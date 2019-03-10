@@ -1,0 +1,15 @@
+name: Cache
+description: Restore and Save directories using a cache key
+author: https://github.com/danthorpe
+requirements:
+  - aws
+configuration:
+  properties:
+    cache_key:
+        type: string
+    paths:
+        type: [ string, array ]
+    env:
+      type: [ string, array ]
+      minimum: 2    
+  additionalProperties: false

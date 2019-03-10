@@ -1,0 +1,29 @@
+#!/bin/bash
+# shellcheck disable=SC2001
+set -euo pipefail
+
+if [[ "${BUILDKITE_PLUGIN_CACHE_DEBUG:-false}" =~ (true|on|1) ]] ; then
+  set -x
+fi
+
+if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]] ; then
+
+  cache_key_prefix=$(echo "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY" | sed -e 's/{.*//')
+  template_value=$(echo "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY" | sed -e 's/^[^\{{]*[^A-Za-z]*//' -e 's/.}}.*$//' | tr -d \' | tr -d \")
+
+  if [[ $template_value == *"checksum"* ]]; then
+    checksum_argument=$(echo "$template_value" | sed -e 's/checksum*//')
+    function=${template_value/"checksum"/"shasum"}
+    result=$($function | tr -d "$checksum_argument")
+    cache_key="$cache_key_prefix$result"
+  else
+    cache_key=$BUILDKITE_PLUGIN_CACHE_CACHE_KEY
+  fi
+
+  echo ":aws: :amazon-s3: sync ${cache_key}"
+  
+  bucket="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}"
+  
+  aws s3 sync "s3://${bucket}/" . --profile="${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}"
+    
+fi
