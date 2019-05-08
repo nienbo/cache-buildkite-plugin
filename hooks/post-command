@@ -20,30 +20,43 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]] ; then
     cache_key=$BUILDKITE_PLUGIN_CACHE_CACHE_KEY
   fi
 
-  bucket="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}"
-  
   paths=()
-  
+
   if [[ -n "${BUILDKITE_PLUGIN_CACHE_PATHS:-}" ]] ; then
     paths+=("$BUILDKITE_PLUGIN_CACHE_PATHS")
   fi
-  
+
   while IFS='=' read -r path _ ; do
     if [[ $path =~ ^(BUILDKITE_PLUGIN_CACHE_PATHS_[0-9]+) ]] ; then
       paths+=("${!path}")
     fi
   done < <(env | sort)
-  
-  if [ "${#paths[@]}" -eq 1 ]; then
 
-    echo "--- :aws: :amazon-s3: sync ${paths[*]}"
-    aws s3 sync "${paths[*]}" "s3://${bucket}/${paths[*]}/" --profile="${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}" --delete    
+  if [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}" ]] ; then
+      mkdir -p "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}"
+  else
+      bucket="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}"
+  fi
+
+  if [ "${#paths[@]}" -eq 1 ]; then
+      if [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}" ]] ; then
+	  mkdir -p "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/${paths[*]}"
+	  rsync -a --delete "${paths[*]}/" "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/${paths[*]}/"
+      else
+	  echo "--- :aws: :amazon-s3: sync ${paths[*]}"
+	  aws s3 sync "${paths[*]}" "s3://${bucket}/${paths[*]}/" --profile="${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}" --delete
+      fi
 
   elif [ "${#paths[@]}" -gt 1 ]; then
     for path in "${paths[@]}"
-      do
-        echo "--- :aws: :amazon-s3: sync ${path}"
-        aws s3 sync "${path}" "s3://${bucket}/${path}/" --profile="${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}" --delete
-      done
-  fi  
+    do
+	if [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}" ]] ; then
+	    mkdir -p "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/${path}"
+	    rsync -a --delete "${path}/" "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/${path}/"
+	else
+            echo "--- :aws: :amazon-s3: sync ${path}"
+            aws s3 sync "${path}" "s3://${bucket}/${path}/" --profile="${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}" --delete
+	fi
+    done
+  fi
 fi

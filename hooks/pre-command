@@ -20,10 +20,15 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]] ; then
     cache_key=$BUILDKITE_PLUGIN_CACHE_CACHE_KEY
   fi
 
-  echo ":aws: :amazon-s3: sync ${cache_key}"
-  
-  bucket="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}"
-  
-  aws s3 sync "s3://${bucket}/" . --profile="${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}"
-    
+  if [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}" ]] ; then
+      mkdir -p "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/"
+      rsync -a "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/" .
+  else
+      echo ":aws: :amazon-s3: sync ${cache_key}"
+
+      bucket="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}"
+
+      aws s3 sync "s3://${bucket}/" . --profile="${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}"
+  fi
+
 fi
