@@ -1,12 +1,17 @@
 name: Cache
-description: Restore and Save directories using a cache key
-author: https://github.com/danthorpe
+description: Restore and Save directories using a cache key & tarballs
+author: https://github.com/gencer
 requirements:
   - aws
+  - tar
 configuration:
   properties:
     rsync_storage:
       type: string
+    tarball_storage:
+      type: string
+    tarball_keep_max_days:
+      type: number
     cache_key:
       type: string
     paths:

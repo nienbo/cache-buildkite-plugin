@@ -2,11 +2,11 @@
 # shellcheck disable=SC2001
 set -euo pipefail
 
-if [[ "${BUILDKITE_PLUGIN_CACHE_DEBUG:-false}" =~ (true|on|1) ]] ; then
+if [[ "${BUILDKITE_PLUGIN_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
   set -x
 fi
 
-if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]] ; then
+if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
 
   cache_key_prefix=$(echo "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY" | sed -e 's/{.*//')
   template_value=$(echo "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY" | sed -e 's/^[^\{{]*[^A-Za-z]*//' -e 's/.}}.*$//' | tr -d \' | tr -d \")
@@ -20,15 +20,21 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]] ; then
     cache_key=$BUILDKITE_PLUGIN_CACHE_CACHE_KEY
   fi
 
-  if [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}" ]] ; then
-      mkdir -p "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/"
-      rsync -a "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/" .
+  if [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE:-}" ]]; then
+    mkdir -p "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/"
+    rsync -a --ignore-missing-args "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/" .
+  elif [[ -n "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE:-}" ]]; then
+    mkdir -p "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
+    TAR_FILE="${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}.tar"
+    if [ -f "$TAR_FILE" ]; then
+      tar -xf "${TAR_FILE}" -C .
+    fi
   else
-      echo ":aws: :amazon-s3: sync ${cache_key}"
-
-      bucket="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}"
-
-      aws s3 sync "s3://${bucket}/" . --profile="${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}"
+    echo ":aws: :amazon-s3: sync ${cache_key}"
+    TAR_FILE="${cache_key}.tar"
+    bucket="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}"
+    aws s3 cp "s3://${bucket}/${TAR_FILE}" . --profile="${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}"
+    tar -xf "${TAR_FILE}" -C .
   fi
 
 fi
