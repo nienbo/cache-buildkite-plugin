@@ -37,7 +37,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
   elif [[ -n "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE:-}" ]]; then
     SOURCE="${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
     mkdir -p "${SOURCE}"
-    DAYS="${BUILDKITE_PLUGIN_CACHE_TARBALL_KEEP_MAX_DAYS:0}"
+    DAYS="${BUILDKITE_PLUGIN_CACHE_TARBALL_KEEP_MAX_DAYS:-}"
     if [ "$DAYS" -gt 0 ]; then
       echo "--- Deleting backups older than ${DAYS} day(s)..."
       find ${SOURCE} -type f -mtime +${DAYS} -delete
