@@ -1,5 +1,3 @@
-[![Build Status](https://badge.buildkite.com/de63a1199fbe2ee8a8d7521bfc35f515934d638fa06b6aa9b1.svg?branch=master)](https://buildkite.com/blindingskies/cache-buildkite-plugin)
-
 # Cache Buildkite Plugin
 
 A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) to restore and save
@@ -73,3 +71,9 @@ steps:
 The paths are synced using `tarball_storage/cache_key.tar`. This is useful for maintaining a local
 cache directory, even though this cache is not shared between servers, it can be reused by different
 agents/builds.
+
+
+Original work by [@danthorpe]( https://github.com/danthorpe/cache-buildkite-plugin)
+
+Copyright (C) 2020 Gencer W. Genç.
+Licensed as **MIT**.
