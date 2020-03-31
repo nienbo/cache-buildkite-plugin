@@ -4,12 +4,18 @@ A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) to restore and
 directories by cache keys. For example, use the checksum of a `.resolved` or `.lock` file
 to restore/save built dependencies between independent builds, not just jobs.
 
+With tarball or rsync, if source folder has changes, this will not fail your build, instead will surpress and continue.
+
+For S3, Instead of sync millions of files, I just tarball before S3 oıperation then copy to s3. This will reduce both time and cost on AWS.
+
+Plus, In addition to tarball & rsync, we also do not re-create another tarball for same cache key if its already exists.
+
 ## Restore & Save Caches
 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.0.0:
+    - gencer/cache#v2.0.1:
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         paths: [ "Pods/", "Rome/" ]
 ```
@@ -43,7 +49,7 @@ If this is set it will be used as the destination parameter of a ``rsync -az`` c
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.0.0:
+    - gencer/cache#v2.0.1:
         rsync_storage: '/tmp/buildkite-cache'
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         paths: [ "Pods/", "Rome/" ]
@@ -61,7 +67,7 @@ If this is set it will be used as the destination parameter of a ``tar -cf`` com
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.0.0:
+    - gencer/cache#v2.0.1:
         tarball_storage: '/tmp/buildkite-cache'
         tarball_keep_max_days: 7 # Optional. Removes tarballs older than 7 days.
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
