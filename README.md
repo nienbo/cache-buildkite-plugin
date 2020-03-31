@@ -46,7 +46,7 @@ If this is set it will be used as the destination parameter of a ``rsync -az`` c
 steps:
   - plugins:
     - gencer/cache#master:
-		rsync_storage: '/tmp/buildkite-cache'
+        rsync_storage: '/tmp/buildkite-cache'
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         paths: [ "Pods/", "Rome/" ]
 ```
@@ -64,8 +64,8 @@ If this is set it will be used as the destination parameter of a ``tar -cf`` com
 steps:
   - plugins:
     - gencer/cache#master:
-		tarball_storage: '/tmp/buildkite-cache'
-		tarball_keep_max_days: 7 # Optional. Removes tarballs older than 7 days.
+        tarball_storage: '/tmp/buildkite-cache'
+        tarball_keep_max_days: 7 # Optional. Removes tarballs older than 7 days.
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         paths: [ "Pods/", "Rome/" ]
 ```
