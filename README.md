@@ -6,7 +6,7 @@ to restore/save built dependencies between independent builds, not just jobs.
 
 With tarball or rsync, if source folder has changes, this will not fail your build, instead will surpress and continue.
 
-For S3, Instead of sync millions of files, I just tarball before S3 oıperation then copy to s3. This will reduce both time and cost on AWS.
+For S3, Instead of sync millions of files, I just tarball before S3 operation then copy to s3. This will reduce both time and cost on AWS.
 
 Plus, In addition to tarball & rsync, we also do not re-create another tarball for same cache key if its already exists.
 
