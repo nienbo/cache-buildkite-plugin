@@ -13,7 +13,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
 
   if [[ $template_value == *"checksum"* ]]; then
     checksum_argument=$(echo "$template_value" | sed -e 's/checksum*//')
-    function=${template_value/"checksum"/"shasum"}
+    function=${template_value/"checksum"/"sha1sum"}
     result=$($function | tr -d "$checksum_argument")
     cache_key="$cache_key_prefix$result"
   else
