@@ -6,6 +6,12 @@ if [[ "${BUILDKITE_PLUGIN_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
   set -x
 fi
 
+if [ ${BUILDKITE_COMMAND_EXIT_STATUS} -ne 0 ]; then
+  echo "~~~ Cache is skipped because step returned ${BUILDKITE_COMMAND_EXIT_STATUS}"
+  exit 0
+fi
+
+
 if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
 
   cache_key_prefix=$(echo "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY" | sed -e 's/{.*//')
