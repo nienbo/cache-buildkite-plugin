@@ -1,9 +1,15 @@
 #!/bin/bash
 # shellcheck disable=SC2001
+
 set -euo pipefail
 
 if [[ "${BUILDKITE_PLUGIN_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
   set -x
+fi
+
+if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
+  echo "~~~ Cache is skipped because no cache key provided"
+  exit 0
 fi
 
 if [ ${BUILDKITE_COMMAND_EXIT_STATUS} -ne 0 ]; then
@@ -11,87 +17,89 @@ if [ ${BUILDKITE_COMMAND_EXIT_STATUS} -ne 0 ]; then
   exit 0
 fi
 
+AWS_ARGS=""
 
-if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
+if [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_PROFILE:-}" ]]; then
+  AWS_ARGS="--profile ${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}"
+fi
 
-  cache_key_prefix=$(echo "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY" | sed -e 's/{.*//')
-  template_value=$(echo "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY" | sed -e 's/^[^\{{]*[^A-Za-z]*//' -e 's/.}}.*$//' | tr -d \' | tr -d \")
+cache_key_prefix=$(echo "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY" | sed -e 's/{.*//')
+template_value=$(echo "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY" | sed -e 's/^[^\{{]*[^A-Za-z]*//' -e 's/.}}.*$//' | tr -d \' | tr -d \")
 
-  if [[ $template_value == *"checksum"* ]]; then
-    checksum_argument=$(echo "$template_value" | sed -e 's/checksum*//')
-    function=${template_value/"checksum"/"sha1sum"}
-    result=$($function | tr -d "$checksum_argument")
-    cache_key="$cache_key_prefix$result"
-  else
-    cache_key=$BUILDKITE_PLUGIN_CACHE_CACHE_KEY
+if [[ $template_value == *"checksum"* ]]; then
+  checksum_argument=$(echo "$template_value" | sed -e 's/checksum*//')
+  function=${template_value/"checksum"/"sha1sum"}
+  result=$($function | tr -d "$checksum_argument")
+  cache_key="$cache_key_prefix$result"
+else
+  cache_key=$BUILDKITE_PLUGIN_CACHE_CACHE_KEY
+fi
+
+paths=()
+
+if [[ -n "${BUILDKITE_PLUGIN_CACHE_PATHS:-}" ]]; then
+  paths+=("$BUILDKITE_PLUGIN_CACHE_PATHS")
+fi
+
+while IFS='=' read -r path _; do
+  if [[ $path =~ ^(BUILDKITE_PLUGIN_CACHE_PATHS_[0-9]+) ]]; then
+    paths+=("${!path}")
   fi
+done < <(env | sort)
 
-  paths=()
-
-  if [[ -n "${BUILDKITE_PLUGIN_CACHE_PATHS:-}" ]]; then
-    paths+=("$BUILDKITE_PLUGIN_CACHE_PATHS")
+if [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE:-}" ]]; then
+  mkdir -p "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}"
+elif [[ -n "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE:-}" ]]; then
+  SOURCE="${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
+  mkdir -p "${SOURCE}"
+  DAYS="${BUILDKITE_PLUGIN_CACHE_TARBALL_KEEP_MAX_DAYS:-}"
+  if [ -n "$DAYS" ] && [ "$DAYS" -gt 0 ]; then
+    echo "--- Deleting backups older than ${DAYS} day(s)..."
+    find ${SOURCE} -type f -mtime +${DAYS} -delete
   fi
+else
+  bucket="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
+fi
 
-  while IFS='=' read -r path _; do
-    if [[ $path =~ ^(BUILDKITE_PLUGIN_CACHE_PATHS_[0-9]+) ]]; then
-      paths+=("${!path}")
-    fi
-  done < <(env | sort)
-
+if [ "${#paths[@]}" -eq 1 ]; then
   if [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE:-}" ]]; then
-    mkdir -p "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}"
+    mkdir -p "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/${paths[*]}"
+    rsync -a --ignore-missing-args --delete "${paths[*]}/" "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/${paths[*]}/"
   elif [[ -n "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE:-}" ]]; then
-    SOURCE="${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
-    mkdir -p "${SOURCE}"
-    DAYS="${BUILDKITE_PLUGIN_CACHE_TARBALL_KEEP_MAX_DAYS:-}"
-    if [ -n "$DAYS" ] && [ "$DAYS" -gt 0 ]; then
-      echo "--- Deleting backups older than ${DAYS} day(s)..."
-      find ${SOURCE} -type f -mtime +${DAYS} -delete
+    mkdir -p "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
+    TAR_FILE="${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}.tar"
+    if [ ! -f "$TAR_FILE" ]; then
+      tar --ignore-failed-read -cf "${TAR_FILE}" "${paths[*]}"
     fi
   else
-    bucket="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}"
+    echo "--- :aws: :amazon-s3: sync ${paths[*]}"
+    TAR_FILE="${cache_key}.tar"
+    if [ ! -f "$TAR_FILE" ]; then
+      tar --ignore-failed-read -cf "${TAR_FILE}" "${paths[*]}"
+    fi
+    aws s3 cp "$TAR_FILE" "s3://${bucket}/${TAR_FILE}" $AWS_ARGS
+    rm -f "${TAR_FILE}"
   fi
 
-  if [ "${#paths[@]}" -eq 1 ]; then
-    if [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE:-}" ]]; then
-      mkdir -p "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/${paths[*]}"
-      rsync -a --ignore-missing-args --delete "${paths[*]}/" "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/${paths[*]}/"
-    elif [[ -n "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE:-}" ]]; then
-      mkdir -p "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
-      TAR_FILE="${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}.tar"
-      if [ ! -f "$TAR_FILE" ]; then
-        tar --ignore-failed-read -cf "${TAR_FILE}" "${paths[*]}"
-      fi
-    else
-      echo "--- :aws: :amazon-s3: sync ${paths[*]}"
-      TAR_FILE="${cache_key}.tar"
-      if [ ! -f "$TAR_FILE" ]; then
-        tar --ignore-failed-read -cf "${TAR_FILE}" "${paths[*]}"
-      fi
-      aws s3 sync "$TAR_FILE" "s3://${bucket}/${TAR_FILE}" --profile="${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}" --delete
-      rm -f "${TAR_FILE}"
+elif [ "${#paths[@]}" -gt 1 ]; then
+  if [[ -n "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE:-}" ]]; then
+    mkdir -p "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
+    TAR_FILE="${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}.tar"
+    if [ ! -f "$TAR_FILE" ]; then
+      tar --ignore-failed-read -cf "${TAR_FILE}" "${paths[@]}"
     fi
-
-  elif [ "${#paths[@]}" -gt 1 ]; then
-    if [[ -n "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE:-}" ]]; then
-      mkdir -p "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
-      TAR_FILE="${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}.tar"
-      if [ ! -f "$TAR_FILE" ]; then
-        tar --ignore-failed-read -cf "${TAR_FILE}" "${paths[@]}"
-      fi
-    elif [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE:-}" ]]; then
-      for path in "${paths[@]}"; do
-        mkdir -p "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/${path}"
-        rsync -a --ignore-missing-args --delete "${path}/" "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/${path}/"
-      done
-    else
-      echo "--- :aws: :amazon-s3: sync ${path}"
-      TAR_FILE="${cache_key}.tar"
-      if [ ! -f "$TAR_FILE" ]; then
-        tar --ignore-failed-read -cf "${TAR_FILE}" "${paths[@]}"
-      fi
-      aws s3 cp "${TAR_FILE}" "s3://${bucket}/${TAR_FILE}" --profile="${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}" --delete
-      rm -f "${TAR_FILE}"
+  elif [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE:-}" ]]; then
+    for path in "${paths[@]}"; do
+      mkdir -p "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/${path}"
+      rsync -a --ignore-missing-args --delete "${path}/" "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/${path}/"
+    done
+  else
+    echo "--- :aws: :amazon-s3: sync ${path}"
+    TAR_FILE="${cache_key}.tar"
+    if [ ! -f "$TAR_FILE" ]; then
+      tar --ignore-failed-read -cf "${TAR_FILE}" "${paths[@]}"
     fi
+    aws s3 cp "${TAR_FILE}" "s3://${bucket}/${TAR_FILE}" $AWS_ARGS
+    rm -f "${TAR_FILE}"
   fi
 fi
