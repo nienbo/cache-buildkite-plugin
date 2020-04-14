@@ -1,3 +1,14 @@
+# v2.0.3
+
++ Skip cache at top level if `key` not provided
++ Check if tar file exists on `s3` before `cp`.
+* + Make AWS Profile optional
+* `sync -> cp` command changed
+
+# v2.0.2
+
++ Skip cache if exit status iz not zero
+
 # v2.0.1
 
 + Fix unbound variable
