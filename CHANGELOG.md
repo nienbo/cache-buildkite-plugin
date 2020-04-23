@@ -1,3 +1,7 @@
+# v2.0.5
+
++ Fix checksum for files with dashes in them
+
 # v2.0.3
 
 + Skip cache at top level if `key` not provided
