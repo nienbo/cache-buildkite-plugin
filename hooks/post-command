@@ -24,7 +24,16 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
 
     if [[ $template_value == *"checksum"* ]]; then
       checksum_argument=$(echo "$template_value" | sed -e 's/checksum*//')
-      function=${template_value/"checksum"/"sha1sum"}
+      if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        function=${template_value/"checksum"/"sha1sum"}
+      elif [[ "$OSTYPE" == "darwin"* ]]; then
+        # fallback to shasum
+        function=${template_value/"checksum"/"shasum"}
+      # elif [[ "$OSTYPE" == "win32" ]]; then # for further usage
+      else
+        # fallback to sha1sum
+        function=${template_value/"checksum"/"sha1sum"}
+      fi
       result=$($function | tr -d "$checksum_argument")
       cache_key="$cache_key_prefix$result"
     else
