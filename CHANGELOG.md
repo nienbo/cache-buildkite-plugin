@@ -1,6 +1,8 @@
 # v2.0.5
 
 + Fix checksum for files with dashes in them
+* Fix incorrect `tr` usage by @xthexder
+* Use `shasum` on macOS.
 
 # v2.0.3
 
