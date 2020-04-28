@@ -18,7 +18,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
     template_value=$(echo "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY" | sed -e 's/^[^\{{]*[^A-Za-z]*//' -e 's/.}}.*$//' | tr -d \' | tr -d \")
 
     if [[ $template_value == *"checksum"* ]]; then
-	  if [[ "$OSTYPE" == "linux-gnu" ]]; then
+      if [[ "$OSTYPE" == "linux-gnu" ]]; then
         function=${template_value/"checksum"/"sha1sum"}
       elif [[ "$OSTYPE" == "darwin"* ]]; then
         # fallback to shasum
@@ -33,10 +33,16 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
     else
       cache_key=$BUILDKITE_PLUGIN_CACHE_CACHE_KEY
     fi
+    
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+      rsync_args="--ignore-missing-args"
+    else
+      rsync_args=""
+    fi
 
     if [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE:-}" ]]; then
       mkdir -p "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/"
-      rsync -a --ignore-missing-args "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/" .
+      rsync -a $rsync_args "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}/" .
     elif [[ -n "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE:-}" ]]; then
       mkdir -p "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
       TAR_FILE="${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}/${cache_key}.tar"
