@@ -1,5 +1,5 @@
 name: Cache
-description: Restore and Save directories using a cache key & tarballs
+description: Restore and Save directories using a cache key with tarballs, Rsync and S3
 author: https://github.com/gencer
 requirements:
   - aws
