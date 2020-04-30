@@ -1,3 +1,7 @@
+# v2.0.6
+
++ macOS compatibility
+
 # v2.0.5
 
 + Fix checksum for files with dashes in them
