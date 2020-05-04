@@ -4,9 +4,9 @@ A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) to restore and
 directories by cache keys. For example, use the checksum of a `.resolved` or `.lock` file
 to restore/save built dependencies between independent builds, not just jobs.
 
-With tarball or rsync, if source folder has changes, this will not fail your build, instead will surpress and continue.
+With tarball or rsync, if source folder has changes, this will not fail your build, instead will surpress, notify and continue.
 
-For S3, Instead of sync millions of files, I just tarball before S3 operation then copy to s3. This will reduce both time and cost on AWS.
+For S3, Instead of sync thousands of files, It just creates a tarball before S3 operation then copy this tarball to s3 at one time. This will reduce both time and cost on AWS billing.
 
 Plus, In addition to tarball & rsync, we also do not re-create another tarball for same cache key if its already exists.
 
