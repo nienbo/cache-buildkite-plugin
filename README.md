@@ -43,7 +43,7 @@ variables defined in your agent.
 steps:
   - plugins:
     - gencer/cache#master:
-        s3: true
+        s3: true `can be s3_storage to comply with others.`
         s3_profile: "my-s3-profile"
         s3_bucket_name: "my-unique-s3-bucket-name"
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
