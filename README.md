@@ -10,6 +10,9 @@ For S3, Instead of sync millions of files, I just tarball before S3 operation th
 
 Plus, In addition to tarball & rsync, we also do not re-create another tarball for same cache key if its already exists.
 
+## Attention!
+Please do not use `master` branch as it has some unfinished work. You can see them in `CHANGELOG`.
+
 ## Restore & Save Caches
 
 ```yml
@@ -17,6 +20,7 @@ steps:
   - plugins:
     - gencer/cache#v2.0.6:
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
+        shared: true # Optional. Default ot `false`
         paths: [ "Pods/", "Rome/" ]
 ```
 
@@ -32,9 +36,19 @@ the cache key will be determined by executing a _checksum_ (actually `sha1sum`) 
 This plugin uses AWS S3 cp to cache the paths into a bucket as defined by environment
 variables defined in your agent.
 
-```bash
-export BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME="my-unique-s3-bucket-name"
-export BUILDKITE_PLUGIN_CACHE_S3_PROFILE="my-s3-profile"
+**Note**: Below YML snippet is for `master` branch. For v2.0.6 and olders, please use ENV variables.
+**Note**: **Not yet released**
+
+```yml
+steps:
+  - plugins:
+    - gencer/cache#master:
+        s3: true
+        s3_profile: "my-s3-profile"
+        s3_bucket_name: "my-unique-s3-bucket-name"
+        cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
+        shared: true # Optional. Default ot `false`. For v2.1.0+
+        paths: [ "Pods/", "Rome/" ]
 ```
 
 The paths are synced using Amazon S3 into your bucket using a structure of
@@ -52,6 +66,7 @@ steps:
     - gencer/cache#v2.0.6:
         rsync_storage: '/tmp/buildkite-cache'
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
+        shared: true # Optional. Default ot `false`. For v2.1.0+
         paths: [ "Pods/", "Rome/" ]
 ```
 
@@ -70,6 +85,7 @@ steps:
     - gencer/cache#v2.0.6:
         tarball_storage: '/tmp/buildkite-cache'
         tarball_keep_max_days: 7 # Optional. Removes tarballs older than 7 days.
+        shared: true # Optional. Default ot `false`. For v2.1.0+
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         paths: [ "Pods/", "Rome/" ]
 ```
@@ -77,7 +93,6 @@ steps:
 The paths are synced using `tarball_storage/cache_key.tar`. This is useful for maintaining a local
 cache directory, even though this cache is not shared between servers, it can be reused by different
 agents/builds.
-
 
 Original work by [@danthorpe]( https://github.com/danthorpe/cache-buildkite-plugin)
 
