@@ -7,7 +7,7 @@ requirements:
 configuration:
   properties:
     s3_storage:
-      type: string
+      type: boolean
     rsync_storage:
       type: string
     tarball_storage:
