@@ -6,6 +6,8 @@ requirements:
   - tar
 configuration:
   properties:
+    s3_storage:
+      type: string
     rsync_storage:
       type: string
     tarball_storage:
@@ -14,9 +16,11 @@ configuration:
       type: number
     cache_key:
       type: string
+    shared:
+      type: boolean
     paths:
-      type: [ string, array ]
+      type: [string, array]
     env:
-      type: [ string, array ]
+      type: [string, array]
       minimum: 2
   additionalProperties: false

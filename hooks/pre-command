@@ -59,7 +59,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
       if [ -f "$TAR_FILE" ]; then
         tar -xf "${TAR_FILE}" -C .
       fi
-    else if [[ -n "${BUILDKITE_PLUGIN_CACHE_S3:-}" ]]; then
+    else if [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_STORAGE:-}" ]]; then
       echo ":aws: :amazon-s3: sync ${cache_key}"
       TAR_FILE="${cache_key}.tar"
       if [[ "${BUILDKITE_PLUGIN_CACHE_SHARED:-false}" =~ (true|on|1) ]]; then

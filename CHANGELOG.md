@@ -1,7 +1,6 @@
-# v2.1.0 **Not yet released! !WIP!**
+# master
 
-+ Added `os` props to S3 Uploads. This will make S3 uploads OS-aware. So caching on linux will not be restored on Windows or Mac... To enable this set `os` to `true` on S3 setting.
-+ Added `shared` prop. This will make sure cached data available across all pipelines. Default to `false`.
++ Added `shared` prop. This will make sure cached data available across multiple pipelines. Default to `false`.
   Use cases:
     In some cases, you may have multiple pipelines for the same project. For example one pipeline for tests and other for deploy. In this case, codebase also is the same and you can safely cache and share data across those pipelines.
 + S3 uploads are now defiend in pipeline instead of ENV variables.
