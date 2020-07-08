@@ -15,7 +15,7 @@ Plus, In addition to tarball & rsync, we also do not re-create another tarball f
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.0.6:
+    - gencer/cache#v2.0.7:
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         paths: [ "Pods/", "Rome/" ]
 ```
@@ -32,12 +32,12 @@ the cache key will be determined by executing a _checksum_ (actually `sha1sum`) 
 This plugin uses AWS S3 cp to cache the paths into a bucket as defined by environment
 variables defined in your agent.
 
-**Note**: Below YML snippet is for `master` branch. For v2.0.6 and olders, please use ENV variables.
+**Note**: Below YML snippet is for `master` branch. For v2.0.7 and olders, please use ENV variables.
 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#master:
+    - gencer/cache#v2.0.7:
         s3_storage: true
         s3_profile: "my-s3-profile"
         s3_bucket_name: "my-unique-s3-bucket-name"
@@ -57,7 +57,7 @@ If this is set it will be used as the destination parameter of a ``rsync -az`` c
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.0.6:
+    - gencer/cache#v2.0.7:
         rsync_storage: '/tmp/buildkite-cache'
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         paths: [ "Pods/", "Rome/" ]
@@ -75,7 +75,7 @@ If this is set it will be used as the destination parameter of a ``tar -cf`` com
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.0.6:
+    - gencer/cache#v2.0.7:
         tarball_storage: '/tmp/buildkite-cache'
         tarball_keep_max_days: 7 # Optional. Removes tarballs older than 7 days.
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
@@ -93,7 +93,7 @@ Along with lock files, you can calculate directory that contains multiple files.
 ```yml
 steps:
   - plugins:
-    - gencer/cache#master:
+    - gencer/cache#v2.0.7:
         tarball_storage: '/tmp/buildkite-cache'
         tarball_keep_max_days: 7 # Optional. Removes tarballs older than 7 days.
         cache_key: "v1-cache-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' directory
