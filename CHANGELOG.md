@@ -1,8 +1,8 @@
-# 2.0.7
+# v2.0.7
 
 + S3 uploads are now defiend in pipeline instead of ENV variables.
 + Ability to hash directory.
-* Improved terminal output with emojis (_and printing current cache version_)
++ Improved terminal output with emojis (_and printing current cache version_)
 
 # v2.0.6
 
