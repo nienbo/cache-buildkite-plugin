@@ -15,17 +15,16 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
   cache_key_prefix=$(echo "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY" | sed -e 's/{.*//')
   template_value=$(echo "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY" | sed -e 's/^[^\{{]*[^A-Za-z]*//' -e 's/.}}.*$//' | tr -d \' | tr -d \")
   if [[ $template_value == *"checksum"* ]]; then
+    target="$(echo -e "${template_value/"checksum"/""}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
-      function="${template_value/"checksum"/""} -type f -print0  | xargs -0 sha1sum"
+      hasher="sha1sum"
     elif [[ "$OSTYPE" == "darwin"* ]]; then
-      # fallback to shasum
-      function="${template_value/"checksum"/""} -type f -print0  | xargs -0 shasum"
-    # elif [[ "$OSTYPE" == "win32" ]]; then # for further usage
+      hasher="shasum"
     else
       # fallback to sha1sum
-      function="${template_value/"checksum"/""} -type f -print0  | xargs -0 sha1sum"
+      hasher="sha1sum"
     fi
-    result=$(find $function | awk '{print $1}')
+    result=$(find "$target" -type f | xargs -d'\n' -P0 -n1 $hasher | sort -k 2 | $hasher | awk '{print $1}')
     cache_key="$cache_key_prefix$result"
   else
     cache_key=$BUILDKITE_PLUGIN_CACHE_CACHE_KEY

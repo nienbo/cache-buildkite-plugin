@@ -1,6 +1,7 @@
 # master
 
 + S3 uploads are now defiend in pipeline instead of ENV variables.
++ Ability to hash directory.
 
 # v2.0.6
 

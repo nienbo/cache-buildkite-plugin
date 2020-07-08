@@ -86,6 +86,22 @@ The paths are synced using `tarball_storage/cache_key.tar`. This is useful for m
 cache directory, even though this cache is not shared between servers, it can be reused by different
 agents/builds.
 
+## Hashing (checksum) against directory
+
+Along with lock files, you can calculate directory that contains multiple files.
+
+```yml
+steps:
+  - plugins:
+    - gencer/cache#master:
+        tarball_storage: '/tmp/buildkite-cache'
+        tarball_keep_max_days: 7 # Optional. Removes tarballs older than 7 days.
+        cache_key: "v1-cache-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' directory
+        paths: [ "Pods/", "Rome/" ]
+```
+
+For example, you can calculate total checksum of your javascript folder to skip build, if source didn't changed.
+
 Original work by [@danthorpe]( https://github.com/danthorpe/cache-buildkite-plugin)
 
 Copyright (C) 2020 Gencer W. Genç.
