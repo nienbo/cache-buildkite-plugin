@@ -1,8 +1,5 @@
 # master
 
-+ Added `shared` prop. This will make sure cached data available across multiple pipelines. Default to `false`.
-  Use cases:
-    In some cases, you may have multiple pipelines for the same project. For example one pipeline for tests and other for deploy. In this case, codebase also is the same and you can safely cache and share data across those pipelines.
 + S3 uploads are now defiend in pipeline instead of ENV variables.
 
 # v2.0.6

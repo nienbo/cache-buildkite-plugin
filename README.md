@@ -8,7 +8,7 @@ With tarball or rsync, if source folder has changes, this will not fail your bui
 
 For S3, Instead of sync thousands of files, It just creates a tarball before S3 operation then copy this tarball to s3 at one time. This will reduce both time and cost on AWS billing.
 
-Plus, In addition to tarball & rsync, we also do not re-create another tarball for same cache key if its already exists.
+Plus, In addition to tarball & rsync, we also do not re-create another tarball for same cache key if it's already exists.
 
 ## Restore & Save Caches
 
@@ -17,7 +17,6 @@ steps:
   - plugins:
     - gencer/cache#v2.0.6:
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
-        shared: true # Optional. Default to `false`
         paths: [ "Pods/", "Rome/" ]
 ```
 
@@ -43,7 +42,6 @@ steps:
         s3_profile: "my-s3-profile"
         s3_bucket_name: "my-unique-s3-bucket-name"
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
-        shared: true # Optional. Default to `false`. For v2.1.0+
         paths: [ "Pods/", "Rome/" ]
 ```
 
@@ -62,7 +60,6 @@ steps:
     - gencer/cache#v2.0.6:
         rsync_storage: '/tmp/buildkite-cache'
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
-        shared: true # Optional. Default to `false`. For v2.1.0+
         paths: [ "Pods/", "Rome/" ]
 ```
 
@@ -81,7 +78,6 @@ steps:
     - gencer/cache#v2.0.6:
         tarball_storage: '/tmp/buildkite-cache'
         tarball_keep_max_days: 7 # Optional. Removes tarballs older than 7 days.
-        shared: true # Optional. Default to `false`. For v2.1.0+
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         paths: [ "Pods/", "Rome/" ]
 ```
