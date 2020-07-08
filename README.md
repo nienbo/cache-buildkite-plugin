@@ -100,6 +100,10 @@ steps:
 
 For example, you can calculate total checksum of your javascript folder to skip build, if source didn't changed.
 
+## Roadmap
+
++ Adding support for Windows.
+
 Original work by [@danthorpe]( https://github.com/danthorpe/cache-buildkite-plugin)
 
 Copyright (C) 2020 Gencer W. Genç.
