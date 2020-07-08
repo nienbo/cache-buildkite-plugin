@@ -3,10 +3,11 @@
 
 set -euo pipefail
 
+
 current_dir="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
 version=$(<"$current_dir/../VERSION")
 
-echo "~~~ :bash: Initializing Cache Buildkite Plugin v$version"
+echo -e "~~~ :bash: Initializing \033[33mCache\033[0m Buildkite Plugin v$version"
 
 if [[ "${BUILDKITE_PLUGIN_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
   set -x
@@ -35,7 +36,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
     cache_key=$BUILDKITE_PLUGIN_CACHE_CACHE_KEY
   fi
 
-  echo ":bk-status-running: Looking for $cache_key"
+  echo "🔍 Looking for $cache_key"
 
   if [[ "$OSTYPE" == "linux-gnu" ]]; then
     rsync_args="--ignore-missing-args"
@@ -53,11 +54,11 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
     TAR_FILE="${cache_prefix}/${cache_key}.tar"
 
     if [ -f "$TAR_FILE" ]; then
-      echo ":bk-status-passed: Cache hit: ${cache_key}"
+      echo "🔥 Cache hit: ${cache_key}"
       tar -xf "${TAR_FILE}" -C .
     fi
   elif [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_STORAGE:-}" ]]; then
-    echo ":aws: :amazon-s3: sync ${cache_key}"
+    echo "🔍 Locating cache on S3"
 
     TAR_FILE="${cache_key}.tar"
     bucket="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
@@ -66,14 +67,14 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
     aws s3api head-object --bucket "${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}" --key "${tkey}/${TAR_FILE}" || no_head=true
 
     if ${no_head:-false}; then
-      echo ":bk-status-pending: Cache restore is skipped because s3://${bucket}/${TAR_FILE} does not exist"
+      echo "🚨 Cache restore is skipped because s3://${bucket}/${TAR_FILE} does not exist"
     else
-      echo ":bk-status-passed: Cache hit: s3://${bucket}/${TAR_FILE}"
+      echo "🔥 Cache hit: s3://${bucket}/${TAR_FILE}"
       aws s3 cp "s3://${bucket}/${TAR_FILE}" . $AWS_ARGS
       tar -xf "${TAR_FILE}" -C .
     fi
   fi
 else
-  echo ":bk-status-pending: Cache is skipped because no cache key provided"
+  echo "🚨 Cache is skipped because no cache key provided"
   exit 0
 fi

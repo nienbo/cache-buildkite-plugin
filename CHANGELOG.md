@@ -1,4 +1,4 @@
-# master
+# 2.7.0-dev
 
 + S3 uploads are now defiend in pipeline instead of ENV variables.
 + Ability to hash directory.

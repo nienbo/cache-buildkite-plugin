@@ -3,17 +3,17 @@
 
 set -euo pipefail
 
-CURRENT_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
-VERSION=$(<"$CURRENT_DIR/../VERSION")
+current_dir="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
+version=$(<"$current_dir/../VERSION")
 
-echo "~~~ :bash: Initializing Cache Buildkite Plugin v$version"
+echo -e "~~~ :bash: Processing Post-Cache..."
 
 if [[ "${BUILDKITE_PLUGIN_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
   set -x
 fi
 
 if [ ${BUILDKITE_COMMAND_EXIT_STATUS} -ne 0 ]; then
-  echo ":bk-status-pending: Cache is skipped because step returned ${BUILDKITE_COMMAND_EXIT_STATUS}"
+  echo "--- 🚨 Cache is skipped because step returned ${BUILDKITE_COMMAND_EXIT_STATUS}"
   exit 0
 fi
 
@@ -73,7 +73,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
     mkdir -p "${cache_prefix}"
     DAYS="${BUILDKITE_PLUGIN_CACHE_TARBALL_KEEP_MAX_DAYS:-}"
     if [ -n "$DAYS" ] && [ "$DAYS" -gt 0 ]; then
-      echo ":bk-status-running: Deleting backups older than ${DAYS} day(s)..."
+      echo "🗑️ Deleting backups older than ${DAYS} day(s)..."
       find ${cache_prefix} -type f -mtime +${DAYS} -delete
     fi
   else
@@ -93,7 +93,8 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
         tar --ignore-failed-read -cf "${TAR_FILE}" "${paths[*]}"
       fi
     else
-      echo ":bk-status-passed: :aws: :amazon-s3: sync ${paths[*]}"
+      echo "🔍 Locating cache on S3: ${paths[*]}"
+
       TAR_FILE="${cache_key}.tar"
       if [ ! -f "$TAR_FILE" ]; then
         tar --ignore-failed-read -cf "${TAR_FILE}" "${paths[*]}"
@@ -115,7 +116,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
         rsync -a $rsync_args --delete "${path}/" "${cache_prefix}/${cache_key}/${path}/"
       done
     else
-      echo ":bk-status-passed: :aws: :amazon-s3: sync ${path}"
+      echo "🔍 Locating cache on S3: ${path}"
       TAR_FILE="${cache_key}.tar"
       if [ ! -f "$TAR_FILE" ]; then
         tar --ignore-failed-read -cf "${TAR_FILE}" "${paths[@]}"
@@ -125,6 +126,6 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
     fi
   fi
 else
-  echo "Cache is skipped because no cache key provided"
+  echo "🚨 Cache is skipped because no cache key provided"
   exit 0
 fi
