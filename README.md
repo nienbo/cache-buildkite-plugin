@@ -32,8 +32,6 @@ the cache key will be determined by executing a _checksum_ (actually `sha1sum`) 
 This plugin uses AWS S3 cp to cache the paths into a bucket as defined by environment
 variables defined in your agent.
 
-**Note**: Below YML snippet is for `master` branch. For v2.0.7 and olders, please use ENV variables.
-
 ```yml
 steps:
   - plugins:
