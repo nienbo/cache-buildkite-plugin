@@ -3,6 +3,11 @@
 
 set -euo pipefail
 
+current_dir="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
+version=$(<"$current_dir/../VERSION")
+
+echo "~~~ :bash: Initializing Cache Buildkite Plugin v$version"
+
 if [[ "${BUILDKITE_PLUGIN_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
   set -x
 fi
@@ -30,6 +35,8 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
     cache_key=$BUILDKITE_PLUGIN_CACHE_CACHE_KEY
   fi
 
+  echo ":bk-status-running: Looking for $cache_key"
+
   if [[ "$OSTYPE" == "linux-gnu" ]]; then
     rsync_args="--ignore-missing-args"
   else
@@ -46,7 +53,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
     TAR_FILE="${cache_prefix}/${cache_key}.tar"
 
     if [ -f "$TAR_FILE" ]; then
-      echo "Cache hit: ${cache_key}"
+      echo ":bk-status-passed: Cache hit: ${cache_key}"
       tar -xf "${TAR_FILE}" -C .
     fi
   elif [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_STORAGE:-}" ]]; then
@@ -59,14 +66,14 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
     aws s3api head-object --bucket "${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}" --key "${tkey}/${TAR_FILE}" || no_head=true
 
     if ${no_head:-false}; then
-      echo "Cache restore is skipped because s3://${bucket}/${TAR_FILE} does not exist"
+      echo ":bk-status-pending: Cache restore is skipped because s3://${bucket}/${TAR_FILE} does not exist"
     else
-      echo "Cache hit: s3://${bucket}/${TAR_FILE}"
+      echo ":bk-status-passed: Cache hit: s3://${bucket}/${TAR_FILE}"
       aws s3 cp "s3://${bucket}/${TAR_FILE}" . $AWS_ARGS
       tar -xf "${TAR_FILE}" -C .
     fi
   fi
 else
-  echo "Cache is skipped because no cache key provided"
+  echo ":bk-status-pending: Cache is skipped because no cache key provided"
   exit 0
 fi
