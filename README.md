@@ -103,6 +103,8 @@ For example, you can calculate total checksum of your javascript folder to skip 
 ## Roadmap
 
 + Adding support for Windows.
++ Move functions to `shared.bash`.
++ Google Cloud Cache Support.
 
 Original work by [@danthorpe]( https://github.com/danthorpe/cache-buildkite-plugin)
 
