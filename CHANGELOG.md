@@ -1,3 +1,7 @@
+# v2.0.8
+
++ Fix `"` and `'` (single/double quotes) issues on docker image that used in EC2 instances.
+
 # v2.0.7
 
 + S3 uploads are now defiend in pipeline instead of ENV variables.
