@@ -28,7 +28,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
   template_value=$(echo "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY" | sed -e 's/^[^\{{]*[^A-Za-z]*//' -e 's/.}}.*$//' | tr -d \' | tr -d \")
 
   if [[ $template_value == *"checksum"* ]]; then
-    target="$(echo -e "${template_value/"checksum"/""}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+    target="$(echo -e "${template_value/"checksum"/""}" |  tr -d \' | tr -d \" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
       hasher="sha1sum"
     elif [[ "$OSTYPE" == "darwin"* ]]; then
