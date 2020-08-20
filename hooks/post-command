@@ -96,7 +96,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
       if [ ! -f "$TAR_FILE" ]; then
         TMP_FILE="$(mktemp)"
         tar $tar_options "${TMP_FILE}" "${paths[*]}"
-        mv "${TMP_FILE}" "${TAR_FILE}"
+        mv -f "${TMP_FILE}" "${TAR_FILE}"
       fi
       aws s3 cp "$TAR_FILE" "s3://${bucket}/${TAR_FILE}" $AWS_ARGS
       rm -f "${TAR_FILE}"
@@ -109,7 +109,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
       if [ ! -f "$TAR_FILE" ]; then
         TMP_FILE="$(mktemp)"
         tar $tar_options "${TMP_FILE}" "${paths[@]}"
-        mv "${TMP_FILE}" "${TAR_FILE}"
+        mv -f "${TMP_FILE}" "${TAR_FILE}"
       fi
     elif [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE:-}" ]]; then
       for path in "${paths[@]}"; do
@@ -122,7 +122,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
       if [ ! -f "$TAR_FILE" ]; then
         TMP_FILE="$(mktemp)"
         tar $tar_options "${TMP_FILE}" "${paths[@]}"
-        mv "${TMP_FILE}" "${TAR_FILE}"
+        mv -f "${TMP_FILE}" "${TAR_FILE}"
       fi
       aws s3 cp "${TAR_FILE}" "s3://${bucket}/${TAR_FILE}" $AWS_ARGS
       rm -f "${TAR_FILE}"
