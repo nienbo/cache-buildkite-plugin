@@ -106,6 +106,12 @@ steps:
 
 For example, you can calculate total checksum of your javascript folder to skip build, if source didn't changed.
 
+## Keeping caches for `X` days
+
+To keep caches and delete them in -for example- 7 days, use tarball storage and use `tarball_keep_max_days`. On S3 side, please use S3 Policy for this routine. Each uploaded file to S3 will be deleted according to your file deletion policy.
+
+There is one catch here, in tarball storage we do not re-create another tarball if its already exists on the disk. This is not the case for S3 tarball upload. Due to expiration policy, we just re-upload the same tarball to refresh expiration date. So as long as you use the same cache, S3 will not delete it. Otherwise, It will be deleted from S3-side if not used in a manner time.
+
 ## Roadmap
 
 + Adding support for Windows.
