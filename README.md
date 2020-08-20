@@ -21,7 +21,7 @@ Plus, In addition to tarball & rsync, we also do not re-create another tarball f
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.0.9:
+    - gencer/cache#v2.0.10:
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         paths: [ "Pods/", "Rome/" ]
 ```
@@ -41,7 +41,7 @@ variables defined in your agent.
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.0.9:
+    - gencer/cache#v2.0.10:
         s3_storage: true
         s3_profile: "my-s3-profile"
         s3_bucket_name: "my-unique-s3-bucket-name"
@@ -61,7 +61,7 @@ If this is set it will be used as the destination parameter of a ``rsync -az`` c
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.0.9:
+    - gencer/cache#v2.0.10:
         rsync_storage: '/tmp/buildkite-cache'
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         paths: [ "Pods/", "Rome/" ]
@@ -79,7 +79,7 @@ If this is set it will be used as the destination parameter of a ``tar -cf`` com
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.0.9:
+    - gencer/cache#v2.0.10:
         tarball_storage: '/tmp/buildkite-cache'
         tarball_keep_max_days: 7 # Optional. Removes tarballs older than 7 days.
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
@@ -97,7 +97,7 @@ Along with lock files, you can calculate directory that contains multiple files.
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.0.9:
+    - gencer/cache#v2.0.10:
         tarball_storage: '/tmp/buildkite-cache'
         tarball_keep_max_days: 7 # Optional. Removes tarballs older than 7 days.
         cache_key: "v1-cache-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' directory

@@ -20,8 +20,6 @@ configuration:
       type: number
     cache_key:
       type: string
-    # shared:
-      # type: boolean
     paths:
       type: [string, array]
     env:

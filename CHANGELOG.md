@@ -1,3 +1,7 @@
+# v2.0.10
+
++ Concurrent writers to tar files clobber each other. See #6. ([@djmarcin]( https://github.com/djmarcin))
+
 # v2.0.9
 
 + Fix `--ignore-failed-read` which is not supported on macOS. See #5.
