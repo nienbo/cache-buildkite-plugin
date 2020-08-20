@@ -1,5 +1,5 @@
 name: Cache
-description: Restore and Save directories using a cache key with tarballs, Rsync and S3
+description: Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux and macOS. (Windows is on the way)
 author: https://github.com/gencer
 requirements:
   - aws
@@ -8,6 +8,10 @@ configuration:
   properties:
     s3_storage:
       type: boolean
+    s3_profile:
+      type: string
+    s3_bucket_name:
+      type: string
     rsync_storage:
       type: string
     tarball_storage:
@@ -16,8 +20,8 @@ configuration:
       type: number
     cache_key:
       type: string
-    shared:
-      type: boolean
+    # shared:
+      # type: boolean
     paths:
       type: [string, array]
     env:
