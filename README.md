@@ -1,4 +1,5 @@
-# Cache Buildkite Plugin
+# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.0.10-green?style=flat-square)](https://buildkite.com/plugins)
+
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux and macOS.
 
@@ -118,7 +119,7 @@ There is one catch here, in tarball storage we do not re-create another tarball 
 + Move functions to `shared.bash`.
 + Google Cloud Cache Support.
 
-Original work by [@danthorpe]( https://github.com/danthorpe/cache-buildkite-plugin)
+Original work by [@danthorpe](https://github.com/danthorpe/cache-buildkite-plugin)
 
 Copyright (C) 2020 Gencer W. Genç.
 
