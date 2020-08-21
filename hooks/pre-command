@@ -3,74 +3,73 @@
 
 set -euo pipefail
 
+CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+VERSION=$(<"$CURRENT_DIR/../VERSION")
 
-current_dir="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
-version=$(<"$current_dir/../VERSION")
-
-echo -e "~~~ :bash: Initializing \033[33mCache\033[0m Buildkite Plugin v$version"
+echo -e "~~~ :bash: Initializing \033[33mCache\033[0m Buildkite Plugin v$VERSION"
 
 if [[ "${BUILDKITE_PLUGIN_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
   set -x
 fi
 
 if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
+
+  # Defaults...
+  HASHER_BIN="sha1sum"
+  TAR_ARGS="--ignore-failed-read -cf"
+  RSYNC_ARGS="--ignore-missing-args"
   AWS_ARGS=""
+
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    HASHER_BIN="shasum"
+    TAR_ARGS="-cf"
+    RSYNC_ARGS=""
+  fi
+
   if [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_PROFILE:-}" ]]; then
     AWS_ARGS="--profile ${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}"
   fi
-  cache_key_prefix=$(echo "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY" | sed -e 's/{.*//')
-  template_value=$(echo "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY" | sed -e 's/^[^\{{]*[^A-Za-z]*//' -e 's/.}}.*$//' | tr -d \' | tr -d \")
-  if [[ $template_value == *"checksum"* ]]; then
-    target="$(echo -e "${template_value/"checksum"/""}" |  tr -d \' | tr -d \" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
-    if [[ "$OSTYPE" == "linux-gnu" ]]; then
-      hasher="sha1sum"
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-      hasher="shasum"
-    else
-      # fallback to sha1sum
-      hasher="sha1sum"
-    fi
-    result=$(find "$target" -type f | xargs -d'\n' -P0 -n1 $hasher | sort -k 2 | $hasher | awk '{print $1}')
-    cache_key="$cache_key_prefix$result"
+
+  CACHE_KEY_PREFIX=$(echo "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY" | sed -e 's/{.*//')
+  TEMPLATE_VALUE=$(echo "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY" | sed -e 's/^[^\{{]*[^A-Za-z]*//' -e 's/.}}.*$//' | tr -d \' | tr -d \")
+  if [[ $TEMPLATE_VALUE == *"checksum"* ]]; then
+    TARGET="$(echo -e "${TEMPLATE_VALUE/"checksum"/""}" | tr -d \' | tr -d \" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+    RESULT=$(find "$TARGET" -type f | xargs -d'\n' -P0 -n1 $HASHER_BIN | sort -k 2 | $HASHER_BIN | awk '{print $1}')
+    CACHE_KEY="$CACHE_KEY_PREFIX$RESULT"
   else
-    cache_key=$BUILDKITE_PLUGIN_CACHE_CACHE_KEY
+    CACHE_KEY=$BUILDKITE_PLUGIN_CACHE_CACHE_KEY
   fi
 
-  echo "🔍 Looking for $cache_key"
+  echo "🔍 Looking for $CACHE_KEY"
 
-  if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    rsync_args="--ignore-missing-args"
-  else
-    rsync_args=""
-  fi
   if [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE:-}" ]]; then
-    cache_prefix="${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
+    CACHE_PREFIX="${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
 
-    mkdir -p "${cache_prefix}/${cache_key}"
-    rsync -a $rsync_args "${cache_prefix}/${cache_key}/" .
+    mkdir -p "${CACHE_PREFIX}/${CACHE_KEY}"
+    rsync -a $RSYNC_ARGS "${CACHE_PREFIX}/${CACHE_KEY}/" .
   elif [[ -n "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE:-}" ]]; then
-    cache_prefix="${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
-    mkdir -p "${cache_prefix}/${BUILDKITE_PIPELINE_SLUG}"
-    TAR_FILE="${cache_prefix}/${cache_key}.tar"
+    CACHE_PREFIX="${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
+    mkdir -p "${CACHE_PREFIX}/${BUILDKITE_PIPELINE_SLUG}"
+    TAR_FILE="${CACHE_PREFIX}/${CACHE_KEY}.tar"
 
     if [ -f "$TAR_FILE" ]; then
-      echo "🔥 Cache hit: ${cache_key}"
+      echo "🔥 Cache hit: ${CACHE_KEY}"
       tar -xf "${TAR_FILE}" -C .
     fi
   elif [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_STORAGE:-}" ]]; then
     echo "🔍 Locating cache on S3"
 
-    TAR_FILE="${cache_key}.tar"
-    bucket="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
-    tkey="${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
+    TAR_FILE="${CACHE_KEY}.tar"
+    BUCKET="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
+    TKEY="${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
 
-    aws s3api head-object --bucket "${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}" --key "${tkey}/${TAR_FILE}" || no_head=true
+    aws s3api head-object --BUCKET "${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}" --key "${TKEY}/${TAR_FILE}" || no_head=true
 
     if ${no_head:-false}; then
-      echo "🚨 Cache restore is skipped because s3://${bucket}/${TAR_FILE} does not exist"
+      echo "🚨 Cache restore is skipped because s3://${BUCKET}/${TAR_FILE} does not exist"
     else
-      echo "🔥 Cache hit: s3://${bucket}/${TAR_FILE}"
-      aws s3 cp "s3://${bucket}/${TAR_FILE}" . $AWS_ARGS
+      echo "🔥 Cache hit: s3://${BUCKET}/${TAR_FILE}"
+      aws s3 cp "s3://${BUCKET}/${TAR_FILE}" . $AWS_ARGS
       tar -xf "${TAR_FILE}" -C .
     fi
   fi
