@@ -40,7 +40,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
 
   if [[ $TEMPLATE_VALUE == *"checksum"* ]]; then
     TARGET="$(echo -e "${TEMPLATE_VALUE/"checksum"/""}" | tr -d \' | tr -d \" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
-    RESULT=$(find "$TARGET" -type f | xargs -d'\n' -P0 -n1 $HASHER_BIN | sort -k 2 | $HASHER_BIN | awk '{print $1}')
+    RESULT=$(find "$TARGET" -type f -exec $HASHER_BIN {} \; | sort -k 2 | $HASHER_BIN | awk '{print $1}')
     CACHE_KEY="$CACHE_KEY_PREFIX$RESULT"
   else
     CACHE_KEY=$BUILDKITE_PLUGIN_CACHE_CACHE_KEY
