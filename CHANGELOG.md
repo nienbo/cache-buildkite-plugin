@@ -1,4 +1,4 @@
-# v2.1.0
+# v2.1.0 `master`
 
 + Improved templating support. Moving shared function to `shared.bash` See #8 and #9. ([@djmarcin]( https://github.com/djmarcin))
 + Added tests. And rewarp the code. See #10. ([@djmarcin]( https://github.com/djmarcin))
