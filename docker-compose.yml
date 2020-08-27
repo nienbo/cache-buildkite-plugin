@@ -1,6 +1,11 @@
-version: '3.4'
+version: "3.4"
 services:
   tests:
     image: buildkite/plugin-tester
     volumes:
-      - ".:/plugin"
+      - ".:/plugin:ro"
+  lint:
+    image: buildkite/plugin-linter
+    command: ["--id", "gencer/cache"]
+    volumes:
+      - ".:/plugin:ro"

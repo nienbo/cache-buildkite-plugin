@@ -3,8 +3,9 @@
 
 set -euo pipefail
 
-CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-VERSION=$(<"$CURRENT_DIR/../VERSION")
+BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
+. "$BASEDIR/lib/shared.bash"
+VERSION=$(<"$BASEDIR/VERSION")
 
 echo -e "~~~ :bash: Processing Post-Cache..."
 
@@ -20,13 +21,11 @@ fi
 if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
 
   # Defaults...
-  HASHER_BIN="sha1sum"
   TAR_ARGS="--ignore-failed-read -cf"
   RSYNC_ARGS="--ignore-missing-args"
   AWS_ARGS=""
 
   if [[ "$OSTYPE" == "darwin"* ]]; then
-    HASHER_BIN="shasum"
     TAR_ARGS="-cf"
     RSYNC_ARGS=""
   fi
@@ -35,18 +34,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
     AWS_ARGS="--profile ${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}"
   fi
 
-  CACHE_KEY="$BUILDKITE_PLUGIN_CACHE_CACHE_KEY"
-  while [[ "$CACHE_KEY" =~ (.*)\{\{\ *(.*)\ *\}\}(.*) ]]; do
-    TEMPLATE_VALUE="${BASH_REMATCH[2]}"
-    EXPANDED_VALUE=""
-    if [[ $TEMPLATE_VALUE == *"checksum"* ]]; then
-      TARGET="$(echo -e "${TEMPLATE_VALUE/"checksum"/""}" | tr -d \' | tr -d \" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
-      EXPANDED_VALUE=$(find "$TARGET" -type f -exec $HASHER_BIN {} \; | sort -k 2 | $HASHER_BIN | awk '{print $1}')
-    else
-      echo "Invalid template expression: $TEMPLATE_VALUE"; exit 1
-    fi
-    CACHE_KEY="${BASH_REMATCH[1]}${EXPANDED_VALUE}${BASH_REMATCH[3]}"
-  done
+  CACHE_KEY="$(expand_templates "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY")"
 
   paths=()
 
