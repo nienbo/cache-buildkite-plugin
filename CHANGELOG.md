@@ -1,3 +1,8 @@
+# v2.1.0
+
++ Improved templating support. Moving shared function to `shared.bash` See #8 and #9. ([@djmarcin]( https://github.com/djmarcin))
++ Added tests. And rewarp the code. See #10. ([@djmarcin]( https://github.com/djmarcin))
+
 # v2.0.10
 
 + Concurrent writers to tar files clobber each other. See #6. ([@djmarcin]( https://github.com/djmarcin))
