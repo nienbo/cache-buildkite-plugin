@@ -1,5 +1,6 @@
 #!/bin/bash
 # shellcheck disable=SC2001
+# shellcheck disable=SC1091
 
 set -euo pipefail
 
@@ -16,12 +17,10 @@ fi
 if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
 
   # Defaults...
-  TAR_ARGS="--ignore-failed-read -cf"
   RSYNC_ARGS="--ignore-missing-args"
   AWS_ARGS=""
 
   if [[ "$OSTYPE" == "darwin"* ]]; then
-    TAR_ARGS="-cf"
     RSYNC_ARGS=""
   fi
 
@@ -37,7 +36,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
     CACHE_PREFIX="${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
 
     mkdir -p "${CACHE_PREFIX}/${CACHE_KEY}"
-    rsync -a $RSYNC_ARGS "${CACHE_PREFIX}/${CACHE_KEY}/" .
+    rsync -a "$RSYNC_ARGS" "${CACHE_PREFIX}/${CACHE_KEY}/" .
   elif [[ -n "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE:-}" ]]; then
     CACHE_PREFIX="${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
     mkdir -p "${CACHE_PREFIX}/${BUILDKITE_PIPELINE_SLUG}"
@@ -60,7 +59,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
       echo "🚨 Cache restore is skipped because s3://${BUCKET}/${TAR_FILE} does not exist"
     else
       echo "🔥 Cache hit: s3://${BUCKET}/${TAR_FILE}"
-      aws s3 cp "s3://${BUCKET}/${TAR_FILE}" . $AWS_ARGS
+      aws s3 cp "s3://${BUCKET}/${TAR_FILE}" . "$AWS_ARGS"
       tar -xf "${TAR_FILE}" -C .
     fi
   fi
