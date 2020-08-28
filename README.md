@@ -1,4 +1,4 @@
-# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.0.10-green?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/454ec90d231d49141fd210760bb2f19ee18d3153e35ec7f6b5.svg)](https://buildkite.com/nienbo/buildkite-cache)
+# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.1.0-green?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/454ec90d231d49141fd210760bb2f19ee18d3153e35ec7f6b5.svg)](https://buildkite.com/nienbo/buildkite-cache)
 
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux and macOS.
@@ -22,7 +22,7 @@ Plus, In addition to tarball & rsync, we also do not re-create another tarball f
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.0.10:
+    - gencer/cache#v2.1.0:
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         paths: [ "Pods/", "Rome/" ]
 ```
@@ -42,7 +42,7 @@ variables defined in your agent.
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.0.10:
+    - gencer/cache#v2.1.0:
         s3_storage: true
         s3_profile: "my-s3-profile"
         s3_bucket_name: "my-unique-s3-bucket-name"
@@ -62,7 +62,7 @@ If this is set it will be used as the destination parameter of a ``rsync -az`` c
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.0.10:
+    - gencer/cache#v2.1.0:
         rsync_storage: '/tmp/buildkite-cache'
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         paths: [ "Pods/", "Rome/" ]
@@ -80,7 +80,7 @@ If this is set it will be used as the destination parameter of a ``tar -cf`` com
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.0.10:
+    - gencer/cache#v2.1.0:
         tarball_storage: '/tmp/buildkite-cache'
         tarball_keep_max_days: 7 # Optional. Removes tarballs older than 7 days.
         cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
@@ -98,7 +98,7 @@ Along with lock files, you can calculate directory that contains multiple files.
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.0.10:
+    - gencer/cache#v2.1.0:
         tarball_storage: '/tmp/buildkite-cache'
         tarball_keep_max_days: 7 # Optional. Removes tarballs older than 7 days.
         cache_key: "v1-cache-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' directory
