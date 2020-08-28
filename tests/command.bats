@@ -9,7 +9,7 @@ load "$BATS_PATH/load.bash"
 
   stub aws \
    "s3api head-object --bucket my-bucket --key 'my-org/my-pipeline/v1-cache-key.tar' : true" \
-   "s3 cp s3://my-bucket/my-org/my-pipeline/v1-cache-key.tar . --profile my-profile : echo Copied from S3"
+   "s3 cp s3://my-bucket/my-org/my-pipeline/v1-cache-key.tar . '--profile my-profile' : echo Copied from S3"
 
   stub tar \
    "-xf v1-cache-key.tar -C . : echo Extracted tar archive"
@@ -46,7 +46,7 @@ load "$BATS_PATH/load.bash"
   stub mv \
     "-f /tmp/tempfile v1-cache-key.tar : true"
   stub aws \
-   "s3 cp v1-cache-key.tar s3://my-bucket/my-org/my-pipeline/v1-cache-key.tar --profile my-profile : echo Copied to S3"
+   "s3 cp v1-cache-key.tar s3://my-bucket/my-org/my-pipeline/v1-cache-key.tar '--profile my-profile' : echo Copied to S3"
 
   export BUILDKITE_ORGANIZATION_SLUG="my-org"
   export BUILDKITE_PIPELINE_SLUG="my-pipeline"
@@ -82,7 +82,7 @@ load "$BATS_PATH/load.bash"
 
   stub aws \
    "s3api head-object --bucket my-bucket --key 'my-org/my-pipeline/v1-cache-key-${CHECKSUM}.tar' : true" \
-   "s3 cp s3://my-bucket/my-org/my-pipeline/v1-cache-key-${CHECKSUM}.tar . --profile my-profile : echo Copied from S3"
+   "s3 cp s3://my-bucket/my-org/my-pipeline/v1-cache-key-${CHECKSUM}.tar . '--profile my-profile' : echo Copied from S3"
 
   stub tar \
    "-xf v1-cache-key-${CHECKSUM}.tar -C . : echo Extracted tar archive"
@@ -115,7 +115,7 @@ load "$BATS_PATH/load.bash"
 
   stub aws \
    "s3api head-object --bucket my-bucket --key 'my-org/my-pipeline/v1-cache-key-${CHECKSUM}.tar' : true" \
-   "s3 cp s3://my-bucket/my-org/my-pipeline/v1-cache-key-${CHECKSUM}.tar . --profile my-profile : echo Copied from S3"
+   "s3 cp s3://my-bucket/my-org/my-pipeline/v1-cache-key-${CHECKSUM}.tar . '--profile my-profile' : echo Copied from S3"
 
   stub tar \
    "-xf v1-cache-key-${CHECKSUM}.tar -C . : echo Extracted tar archive"
@@ -148,7 +148,7 @@ load "$BATS_PATH/load.bash"
 
   stub aws \
    "s3api head-object --bucket my-bucket --key 'my-org/my-pipeline/v1-cache-key-${CHECKSUMS}.tar' : true" \
-   "s3 cp s3://my-bucket/my-org/my-pipeline/v1-cache-key-${CHECKSUMS}.tar . --profile my-profile : echo Copied from S3"
+   "s3 cp s3://my-bucket/my-org/my-pipeline/v1-cache-key-${CHECKSUMS}.tar . '--profile my-profile' : echo Copied from S3"
 
   stub tar \
    "-xf v1-cache-key-${CHECKSUMS}.tar -C . : echo Extracted tar archive"
@@ -181,7 +181,7 @@ load "$BATS_PATH/load.bash"
 
   stub aws \
    "s3api head-object --bucket my-bucket --key 'my-org/my-pipeline/v1-cache-$CHECKSUM-key.tar' : true" \
-   "s3 cp s3://my-bucket/my-org/my-pipeline/v1-cache-$CHECKSUM-key.tar . --profile my-profile : echo Copied from S3"
+   "s3 cp s3://my-bucket/my-org/my-pipeline/v1-cache-$CHECKSUM-key.tar . '--profile my-profile' : echo Copied from S3"
 
   stub tar \
    "-xf v1-cache-$CHECKSUM-key.tar -C . : echo Extracted tar archive"
