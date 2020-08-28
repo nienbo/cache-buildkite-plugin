@@ -1,6 +1,7 @@
 #!/bin/bash
 # shellcheck disable=SC2001
 # shellcheck disable=SC1091
+# shellcheck disable=SC2086
 
 set -euo pipefail
 
@@ -88,7 +89,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
         tar $TAR_ARGS "${TMP_FILE}" "${paths[*]}"
         mv -f "${TMP_FILE}" "${TAR_FILE}"
       fi
-      aws s3 cp "$TAR_FILE" "s3://${BUCKET}/${TAR_FILE}" "$AWS_ARGS"
+      aws s3 cp "$TAR_FILE" "s3://${BUCKET}/${TAR_FILE}" $AWS_ARGS
       rm -f "${TAR_FILE}"
     fi
 
@@ -114,7 +115,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
         tar $TAR_ARGS "${TMP_FILE}" "${paths[@]}"
         mv -f "${TMP_FILE}" "${TAR_FILE}"
       fi
-      aws s3 cp "${TAR_FILE}" "s3://${BUCKET}/${TAR_FILE}" "$AWS_ARGS"
+      aws s3 cp "${TAR_FILE}" "s3://${BUCKET}/${TAR_FILE}" $AWS_ARGS
       rm -f "${TAR_FILE}"
     fi
   fi
