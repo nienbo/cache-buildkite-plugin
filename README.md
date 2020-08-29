@@ -23,7 +23,10 @@ Plus, In addition to tarball & rsync, we also do not re-create another tarball f
 steps:
   - plugins:
     - gencer/cache#v2.1.0:
-        cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
+        backend: tarball # Optional. Defaults to `tarball`. Please specify `tarball` option below even backend is not provided
+        key: "v1-cache-{{ checksum 'Podfile.lock' }}"
+        tarball:
+          path: 'tmp/buildkite-cache'
         paths: [ "Pods/", "Rome/" ]
 ```
 
