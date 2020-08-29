@@ -16,9 +16,9 @@ load "$BATS_PATH/load.bash"
 
   export BUILDKITE_ORGANIZATION_SLUG="my-org"
   export BUILDKITE_PIPELINE_SLUG="my-pipeline"
-  export BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME="my-bucket"
+  export BUILDKITE_PLUGIN_CACHE_S3_BUCKET="my-bucket"
   export BUILDKITE_PLUGIN_CACHE_S3_PROFILE="my-profile"
-  export BUILDKITE_PLUGIN_CACHE_S3_STORAGE="true"
+  export BUILDKITE_PLUGIN_CACHE_BACKEND="s3"
   export BUILDKITE_PLUGIN_CACHE_KEY="v1-cache-key"
 
   run "$PWD/hooks/pre-command"
@@ -27,9 +27,9 @@ load "$BATS_PATH/load.bash"
   assert_output --partial "Extracted tar archive"
 
   unset BUILDKITE_PLUGIN_CACHE_KEY
-  unset BUILDKITE_PLUGIN_CACHE_S3_STORAGE
+  unset BUILDKITE_PLUGIN_CACHE_BACKEND
   unset BUILDKITE_PLUGIN_CACHE_S3_PROFILE
-  unset BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME
+  unset BUILDKITE_PLUGIN_CACHE_S3_BUCKET
   unset BUILDKITE_PIPELINE_SLUG
   unset BUILDKITE_ORGANIZATION_SLUG
 
@@ -50,9 +50,9 @@ load "$BATS_PATH/load.bash"
 
   export BUILDKITE_ORGANIZATION_SLUG="my-org"
   export BUILDKITE_PIPELINE_SLUG="my-pipeline"
-  export BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME="my-bucket"
+  export BUILDKITE_PLUGIN_CACHE_S3_BUCKET="my-bucket"
   export BUILDKITE_PLUGIN_CACHE_S3_PROFILE="my-profile"
-  export BUILDKITE_PLUGIN_CACHE_S3_STORAGE="true"
+  export BUILDKITE_PLUGIN_CACHE_BACKEND="s3"
   export BUILDKITE_PLUGIN_CACHE_KEY="v1-cache-key"
   export BUILDKITE_PLUGIN_CACHE_PATHS="Pods"
   export BUILDKITE_COMMAND_EXIT_STATUS="0"
@@ -64,10 +64,10 @@ load "$BATS_PATH/load.bash"
 
   unset BUILDKITE_COMMAND_EXIT_STATUS
   unset BUILDKITE_PLUGIN_CACHE_PATHS
-  unset BUILDKITE_PLUGIN_CACHE_S3_STORAGE
+  unset BUILDKITE_PLUGIN_CACHE_BACKEND
   unset BUILDKITE_PLUGIN_CACHE_KEY
   unset BUILDKITE_PLUGIN_CACHE_S3_PROFILE
-  unset BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME
+  unset BUILDKITE_PLUGIN_CACHE_S3_BUCKET
   unset BUILDKITE_PIPELINE_SLUG
   unset BUILDKITE_ORGANIZATION_SLUG
 
@@ -89,9 +89,9 @@ load "$BATS_PATH/load.bash"
 
   export BUILDKITE_ORGANIZATION_SLUG="my-org"
   export BUILDKITE_PIPELINE_SLUG="my-pipeline"
-  export BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME="my-bucket"
+  export BUILDKITE_PLUGIN_CACHE_S3_BUCKET="my-bucket"
   export BUILDKITE_PLUGIN_CACHE_S3_PROFILE="my-profile"
-  export BUILDKITE_PLUGIN_CACHE_S3_STORAGE="true"
+  export BUILDKITE_PLUGIN_CACHE_BACKEND="s3"
   export BUILDKITE_PLUGIN_CACHE_KEY="v1-cache-key-{{ checksum 'tests/data/checksum/foo.lock' }}"
 
   run "$PWD/hooks/pre-command"
@@ -100,9 +100,9 @@ load "$BATS_PATH/load.bash"
   assert_output --partial "Extracted tar archive"
 
   unset BUILDKITE_PLUGIN_CACHE_KEY
-  unset BUILDKITE_PLUGIN_CACHE_S3_STORAGE
+  unset BUILDKITE_PLUGIN_CACHE_BACKEND
   unset BUILDKITE_PLUGIN_CACHE_S3_PROFILE
-  unset BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME
+  unset BUILDKITE_PLUGIN_CACHE_S3_BUCKET
   unset BUILDKITE_PIPELINE_SLUG
   unset BUILDKITE_ORGANIZATION_SLUG
 
@@ -122,9 +122,9 @@ load "$BATS_PATH/load.bash"
 
   export BUILDKITE_ORGANIZATION_SLUG="my-org"
   export BUILDKITE_PIPELINE_SLUG="my-pipeline"
-  export BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME="my-bucket"
+  export BUILDKITE_PLUGIN_CACHE_S3_BUCKET="my-bucket"
   export BUILDKITE_PLUGIN_CACHE_S3_PROFILE="my-profile"
-  export BUILDKITE_PLUGIN_CACHE_S3_STORAGE="true"
+  export BUILDKITE_PLUGIN_CACHE_BACKEND="s3"
   export BUILDKITE_PLUGIN_CACHE_KEY="v1-cache-key-{{ checksum 'tests/data/checksum' }}"
 
   run "$PWD/hooks/pre-command"
@@ -133,9 +133,9 @@ load "$BATS_PATH/load.bash"
   assert_output --partial "Extracted tar archive"
 
   unset BUILDKITE_PLUGIN_CACHE_KEY
-  unset BUILDKITE_PLUGIN_CACHE_S3_STORAGE
+  unset BUILDKITE_PLUGIN_CACHE_BACKEND
   unset BUILDKITE_PLUGIN_CACHE_S3_PROFILE
-  unset BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME
+  unset BUILDKITE_PLUGIN_CACHE_S3_BUCKET
   unset BUILDKITE_PIPELINE_SLUG
   unset BUILDKITE_ORGANIZATION_SLUG
 
@@ -155,9 +155,9 @@ load "$BATS_PATH/load.bash"
 
   export BUILDKITE_ORGANIZATION_SLUG="my-org"
   export BUILDKITE_PIPELINE_SLUG="my-pipeline"
-  export BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME="my-bucket"
+  export BUILDKITE_PLUGIN_CACHE_S3_BUCKET="my-bucket"
   export BUILDKITE_PLUGIN_CACHE_S3_PROFILE="my-profile"
-  export BUILDKITE_PLUGIN_CACHE_S3_STORAGE="true"
+  export BUILDKITE_PLUGIN_CACHE_BACKEND="s3"
   export BUILDKITE_PLUGIN_CACHE_KEY="v1-cache-key-{{ checksum 'tests/data/checksum/foo.lock' }}-{{ checksum 'tests/data/checksum/bar.lock' }}"
 
   run "$PWD/hooks/pre-command"
@@ -166,9 +166,9 @@ load "$BATS_PATH/load.bash"
   assert_output --partial "Extracted tar archive"
 
   unset BUILDKITE_PLUGIN_CACHE_KEY
-  unset BUILDKITE_PLUGIN_CACHE_S3_STORAGE
+  unset BUILDKITE_PLUGIN_CACHE_BACKEND
   unset BUILDKITE_PLUGIN_CACHE_S3_PROFILE
-  unset BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME
+  unset BUILDKITE_PLUGIN_CACHE_S3_BUCKET
   unset BUILDKITE_PIPELINE_SLUG
   unset BUILDKITE_ORGANIZATION_SLUG
 
@@ -188,9 +188,9 @@ load "$BATS_PATH/load.bash"
 
   export BUILDKITE_ORGANIZATION_SLUG="my-org"
   export BUILDKITE_PIPELINE_SLUG="my-pipeline"
-  export BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME="my-bucket"
+  export BUILDKITE_PLUGIN_CACHE_S3_BUCKET="my-bucket"
   export BUILDKITE_PLUGIN_CACHE_S3_PROFILE="my-profile"
-  export BUILDKITE_PLUGIN_CACHE_S3_STORAGE="true"
+  export BUILDKITE_PLUGIN_CACHE_BACKEND="s3"
   export BUILDKITE_PLUGIN_CACHE_KEY="v1-cache-{{ checksum 'tests/data/checksum/foo.lock' }}-key"
 
   run "$PWD/hooks/pre-command"
@@ -199,9 +199,9 @@ load "$BATS_PATH/load.bash"
   assert_output --partial "Extracted tar archive"
 
   unset BUILDKITE_PLUGIN_CACHE_KEY
-  unset BUILDKITE_PLUGIN_CACHE_S3_STORAGE
+  unset BUILDKITE_PLUGIN_CACHE_BACKEND
   unset BUILDKITE_PLUGIN_CACHE_S3_PROFILE
-  unset BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME
+  unset BUILDKITE_PLUGIN_CACHE_S3_BUCKET
   unset BUILDKITE_PIPELINE_SLUG
   unset BUILDKITE_ORGANIZATION_SLUG
 
@@ -213,9 +213,9 @@ load "$BATS_PATH/load.bash"
 
   export BUILDKITE_ORGANIZATION_SLUG="my-org"
   export BUILDKITE_PIPELINE_SLUG="my-pipeline"
-  export BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME="my-bucket"
+  export BUILDKITE_PLUGIN_CACHE_S3_BUCKET="my-bucket"
   export BUILDKITE_PLUGIN_CACHE_S3_PROFILE="my-profile"
-  export BUILDKITE_PLUGIN_CACHE_S3_STORAGE="true"
+  export BUILDKITE_PLUGIN_CACHE_BACKEND="s3"
   # Deliberately misspell checksum as cheksum.
   export BUILDKITE_PLUGIN_CACHE_KEY="v1-cache-key-{{ cheksum 'tests/data/checksum/foo.lock' }}"
 
@@ -224,9 +224,9 @@ load "$BATS_PATH/load.bash"
   assert_output --partial "Invalid template expression: cheksum"
 
   unset BUILDKITE_PLUGIN_CACHE_KEY
-  unset BUILDKITE_PLUGIN_CACHE_S3_STORAGE
+  unset BUILDKITE_PLUGIN_CACHE_BACKEND
   unset BUILDKITE_PLUGIN_CACHE_S3_PROFILE
-  unset BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME
+  unset BUILDKITE_PLUGIN_CACHE_S3_BUCKET
   unset BUILDKITE_PIPELINE_SLUG
   unset BUILDKITE_ORGANIZATION_SLUG
 
