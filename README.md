@@ -19,6 +19,17 @@ Plus, In addition to tarball & rsync, we also do not re-create another tarball f
 
 Please see usages below to adopt new `v2.2.x` branch. Please use `v2.1.0` or older to keep old syntax.
 
+## Backends
+
+Please see `lib/backends/*.sh` for available backends. You can fork, add your backend then send a PR here.
+
+Available backends at the moments are:
+
+- tarball
+- s3
+- rsync
+
+
 ## Restore & Save Caches
 
 ```yml
