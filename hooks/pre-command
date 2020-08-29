@@ -2,6 +2,7 @@
 # shellcheck disable=SC2001
 # shellcheck disable=SC1091
 # shellcheck disable=SC2086
+# shellcheck disable=SC1090
 
 set -euo pipefail
 
@@ -19,17 +20,7 @@ fi
 if [[ -n "${BUILDKITE_PLUGIN_CACHE_KEY:-}" ]]; then
 
   # Defaults...
-  RSYNC_ARGS="--ignore-missing-args"
-  AWS_ARGS=""
   BACKEND="${BUILDKITE_PLUGIN_CACHE_BACKEND:-tarball}"
-
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    RSYNC_ARGS=""
-  fi
-
-  if [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_PROFILE:-}" ]]; then
-    AWS_ARGS="--profile ${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}"
-  fi
 
   CACHE_KEY="$(expand_templates "$BUILDKITE_PLUGIN_CACHE_KEY")"
 
