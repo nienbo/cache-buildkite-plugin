@@ -23,7 +23,7 @@ Please see usages below to adopt new `v2.2.x` branch. Please use `v2.1.0` or old
 
 Please see `lib/backends/*.sh` for available backends. You can fork, add your backend then send a PR here.
 
-Available backends at the moments are:
+Available backends at the moment are:
 
 - tarball
 - s3
