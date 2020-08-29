@@ -6,20 +6,19 @@ requirements:
   - tar
 configuration:
   properties:
-    s3_storage:
-      type: boolean
-    s3_profile:
+    key:
       type: string
-    s3_bucket_name:
+    backend:
       type: string
-    rsync_storage:
-      type: string
-    tarball_storage:
-      type: string
-    tarball_keep_max_days:
-      type: number
-    cache_key:
-      type: string
+      required: false
+    s3:
+      profile:
+        type: string
+      bucket:
+        type: string
+    tarball:
+      max:
+        type: number
     paths:
       type: [string, array]
     env:

@@ -19,7 +19,7 @@ if [ "${BUILDKITE_COMMAND_EXIT_STATUS}" -ne 0 ]; then
   exit 0
 fi
 
-if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
+if [[ -n "${BUILDKITE_PLUGIN_CACHE_KEY:-}" ]]; then
 
   # Defaults...
   TAR_ARGS="--ignore-failed-read -cf"
@@ -35,7 +35,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
     AWS_ARGS="--profile ${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}"
   fi
 
-  CACHE_KEY="$(expand_templates "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY")"
+  CACHE_KEY="$(expand_templates "$BUILDKITE_PLUGIN_CACHE_KEY")"
 
   paths=()
 

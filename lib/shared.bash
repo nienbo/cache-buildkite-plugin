@@ -29,3 +29,12 @@ function expand_templates {
 
   echo "$CACHE_KEY"
 }
+
+
+function cache_hit {
+  echo "🔥 Cache hit: $1"
+}
+
+function cache_skip {
+  echo "🚨 Cache restore is skipped because $1 does not exist"
+}
