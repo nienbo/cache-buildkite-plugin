@@ -44,8 +44,8 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_KEY:-}" ]]; then
     . "$BASEDIR/lib/backends/$BACKEND.bash"
     cache
   else
-    echo "$BACKEND is not supported."
-    exit 1
+    echo "🚨 $BACKEND is not supported or not provided."
+    exit 0
   fi
 else
   echo "🚨 Cache is skipped because no cache key provided"

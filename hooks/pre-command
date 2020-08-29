@@ -6,7 +6,7 @@
 
 set -euo pipefail
 
-BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
+BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
 VERSION=$(<"$BASEDIR/VERSION")
 
 . "$BASEDIR/lib/shared.bash"
@@ -27,11 +27,11 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_KEY:-}" ]]; then
   echo "🔍 Looking for $CACHE_KEY"
 
   if [ -f "$BASEDIR/lib/backends/$BACKEND.bash" ]; then
-      . "$BASEDIR/lib/backends/$BACKEND.bash"
-      restore
-  else 
-      echo "$BACKEND is not supported."
-      exit 1
+    . "$BASEDIR/lib/backends/$BACKEND.bash"
+    restore
+  else
+    echo "🚨 $BACKEND is not supported or not provided."
+    exit 0
   fi
 
 else
