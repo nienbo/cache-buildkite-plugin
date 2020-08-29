@@ -1,4 +1,4 @@
-# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.1.0-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/454ec90d231d49141fd210760bb2f19ee18d3153e35ec7f6b5.svg)](https://buildkite.com/nienbo/buildkite-cache)
+# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.1.0-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
 
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux and macOS.
