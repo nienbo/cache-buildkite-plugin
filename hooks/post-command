@@ -2,6 +2,7 @@
 # shellcheck disable=SC2001
 # shellcheck disable=SC1091
 # shellcheck disable=SC2086
+# shellcheck disable=SC1090
 
 set -euo pipefail
 
@@ -22,20 +23,10 @@ fi
 if [[ -n "${BUILDKITE_PLUGIN_CACHE_KEY:-}" ]]; then
 
   # Defaults...
-  TAR_ARGS="--ignore-failed-read -cf"
-  RSYNC_ARGS="--ignore-missing-args"
-  AWS_ARGS=""
-
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    TAR_ARGS="-cf"
-    RSYNC_ARGS=""
-  fi
-
-  if [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_PROFILE:-}" ]]; then
-    AWS_ARGS="--profile ${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}"
-  fi
-
+  BACKEND="${BUILDKITE_PLUGIN_CACHE_BACKEND:-tarball}"
   CACHE_KEY="$(expand_templates "$BUILDKITE_PLUGIN_CACHE_KEY")"
+
+  echo "🔍 Looking for $CACHE_KEY"
 
   paths=()
 
@@ -49,71 +40,12 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_KEY:-}" ]]; then
     fi
   done < <(env | sort)
 
-  if [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE:-}" ]]; then
-    CACHE_PREFIX="${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
-    mkdir -p "${CACHE_PREFIX}/${CACHE_KEY}/"
-  elif [[ -n "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE:-}" ]]; then
-    CACHE_PREFIX="${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
-
-    mkdir -p "${CACHE_PREFIX}"
-    DAYS="${BUILDKITE_PLUGIN_CACHE_TARBALL_KEEP_MAX_DAYS:-}"
-    if [ -n "$DAYS" ] && [ "$DAYS" -gt 0 ]; then
-      echo "🗑️ Deleting backups older than ${DAYS} day(s)..."
-      find "${CACHE_PREFIX}" -type f -mtime +"${DAYS}" -delete
-    fi
+  if [ -f "$BASEDIR/lib/backends/$BACKEND.bash" ]; then
+    . "$BASEDIR/lib/backends/$BACKEND.bash"
+    cache paths
   else
-    TAR_FILE="${CACHE_KEY}.tar"
-    BUCKET="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
-  fi
-
-  if [ "${#paths[@]}" -eq 1 ]; then
-    if [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE:-}" ]]; then
-      mkdir -p "${CACHE_PREFIX}/${CACHE_KEY}/${paths[*]}"
-      rsync -a "$RSYNC_ARGS" --delete "${paths[*]}/" "${CACHE_PREFIX}/${CACHE_KEY}/${paths[*]}/"
-    elif [[ -n "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE:-}" ]]; then
-      mkdir -p "${CACHE_PREFIX}"
-      TAR_FILE="${CACHE_PREFIX}/${CACHE_KEY}.tar"
-      if [ ! -f "$TAR_FILE" ]; then
-        tar $TAR_ARGS "${TAR_FILE}" "${paths[*]}"
-      fi
-    else
-      echo "🔍 Locating cache on S3: ${paths[*]}"
-
-      TAR_FILE="${CACHE_KEY}.tar"
-      if [ ! -f "$TAR_FILE" ]; then
-        TMP_FILE="$(mktemp)"
-        tar $TAR_ARGS "${TMP_FILE}" "${paths[*]}"
-        mv -f "${TMP_FILE}" "${TAR_FILE}"
-      fi
-      aws s3 cp "$TAR_FILE" "s3://${BUCKET}/${TAR_FILE}" $AWS_ARGS
-      rm -f "${TAR_FILE}"
-    fi
-
-  elif [ "${#paths[@]}" -gt 1 ]; then
-    if [[ -n "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE:-}" ]]; then
-      mkdir -p "${CACHE_PREFIX}"
-      TAR_FILE="${CACHE_PREFIX}/${CACHE_KEY}.tar"
-      if [ ! -f "$TAR_FILE" ]; then
-        TMP_FILE="$(mktemp)"
-        tar $TAR_ARGS "${TMP_FILE}" "${paths[@]}"
-        mv -f "${TMP_FILE}" "${TAR_FILE}"
-      fi
-    elif [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE:-}" ]]; then
-      for path in "${paths[@]}"; do
-        mkdir -p "${CACHE_PREFIX}/${CACHE_KEY}/${path}"
-        rsync -a "$RSYNC_ARGS" --delete "${path}/" "${CACHE_PREFIX}/${CACHE_KEY}/${path}/"
-      done
-    else
-      echo "🔍 Locating cache on S3: ${path}"
-      TAR_FILE="${CACHE_KEY}.tar"
-      if [ ! -f "$TAR_FILE" ]; then
-        TMP_FILE="$(mktemp)"
-        tar $TAR_ARGS "${TMP_FILE}" "${paths[@]}"
-        mv -f "${TMP_FILE}" "${TAR_FILE}"
-      fi
-      aws s3 cp "${TAR_FILE}" "s3://${BUCKET}/${TAR_FILE}" $AWS_ARGS
-      rm -f "${TAR_FILE}"
-    fi
+    echo "$BACKEND is not supported."
+    exit 1
   fi
 else
   echo "🚨 Cache is skipped because no cache key provided"

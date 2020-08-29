@@ -1,12 +1,13 @@
 #!/bin/bash
 
+# Defaults...
+AWS_ARGS=""
+
+if [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_PROFILE:-}" ]]; then
+  AWS_ARGS="--profile ${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}"
+fi
+
 function restore() {
-  AWS_ARGS=""
-
-  if [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_PROFILE:-}" ]]; then
-    AWS_ARGS="--profile ${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}"
-  fi
-
   TAR_FILE="${CACHE_KEY}.tar"
   BUCKET="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
   TKEY="${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
@@ -22,3 +23,35 @@ function restore() {
   fi
 }
 
+function cache() {
+  PATHS=$1
+  
+  TAR_FILE="${CACHE_KEY}.tar"
+  BUCKET="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
+
+  if [ "${#PATHS[@]}" -eq 1 ]; then
+    echo "🔍 Locating cache on S3: ${PATHS[*]}"
+    TAR_FILE="${CACHE_KEY}.tar"
+    if [ ! -f "$TAR_FILE" ]; then
+      TMP_FILE="$(mktemp)"
+      tar $TAR_ARGS "${TMP_FILE}" "${PATHS[*]}"
+      mv -f "${TMP_FILE}" "${TAR_FILE}"
+    fi
+    aws s3 cp "$TAR_FILE" "s3://${BUCKET}/${TAR_FILE}" $AWS_ARGS
+    rm -f "${TAR_FILE}"
+
+  elif
+    [ "${#PATHS[@]}" -gt 1 ]
+  then
+    echo "🔍 Locating cache on S3: ${path}"
+    TAR_FILE="${CACHE_KEY}.tar"
+    if [ ! -f "$TAR_FILE" ]; then
+      TMP_FILE="$(mktemp)"
+      tar $TAR_ARGS "${TMP_FILE}" "${PATHS[@]}"
+      mv -f "${TMP_FILE}" "${TAR_FILE}"
+    fi
+    aws s3 cp "${TAR_FILE}" "s3://${BUCKET}/${TAR_FILE}" $AWS_ARGS
+    rm -f "${TAR_FILE}"
+  fi
+
+}
