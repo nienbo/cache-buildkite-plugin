@@ -2,9 +2,14 @@
 
 # Defaults...
 AWS_ARGS=""
+TAR_ARGS="--ignore-failed-read -cf"
 
 if [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_PROFILE:-}" ]]; then
   AWS_ARGS="--profile ${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}"
+fi
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  TAR_ARGS="-cf"
 fi
 
 function restore() {
@@ -28,7 +33,7 @@ function cache() {
   BUCKET="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
 
   if [ "${#paths[@]}" -eq 1 ]; then
-    echo "🔍 Locating cache on S3: ${paths[*]}"
+    cache_locating "${paths[*]}"
     TAR_FILE="${CACHE_KEY}.tar"
     if [ ! -f "$TAR_FILE" ]; then
       TMP_FILE="$(mktemp)"
@@ -41,7 +46,7 @@ function cache() {
   elif
     [ "${#paths[@]}" -gt 1 ]
   then
-    echo "🔍 Locating cache on S3: ${path}"
+    cache_locating "${path}"
     TAR_FILE="${CACHE_KEY}.tar"
     if [ ! -f "$TAR_FILE" ]; then
       TMP_FILE="$(mktemp)"

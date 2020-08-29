@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Defaults...
+TAR_ARGS="--ignore-failed-read -cf"
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  TAR_ARGS="-cf"
+fi
+
 function restore() {
   CACHE_PREFIX="${BUILDKITE_PLUGIN_CACHE_TARBALL_PATH}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
   mkdir -p "${CACHE_PREFIX}/${BUILDKITE_PIPELINE_SLUG}"
@@ -11,18 +18,11 @@ function restore() {
   fi
 }
 
-function cache() {  
-  # Defaults...
-  TAR_ARGS="--ignore-failed-read -cf"
-
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    TAR_ARGS="-cf"
-  fi
-
-  CACHE_PREFIX="${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
+function cache() {
+  CACHE_PREFIX="${BUILDKITE_PLUGIN_CACHE_TARBALL_PATH}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
 
   mkdir -p "${CACHE_PREFIX}"
-  DAYS="${BUILDKITE_PLUGIN_CACHE_TARBALL_KEEP_MAX_DAYS:-}"
+  DAYS="${BUILDKITE_PLUGIN_CACHE_TARBALL_MAX:-}"
   if [ -n "$DAYS" ] && [ "$DAYS" -gt 0 ]; then
     echo "🗑️ Deleting backups older than ${DAYS} day(s)..."
     find "${CACHE_PREFIX}" -type f -mtime +"${DAYS}" -delete
