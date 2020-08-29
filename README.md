@@ -1,11 +1,9 @@
-# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.1.0-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
+# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.2.0-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
 
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux and macOS.
 
 _(Windows is on the way)_
-
-
 
 A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) to restore and save
 directories by cache keys. For example, use the checksum of a `.resolved` or `.lock` file
@@ -17,12 +15,16 @@ For S3, Instead of sync thousands of files, It just creates a tarball before S3 
 
 Plus, In addition to tarball & rsync, we also do not re-create another tarball for same cache key if it's already exists.
 
+## 🚨 Breaking Change
+
+Please see usages below to adopt new `v2.2.x` branch. Please use `v2.1.0` or older to keep old syntax.
+
 ## Restore & Save Caches
 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.1.0:
+    - gencer/cache#v2.2.0:
         backend: tarball # Optional. Defaults to `tarball`. Please specify `tarball` option below even backend is not provided
         key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         tarball:
@@ -45,7 +47,7 @@ variables defined in your agent.
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.1.0:
+    - gencer/cache#v2.2.0:
         backend: s3
         key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         s3:
@@ -66,7 +68,7 @@ If this is set it will be used as the destination parameter of a ``rsync -az`` c
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.1.0:
+    - gencer/cache#v2.2.0:
         backend: rsync
         key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         rsync:
@@ -86,7 +88,7 @@ If this is set it will be used as the destination parameter of a ``tar -cf`` com
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.1.0:
+    - gencer/cache#v2.2.0:
         backend: tarball
         key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         tarball:
@@ -106,7 +108,7 @@ Along with lock files, you can calculate directory that contains multiple files.
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.1.0:
+    - gencer/cache#v2.2.0:
         backend: tarball
         key: "v1-cache-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' directory
         tarball:
@@ -126,7 +128,6 @@ There is one catch here, in tarball storage we do not re-create another tarball 
 ## Roadmap
 
 + Adding support for Windows.
-+ Move functions to `shared.bash`.
 + Google Cloud Cache Support.
 
 Original work by [@danthorpe](https://github.com/danthorpe/cache-buildkite-plugin)
