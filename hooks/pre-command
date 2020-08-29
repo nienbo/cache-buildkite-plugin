@@ -2,10 +2,11 @@
 # shellcheck disable=SC2001
 # shellcheck disable=SC1091
 # shellcheck disable=SC2086
+# shellcheck disable=SC1090
 
 set -euo pipefail
 
-BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
+BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
 VERSION=$(<"$BASEDIR/VERSION")
 
 . "$BASEDIR/lib/shared.bash"
@@ -16,55 +17,23 @@ if [[ "${BUILDKITE_PLUGIN_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
   set -x
 fi
 
-if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
+if [[ -n "${BUILDKITE_PLUGIN_CACHE_KEY:-}" ]]; then
 
   # Defaults...
-  RSYNC_ARGS="--ignore-missing-args"
-  AWS_ARGS=""
+  BACKEND="${BUILDKITE_PLUGIN_CACHE_BACKEND:-tarball}"
 
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    RSYNC_ARGS=""
-  fi
-
-  if [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_PROFILE:-}" ]]; then
-    AWS_ARGS="--profile ${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}"
-  fi
-
-  CACHE_KEY="$(expand_templates "$BUILDKITE_PLUGIN_CACHE_CACHE_KEY")"
+  CACHE_KEY="$(expand_templates "$BUILDKITE_PLUGIN_CACHE_KEY")"
 
   echo "🔍 Looking for $CACHE_KEY"
 
-  if [[ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE:-}" ]]; then
-    CACHE_PREFIX="${BUILDKITE_PLUGIN_CACHE_RSYNC_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
-
-    mkdir -p "${CACHE_PREFIX}/${CACHE_KEY}"
-    rsync -a "$RSYNC_ARGS" "${CACHE_PREFIX}/${CACHE_KEY}/" .
-  elif [[ -n "${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE:-}" ]]; then
-    CACHE_PREFIX="${BUILDKITE_PLUGIN_CACHE_TARBALL_STORAGE}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
-    mkdir -p "${CACHE_PREFIX}/${BUILDKITE_PIPELINE_SLUG}"
-    TAR_FILE="${CACHE_PREFIX}/${CACHE_KEY}.tar"
-
-    if [ -f "$TAR_FILE" ]; then
-      echo "🔥 Cache hit: tar://${TAR_FILE}"
-      tar -xf "${TAR_FILE}" -C .
-    fi
-  elif [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_STORAGE:-}" ]]; then
-    echo "🔍 Locating cache on S3"
-
-    TAR_FILE="${CACHE_KEY}.tar"
-    BUCKET="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
-    TKEY="${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
-
-    aws s3api head-object --bucket "${BUILDKITE_PLUGIN_CACHE_S3_BUCKET_NAME}" --key "${TKEY}/${TAR_FILE}" || no_head=true
-
-    if ${no_head:-false}; then
-      echo "🚨 Cache restore is skipped because s3://${BUCKET}/${TAR_FILE} does not exist"
-    else
-      echo "🔥 Cache hit: s3://${BUCKET}/${TAR_FILE}"
-      aws s3 cp "s3://${BUCKET}/${TAR_FILE}" . $AWS_ARGS
-      tar -xf "${TAR_FILE}" -C .
-    fi
+  if [ -f "$BASEDIR/lib/backends/$BACKEND.bash" ]; then
+    . "$BASEDIR/lib/backends/$BACKEND.bash"
+    restore
+  else
+    echo "🚨 $BACKEND is not supported or not provided."
+    exit 0
   fi
+
 else
   echo "🚨 Cache is skipped because no cache key provided"
   exit 0
