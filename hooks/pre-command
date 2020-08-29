@@ -6,8 +6,9 @@
 set -euo pipefail
 
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
-. "$BASEDIR/lib/shared.bash"
 VERSION=$(<"$BASEDIR/VERSION")
+
+. "$BASEDIR/lib/shared.bash"
 
 echo -e "~~~ :bash: Initializing \033[33mCache\033[0m Buildkite Plugin v$VERSION"
 
@@ -44,7 +45,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_CACHE_KEY:-}" ]]; then
     TAR_FILE="${CACHE_PREFIX}/${CACHE_KEY}.tar"
 
     if [ -f "$TAR_FILE" ]; then
-      echo "🔥 Cache hit: ${CACHE_KEY}"
+      echo "🔥 Cache hit: tar://${TAR_FILE}"
       tar -xf "${TAR_FILE}" -C .
     fi
   elif [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_STORAGE:-}" ]]; then
