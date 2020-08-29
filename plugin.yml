@@ -10,7 +10,6 @@ configuration:
       type: string
     backend:
       type: string
-      required: false
     s3:
       profile:
         type: string
