@@ -16,8 +16,13 @@ configuration:
       bucket:
         type: string
     tarball:
+      path:
+        type: string
       max:
         type: number
+    rsync:
+      path:
+        type: string
     paths:
       type: [string, array]
     env:

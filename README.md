@@ -43,10 +43,11 @@ variables defined in your agent.
 steps:
   - plugins:
     - gencer/cache#v2.1.0:
-        s3_storage: true
-        s3_profile: "my-s3-profile"
-        s3_bucket_name: "my-unique-s3-bucket-name"
-        cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
+        backend: s3
+        key: "v1-cache-{{ checksum 'Podfile.lock' }}"
+        s3:
+          profile: "my-s3-profile"
+          bucket: "my-unique-s3-bucket-name"
         paths: [ "Pods/", "Rome/" ]
 ```
 
@@ -63,8 +64,10 @@ If this is set it will be used as the destination parameter of a ``rsync -az`` c
 steps:
   - plugins:
     - gencer/cache#v2.1.0:
-        rsync_storage: '/tmp/buildkite-cache'
-        cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
+        backend: rsync
+        key: "v1-cache-{{ checksum 'Podfile.lock' }}"
+        rsync:
+          path: '/tmp/buildkite-cache'
         paths: [ "Pods/", "Rome/" ]
 ```
 
@@ -81,9 +84,11 @@ If this is set it will be used as the destination parameter of a ``tar -cf`` com
 steps:
   - plugins:
     - gencer/cache#v2.1.0:
-        tarball_storage: '/tmp/buildkite-cache'
-        tarball_keep_max_days: 7 # Optional. Removes tarballs older than 7 days.
-        cache_key: "v1-cache-{{ checksum 'Podfile.lock' }}"
+        backend: tarball
+        key: "v1-cache-{{ checksum 'Podfile.lock' }}"
+        tarball:
+          path: '/tmp/buildkite-cache'
+          max: 7 # Optional. Removes tarballs older than 7 days.
         paths: [ "Pods/", "Rome/" ]
 ```
 
@@ -99,9 +104,11 @@ Along with lock files, you can calculate directory that contains multiple files.
 steps:
   - plugins:
     - gencer/cache#v2.1.0:
-        tarball_storage: '/tmp/buildkite-cache'
-        tarball_keep_max_days: 7 # Optional. Removes tarballs older than 7 days.
-        cache_key: "v1-cache-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' directory
+        backend: tarball
+        key: "v1-cache-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' directory
+        tarball:
+          path: '/tmp/buildkite-cache'
+          max: 7 # Optional. Removes tarballs older than 7 days. 
         paths: [ "Pods/", "Rome/" ]
 ```
 
