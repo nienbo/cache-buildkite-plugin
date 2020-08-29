@@ -11,9 +11,7 @@ function restore() {
   fi
 }
 
-function cache() {
-  PATHS=$1
-  
+function cache() {  
   # Defaults...
   TAR_ARGS="--ignore-failed-read -cf"
 
@@ -30,20 +28,20 @@ function cache() {
     find "${CACHE_PREFIX}" -type f -mtime +"${DAYS}" -delete
   fi
 
-  if [ "${#PATHS[@]}" -eq 1 ]; then
+  if [ "${#paths[@]}" -eq 1 ]; then
     mkdir -p "${CACHE_PREFIX}"
     TAR_FILE="${CACHE_PREFIX}/${CACHE_KEY}.tar"
     if [ ! -f "$TAR_FILE" ]; then
-      tar $TAR_ARGS "${TAR_FILE}" "${PATHS[*]}"
+      tar $TAR_ARGS "${TAR_FILE}" "${paths[*]}"
     fi
   elif
-    [ "${#PATHS[@]}" -gt 1 ]
+    [ "${#paths[@]}" -gt 1 ]
   then
     mkdir -p "${CACHE_PREFIX}"
     TAR_FILE="${CACHE_PREFIX}/${CACHE_KEY}.tar"
     if [ ! -f "$TAR_FILE" ]; then
       TMP_FILE="$(mktemp)"
-      tar $TAR_ARGS "${TMP_FILE}" "${PATHS[@]}"
+      tar $TAR_ARGS "${TMP_FILE}" "${paths[@]}"
       mv -f "${TMP_FILE}" "${TAR_FILE}"
     fi
   fi
