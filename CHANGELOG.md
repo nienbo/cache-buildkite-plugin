@@ -1,6 +1,10 @@
-# v2.1.1
+# v2.2.1
 
 + Fix possible failure in tarball cleanup. See #12. ([@djmarcin]( https://github.com/djmarcin))
+
+# v2.2.0
+
++ Modular system. Backends and shared functions goes into their own files.
 
 # v2.1.0
 
