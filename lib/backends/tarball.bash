@@ -25,7 +25,9 @@ function cache() {
   DAYS="${BUILDKITE_PLUGIN_CACHE_TARBALL_MAX:-}"
   if [ -n "$DAYS" ] && [ "$DAYS" -gt 0 ]; then
     echo "🗑️ Deleting backups older than ${DAYS} day(s)..."
-    find "${CACHE_PREFIX}" -type f -mtime +"${DAYS}" -delete
+    # On Linux, concurrent deletes race and cause a non-zero exit code. -ignore_readdir_race fixes this.
+    # macOS handles this flag but it has no effect since bsdfind already returns zero in this case.
+    find "${CACHE_PREFIX}" -ignore_readdir_race -type f -mtime +"${DAYS}" -delete
   fi
 
   if [ "${#paths[@]}" -eq 1 ]; then
