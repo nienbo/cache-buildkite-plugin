@@ -1,4 +1,8 @@
-# v2.1.0 `master`
+# v2.1.1
+
++ Fix possible failure in tarball cleanup. See #12. ([@djmarcin]( https://github.com/djmarcin))
+
+# v2.1.0
 
 + Improved templating support. Moving shared function to `shared.bash` See #8 and #9. ([@djmarcin]( https://github.com/djmarcin))
 + Added tests. And rewarp the code. See #10. ([@djmarcin]( https://github.com/djmarcin))
