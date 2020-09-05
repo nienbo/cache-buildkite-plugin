@@ -1,4 +1,4 @@
-# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.2.0-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
+# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.2.1-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
 
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux and macOS.
@@ -35,7 +35,7 @@ Available backends at the moment are:
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.2.0:
+    - gencer/cache#v2.2.1:
         backend: tarball # Optional. Defaults to `tarball`. Please specify `tarball` option below even backend is not provided
         key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         tarball:
@@ -58,7 +58,7 @@ variables defined in your agent.
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.2.0:
+    - gencer/cache#v2.2.1:
         backend: s3
         key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         s3:
@@ -79,7 +79,7 @@ If this is set it will be used as the destination parameter of a ``rsync -az`` c
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.2.0:
+    - gencer/cache#v2.2.1:
         backend: rsync
         key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         rsync:
@@ -99,7 +99,7 @@ If this is set it will be used as the destination parameter of a ``tar -cf`` com
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.2.0:
+    - gencer/cache#v2.2.1:
         backend: tarball
         key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         tarball:
@@ -119,7 +119,7 @@ Along with lock files, you can calculate directory that contains multiple files.
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.2.0:
+    - gencer/cache#v2.2.1:
         backend: tarball
         key: "v1-cache-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' directory
         tarball:
