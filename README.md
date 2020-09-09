@@ -25,32 +25,11 @@ Please see `lib/backends/*.sh` for available backends. You can fork, add your ba
 
 Available backends and their requirements:
 
-| **Backend** | **Requirements**                                       |
-| ----------- | ------------------------------------------------------ |
-| `tarball`   | **macOS**: tar (BSD), **Linux**: tar (GNU)             |
-| `rsync`     | **macOS**: rsync (BSD), **Linux**: rsync (GNU)         |
-| `s3`        | **macOS**: aws-cli (v1/v2), **Linux**: aws-cli (v1/v2) |
-
-
-## Restore & Save Caches
-
-```yml
-steps:
-  - plugins:
-    - gencer/cache#v2.2.1:
-        backend: tarball # Optional. Defaults to `tarball`. Please specify `tarball` option below even backend is not provided
-        key: "v1-cache-{{ checksum 'Podfile.lock' }}"
-        tarball:
-          path: '/tmp/buildkite-cache'
-        paths: [ "Pods/", "Rome/" ]
-```
-
-## Cache Key Templates
-
-The cache key is a string, which support a crude template system. Currently `checksum` is
-the only command supported for now. It can be used as in the example above. In this case
-the cache key will be determined by executing a _checksum_ (actually `sha1sum`) on the
-`Podfile.lock` file, prepended with `v1-cache-`.
+| **Backend** | **Linux (GNU)**                       | **macOS (BSD)**                       | **Windows** |
+| ----------- | ------------------------------------- | ------------------------------------- | ----------- |
+| `tarball`   | tar<br />sha1sum                      | tar<br />shasum                       | -           |
+| `rsync`     | rsync<br />sha1sum                    | rsync <br />shasum                    | -           |
+| `s3`        | aws-cli (>= 1.x)<br />tar<br/>sha1sum | aws-cli (>= 1.x)<br />tar<br />shasum | -           |
 
 ## S3 Storage (Using tarball)
 
@@ -114,6 +93,13 @@ The paths are synced using `tarball_storage/cache_key.tar`. This is useful for m
 cache directory, even though this cache is not shared between servers, it can be reused by different
 agents/builds.
 
+## Cache Key Templates
+
+The cache key is a string, which support a crude template system. Currently `checksum` is
+the only command supported for now. It can be used as in the example above. In this case
+the cache key will be determined by executing a _checksum_ (actually `sha1sum`) on the
+`Podfile.lock` file, prepended with `v1-cache-`.
+
 ## Hashing (checksum) against directory
 
 Along with lock files, you can calculate directory that contains multiple files.
@@ -131,6 +117,8 @@ steps:
 ```
 
 For example, you can calculate total checksum of your javascript folder to skip build, if source didn't changed.
+
+Note: Before hashing files, we do "sort". This provides exact same sorted and hashed content against very same directory between builds.
 
 ## Keeping caches for `X` days
 
