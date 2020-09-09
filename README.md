@@ -27,7 +27,7 @@ Available backends and their requirements:
 
 | **Backend** | **Requirements**                                       |
 | ----------- | ------------------------------------------------------ |
-| `tar`       | **macOS**: tar (BSD), **Linux**: tar (GNU)             |
+| `tarball`       | **macOS**: tar (BSD), **Linux**: tar (GNU)             |
 | `rsync`     | **macOS**: rsync (BSD), **Linux**: rsync (GNU)         |
 | `s3`        | **macOS**: aws-cli (v1/v2), **Linux**: aws-cli (v1/v2) |
 
