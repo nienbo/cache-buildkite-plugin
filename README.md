@@ -124,7 +124,7 @@ Note: Before hashing files, we do "sort". This provides exact same sorted and ha
 
 To keep caches and delete them in -for example- 7 days, use tarball storage and use `tarball_keep_max_days`. On S3 side, please use S3 Policy for this routine. Each uploaded file to S3 will be deleted according to your file deletion policy.
 
-** For S3**, Due to expiration policy, we just re-upload the same tarball to refresh expiration date. As long as you use the same cache, S3 will not delete it. Otherwise, It will be deleted from S3-side not used in a manner time.
+**For S3**, Due to expiration policy, we just re-upload the same tarball to refresh expiration date. As long as you use the same cache, S3 will not delete it. Otherwise, It will be deleted from S3-side not used in a manner time.
 
 ## Roadmap
 
