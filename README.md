@@ -39,7 +39,7 @@ steps:
         backend: tarball # Optional. Defaults to `tarball`. Please specify `tarball` option below even backend is not provided
         key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         tarball:
-          path: 'tmp/buildkite-cache'
+          path: '/tmp/buildkite-cache'
         paths: [ "Pods/", "Rome/" ]
 ```
 
