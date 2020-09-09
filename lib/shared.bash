@@ -35,7 +35,7 @@ function cache_hit {
   echo "🔥 Cache hit: $1"
 }
 
-function cache_skip {
+function cache_restore_skip {
   echo "🚨 Cache restore is skipped because $1 does not exist"
 }
 

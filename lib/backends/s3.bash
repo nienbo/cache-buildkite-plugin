@@ -20,7 +20,7 @@ function restore() {
   aws s3api head-object --bucket "${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}" --key "${TKEY}/${TAR_FILE}" || no_head=true
 
   if ${no_head:-false}; then
-    cache_skip "s3://${BUCKET}/${TAR_FILE}"
+    cache_restore_skip "s3://${BUCKET}/${TAR_FILE}"
   else
     cache_hit "s3://${BUCKET}/${TAR_FILE}"
     aws s3 cp "s3://${BUCKET}/${TAR_FILE}" . $AWS_ARGS
