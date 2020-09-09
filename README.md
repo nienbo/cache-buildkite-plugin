@@ -23,11 +23,13 @@ Please see usages below to adopt new `v2.2.x` branch. Please use `v2.1.0` or old
 
 Please see `lib/backends/*.sh` for available backends. You can fork, add your backend then send a PR here.
 
-Available backends at the moment are:
+Available backends and their requirements:
 
-- tarball
-- s3
-- rsync
+| **Backend** | **Requirements**                                       |
+| ----------- | ------------------------------------------------------ |
+| `tar`       | **macOS**: tar (BSD), **Linux**: tar (GNU)             |
+| `rsync`     | **macOS**: rsync (BSD), **Linux**: rsync (GNU)         |
+| `s3`        | **macOS**: aws-cli (v1/v2), **Linux**: aws-cli (v1/v2) |
 
 
 ## Restore & Save Caches
