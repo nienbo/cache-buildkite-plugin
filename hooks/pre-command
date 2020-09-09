@@ -30,7 +30,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_KEY:-}" ]]; then
     . "$BASEDIR/lib/backends/$BACKEND.bash"
     restore
   else
-    echo "🚨 $BACKEND is not supported or not provided."
+    echo "🚨 $BACKEND is not supported or not provided. Soft failing..."
     exit 0
   fi
 
