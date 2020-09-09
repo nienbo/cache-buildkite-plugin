@@ -25,11 +25,11 @@ Please see `lib/backends/*.sh` for available backends. You can fork, add your ba
 
 Available backends and their requirements:
 
-| **Backend** | **Linux (GNU)**                       | **macOS (BSD)**                       | **Windows** |
-| ----------- | ------------------------------------- | ------------------------------------- | ----------- |
-| `tarball`   | tar<br />sha1sum                      | tar<br />shasum                       | -           |
-| `rsync`     | rsync<br />sha1sum                    | rsync <br />shasum                    | -           |
-| `s3`        | aws-cli (>= 1.x)<br />tar<br/>sha1sum | aws-cli (>= 1.x)<br />tar<br />shasum | -           |
+| **Backend** | **Linux (GNU)**                             | **macOS (BSD)**                             | **Windows** |
+| ----------- | ------------------------------------------- | ------------------------------------------- | ----------- |
+| `tarball`   | tar<br />sha1sum                            | tar<br />shasum                             | -           |
+| `rsync`     | rsync<br />sha1sum                          | rsync <br />shasum                          | -           |
+| `s3`        | aws-cli (`>= 1, ~> 2`)<br />tar<br/>sha1sum | aws-cli (`>= 1, ~> 2`)<br />tar<br />shasum | -           |
 
 ## S3 Storage (Using tarball)
 
