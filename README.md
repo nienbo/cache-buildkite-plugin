@@ -33,8 +33,8 @@ Available backends and their requirements:
 
 ### S3
 
-This plugin uses AWS S3 cp to cache the paths into a bucket as defined by environment
-variables defined in your agent.
+This plugin uses AWS S3 `cp` to cache the paths into a bucket as defined by environment
+variables defined in your agent. Content of the paths will be packed with `tar` before upload `cp` and single tarball will be copied to s3.
 
 ```yml
 steps:
@@ -54,8 +54,7 @@ variables.
 
 ### rsync
 
-You can also use rsync to store your files using the ``rsync_storage`` config parameter.
-If this is set it will be used as the destination parameter of a ``rsync -az`` command.
+You can also use rsync to store your files using the `rsync` backend. Files will neither compressed nor packed.
 
 ```yml
 steps:
@@ -68,14 +67,15 @@ steps:
         paths: [ "Pods/", "Rome/" ]
 ```
 
-The paths are synced using `rsync_storage/cache_key/path`. This is useful for maintaining a local
+The paths are synced using `rsync_path/cache_key/path`. This is useful for maintaining a local
 cache directory, even though this cache is not shared between servers, it can be reused by different
 agents/builds.
 
 ### tarball
 
-You can also use tarballs to store your files using the ``tarball_storage`` config parameter.
-If this is set it will be used as the destination parameter of a ``tar -cf`` command.
+You can also use tarballs to store your files using the `tarball` backend. Files will not be compressed but surely packed into single archive.
+
+**This is the Default and Recommended backend for cache**
 
 ```yml
 steps:
@@ -89,7 +89,7 @@ steps:
         paths: [ "Pods/", "Rome/" ]
 ```
 
-The paths are synced using `tarball_storage/cache_key.tar`. This is useful for maintaining a local
+The paths are synced using `tarball_path/cache_key.tar`. This is useful for maintaining a local
 cache directory, even though this cache is not shared between servers, it can be reused by different
 agents/builds.
 
@@ -98,7 +98,7 @@ agents/builds.
 The cache key is a string, which support a crude template system. Currently `checksum` is
 the only command supported for now. It can be used as in the example above. In this case
 the cache key will be determined by executing a _checksum_ (actually `sha1sum`) on the
-`Podfile.lock` file, prepended with `v1-cache-`.
+`Gemfile.lock` file, prepended with `v1-cache-`.
 
 ## Hashing (checksum) against directory
 
@@ -120,9 +120,9 @@ For example, you can calculate total checksum of your javascript folder to skip 
 
 Note: Before hashing files, we do "sort". This provides exact same sorted and hashed content against very same directory between builds.
 
-## Keeping caches for `X` days
+## Auto deletion old caches
 
-To keep caches and delete them in -for example- 7 days, use tarball storage and use `tarball_keep_max_days`. On S3 side, please use S3 Policy for this routine. Each uploaded file to S3 will be deleted according to your file deletion policy.
+To keep caches and delete them in _for example_ 7 days, use tarball backend and use `max`. On S3 side, please use S3 Policy for this routine. Each uploaded file to S3 will be deleted according to your file deletion policy.
 
 **For S3**, Due to expiration policy, we just re-upload the same tarball to refresh expiration date. As long as you use the same cache, S3 will not delete it. Otherwise, It will be deleted from S3-side not used in a manner time.
 
