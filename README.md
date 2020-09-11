@@ -31,6 +31,8 @@ Available backends and their requirements:
 | `rsync`     | rsync<br />sha1sum                          | rsync <br />shasum                          | -           |
 | `s3`        | aws-cli (`>= 1, ~> 2`)<br />tar<br/>sha1sum | aws-cli (`>= 1, ~> 2`)<br />tar<br />shasum | -           |
 
+**Default Backend**: `tarball`
+
 ### S3
 
 This plugin uses AWS S3 `cp` to cache the paths into a bucket as defined by environment
@@ -75,17 +77,15 @@ agents/builds.
 
 You can also use tarballs to store your files using the `tarball` backend. Files will not be compressed but surely packed into single archive.
 
-**This is the Default and Recommended backend for cache**
-
 ```yml
 steps:
   - plugins:
     - gencer/cache#v2.2.1:
-        backend: tarball
+        backend: tarball # Optional. Defaults to `tarball`
         key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         tarball:
           path: '/tmp/buildkite-cache'
-          max: 7 # Optional. Removes tarballs older than 7 days.
+          max: 7 # Optional. Removes tarballs older than 7 days. No default.
         paths: [ "Pods/", "Rome/" ]
 ```
 
@@ -108,19 +108,19 @@ Along with lock files, you can calculate directory that contains multiple files 
 steps:
   - plugins:
     - gencer/cache#v2.2.1:
-        backend: tarball
+        backend: tarball # Optional. Defaults to `tarball`
         key: "v1-cache-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
         tarball:
           path: '/tmp/buildkite-cache'
-          max: 7 # Optional. Removes tarballs older than 7 days. 
+          max: 7 # Optional. Removes tarballs older than 7 days. No default.
         paths: [ "Pods/", "Rome/" ]
 ```
 
 For example, you can calculate total checksum of your javascript folder to skip build, If the source didn't changed.
 
-Note: Before hashing files, we do "sort". This provides exact same sorted and hashed content against very same directory between builds.
+Note: Before hashing files, we do "sort". This ensures exact same hash against the directory between builds.
 
-## Auto deletion old caches
+## Remove old caches with tarball
 
 To keep caches and delete them in _for example_ 7 days, use tarball backend and use `max`. On S3 side, please use S3 Policy for this routine. Each uploaded file to S3 will be deleted according to your file deletion policy.
 
