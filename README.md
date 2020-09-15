@@ -1,4 +1,4 @@
-# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.2.1-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
+# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.3.0-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
 
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux and macOS.
@@ -39,7 +39,7 @@ variables defined in your agent. Content of the paths will be packed with `tar` 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.2.1:
+    - gencer/cache#v2.3.0:
         backend: s3
         key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         s3:
@@ -59,7 +59,7 @@ You can also use rsync to store your files using the `rsync` backend. Files will
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.2.1:
+    - gencer/cache#v2.3.0:
         backend: rsync
         key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         rsync:
@@ -80,7 +80,7 @@ You can also use tarballs to store your files using the `tarball` backend. Files
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.2.1:
+    - gencer/cache#v2.3.0:
         backend: tarball
         key: "v1-cache-{{ checksum 'Podfile.lock' }}"
         tarball:
@@ -107,7 +107,7 @@ Along with lock files, you can calculate directory that contains multiple files 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.2.1:
+    - gencer/cache#v2.3.0:
         backend: tarball
         key: "v1-cache-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
         tarball:
@@ -119,6 +119,23 @@ steps:
 For example, you can calculate total checksum of your javascript folder to skip build, If the source didn't changed.
 
 Note: Before hashing files, we do "sort". This provides exact same sorted and hashed content against very same directory between builds.
+
+## Skip Cache on PRs
+
+You can skip caching on Pull Requests (Merge Requests) by simply adding `pr: false` to the cache plugin. For example;
+
+```yml
+steps:
+  - plugins:
+    - gencer/cache#v2.3.0:
+        backend: s3
+        key: "v1-cache-{{ checksum 'Podfile.lock' }}"
+        pr: false # Default to `true` which is doers cache on PRs.
+        s3:
+          profile: "my-s3-profile"
+          bucket: "my-unique-s3-bucket-name"
+        paths: [ "Pods/", "Rome/" ]
+```
 
 ## Auto deletion old caches
 
