@@ -130,7 +130,7 @@ steps:
     - gencer/cache#v2.3.0:
         backend: s3
         key: "v1-cache-{{ checksum 'Podfile.lock' }}"
-        pr: false # Default to `true` which is doers cache on PRs.
+        pr: false # Default to `true` which is do cache on PRs.
         s3:
           profile: "my-s3-profile"
           bucket: "my-unique-s3-bucket-name"
