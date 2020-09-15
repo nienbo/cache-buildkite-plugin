@@ -1,3 +1,7 @@
+# v2.3.0
+
++ Ability to skip cache on PR builds. See README.
+  
 # v2.2.1
 
 + Fix possible failure in tarball cleanup. See #12. ([@djmarcin]( https://github.com/djmarcin))
