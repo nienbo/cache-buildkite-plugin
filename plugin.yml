@@ -10,6 +10,8 @@ configuration:
       type: string
     backend:
       type: string
+    pr:
+      type: boolean
     s3:
       profile:
         type: string

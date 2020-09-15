@@ -17,6 +17,13 @@ if [[ "${BUILDKITE_PLUGIN_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
   set -x
 fi
 
+if [[ "${BUILDKITE_PLUGIN_CACHE_PR:-true}" =~ (false|off|0) ]]; then
+  if [[ "${BUILDKITE_PULL_REQUEST:-false}" =~ (true|on|1) ]]; then
+    echo "PR Detected. Skipping..."
+    exit 0
+  fi
+fi
+
 if [[ -n "${BUILDKITE_PLUGIN_CACHE_KEY:-}" ]]; then
 
   # Defaults...
