@@ -137,6 +137,14 @@ steps:
         paths: [ "Pods/", "Rome/" ]
 ```
 
+Or you can set this by Environment:
+
+```
+#!/bin/bash
+
+export BUILDKITE_PLUGIN_CACHE_PR=false
+```
+
 ## Auto deletion old caches
 
 To keep caches and delete them in _for example_ 7 days, use tarball backend and use `max`. On S3 side, please use S3 Policy for this routine. Each uploaded file to S3 will be deleted according to your file deletion policy.
