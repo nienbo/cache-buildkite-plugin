@@ -1,3 +1,7 @@
+# v2.3.1
+
++ Add Glob Support on `paths`. See #13.
+
 # v2.3.0
 
 + Ability to skip cache on PR builds. See README.
