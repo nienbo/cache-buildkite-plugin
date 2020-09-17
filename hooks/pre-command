@@ -18,7 +18,7 @@ if [[ "${BUILDKITE_PLUGIN_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
 fi
 
 if [[ "${BUILDKITE_PLUGIN_CACHE_PR:-true}" =~ (false|off|0) ]]; then
-  if [[ !"${BUILDKITE_PULL_REQUEST:-false}" =~ (false) ]]; then
+  if [[ ! "${BUILDKITE_PULL_REQUEST:-false}" =~ (false) ]]; then
     echo "PR Detected. Skipping..."
     exit 0
   fi
