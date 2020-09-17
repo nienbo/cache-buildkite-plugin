@@ -34,7 +34,7 @@ function cache() {
     mkdir -p "${CACHE_PREFIX}"
     TAR_FILE="${CACHE_PREFIX}/${CACHE_KEY}.tar"
     if [ ! -f "$TAR_FILE" ]; then
-      tar $TAR_ARGS "${TAR_FILE}" "${paths[*]}"
+      tar $TAR_ARGS "${TAR_FILE}" ${paths[*]}
     fi
   elif
     [ "${#paths[@]}" -gt 1 ]
@@ -43,7 +43,7 @@ function cache() {
     TAR_FILE="${CACHE_PREFIX}/${CACHE_KEY}.tar"
     if [ ! -f "$TAR_FILE" ]; then
       TMP_FILE="$(mktemp)"
-      tar $TAR_ARGS "${TMP_FILE}" "${paths[@]}"
+      tar $TAR_ARGS "${TMP_FILE}" ${paths[@]}
       mv -f "${TMP_FILE}" "${TAR_FILE}"
     fi
   fi
