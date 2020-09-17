@@ -21,7 +21,7 @@ if [ "${BUILDKITE_COMMAND_EXIT_STATUS}" -ne 0 ]; then
 fi
 
 if [[ "${BUILDKITE_PLUGIN_CACHE_PR:-true}" =~ (false|off|0) ]]; then
-  if [[ "${BUILDKITE_PULL_REQUEST:-false}" =~ (true|on|1) ]]; then
+  if [[ ! "${BUILDKITE_PULL_REQUEST:-false}" =~ (false) ]]; then
     echo "PR Detected. Skipping..."
     exit 0
   fi
