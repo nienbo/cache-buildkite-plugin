@@ -25,11 +25,15 @@ Please see `lib/backends/*.sh` for available backends. You can fork, add your ba
 
 Available backends and their requirements:
 
-| **Backend** | **Linux (GNU)**                             | **macOS (BSD)**                             | **Windows** |
-| ----------- | ------------------------------------------- | ------------------------------------------- | ----------- |
-| `tarball`   | tar<br />sha1sum                            | tar<br />shasum                             | -           |
-| `rsync`     | rsync<br />sha1sum                          | rsync <br />shasum                          | -           |
-| `s3`        | aws-cli (`>= 1, ~> 2`)<br />tar<br/>sha1sum | aws-cli (`>= 1, ~> 2`)<br />tar<br />shasum | -           |
+| **Backend** | **Linux (GNU)**                             | **macOS (BSD)**                             | **Windows**     |
+| ----------- | ------------------------------------------- | ------------------------------------------- | --------------- |
+| `tarball`   | tar<br />sha1sum                            | tar<br />shasum                             | Same as Linux   |
+| `rsync`     | rsync<br />sha1sum                          | rsync <br />shasum                          | Same as Linux   |
+| `s3`        | aws-cli (`>= 1, ~> 2`)<br />tar<br/>sha1sum | aws-cli (`>= 1, ~> 2`)<br />tar<br />shasum | Same as Linux   |
+
+### Windows
+
+If you install **Git for Windows 2.25 and later**, you will benefit all features of Cache on Windows.
 
 ### S3
 
