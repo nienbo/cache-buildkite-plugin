@@ -1,9 +1,10 @@
 # Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.3.1-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
 
 
-### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows (_using Git for Windows 2.25 and later_).
+### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows*
 
-_(Windows is on the way)_
+* Windows requires **Git for Windows 2.25 and later**.
+
 
 A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) to restore and save
 directories by cache keys. For example, use the checksum of a `.resolved` or `.lock` file
