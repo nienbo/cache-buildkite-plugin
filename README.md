@@ -35,6 +35,7 @@ Available backends and their requirements:
 ### Windows
 
 If you install **Git for Windows 2.25 and later**, you will benefit all features of Cache on Windows. Make sure you've added `bash.exe` into your `PATH`.
+
 &ast; Rsync on Windows requires https://itefix.net/cwrsync. To be clear, except `rsync`, you can use `s3` and `tarball` on Windows without an additional app.
 
 ### S3
