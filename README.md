@@ -164,7 +164,6 @@ You can use glob pattern in paths (to be cached) after `v2.3.1`
 
 ## Roadmap
 
-+ Adding support for Windows.
 + Google Cloud Cache Support.
 
 Original work by [@danthorpe](https://github.com/danthorpe/cache-buildkite-plugin)
