@@ -23,6 +23,11 @@ configuration:
         type: string
       max:
         type: number
+    tgzball:
+      path:
+        type: string
+      max:
+        type: number
     rsync:
       path:
         type: string

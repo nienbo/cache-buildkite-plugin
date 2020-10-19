@@ -39,6 +39,10 @@ function cache_restore_skip {
   echo "🚨 Cache restore is skipped because $1 does not exist"
 }
 
+function source_locating {
+  echo "🔍 Locating source: $1"
+}
+
 function cache_locating {
   echo "🔍 Locating cache: $1"
 }

@@ -33,7 +33,7 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_KEY:-}" ]]; then
   BACKEND="${BUILDKITE_PLUGIN_CACHE_BACKEND:-tarball}"
   CACHE_KEY="$(expand_templates "$BUILDKITE_PLUGIN_CACHE_KEY")"
 
-  cache_locating "$CACHE_KEY"
+  source_locating "$CACHE_KEY"
 
   paths=()
 
