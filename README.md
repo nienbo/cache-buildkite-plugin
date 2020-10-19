@@ -1,9 +1,10 @@
 # Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.3.2-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
 
 
-### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux and macOS.
+### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows*
 
-_(Windows is on the way)_
+&ast; Windows requires **Git for Windows 2.25 and later**.
+
 
 A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) to restore and save
 directories by cache keys. For example, use the checksum of a `.resolved` or `.lock` file
@@ -25,11 +26,17 @@ Please see `lib/backends/*.sh` for available backends. You can fork, add your ba
 
 Available backends and their requirements:
 
-| **Backend** | **Linux (GNU)**                             | **macOS (BSD)**                             | **Windows** |
-| ----------- | ------------------------------------------- | ------------------------------------------- | ----------- |
-| `tarball`   | tar<br />sha1sum                            | tar<br />shasum                             | -           |
-| `rsync`     | rsync<br />sha1sum                          | rsync <br />shasum                          | -           |
-| `s3`        | aws-cli (`>= 1, ~> 2`)<br />tar<br/>sha1sum | aws-cli (`>= 1, ~> 2`)<br />tar<br />shasum | -           |
+| **Backend** | **Linux (GNU)**                             | **macOS (BSD)**                             | **Windows**     |
+| ----------- | ------------------------------------------- | ------------------------------------------- | --------------- |
+| `tarball`   | tar<br />sha1sum                            | tar<br />shasum                             | Same as Linux   |
+| `rsync`     | rsync<br />sha1sum                          | rsync <br />shasum                          | Same as Linux*  |
+| `s3`        | aws-cli (`>= 1, ~> 2`)<br />tar<br/>sha1sum | aws-cli (`>= 1, ~> 2`)<br />tar<br />shasum | Same as Linux   |
+
+### Windows
+
+If you install **Git for Windows 2.25 and later**, you will benefit all features of Cache on Windows. Make sure you've added `bash.exe` into your `PATH`.
+
+&ast; Rsync on Windows requires https://itefix.net/cwrsync. To be clear, except `rsync`, you can use `s3` and `tarball` on Windows without an additional app.
 
 ### S3
 
@@ -157,7 +164,6 @@ You can use glob pattern in paths (to be cached) after `v2.3.2`
 
 ## Roadmap
 
-+ Adding support for Windows.
 + Google Cloud Cache Support.
 
 Original work by [@danthorpe](https://github.com/danthorpe/cache-buildkite-plugin)
