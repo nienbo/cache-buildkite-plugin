@@ -21,11 +21,8 @@ configuration:
     tarball:
       path:
         type: string
-      max:
-        type: number
-    tgzball:
-      path:
-        type: string
+      compress:
+        type: boolean
       max:
         type: number
     rsync:
