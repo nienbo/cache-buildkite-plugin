@@ -52,6 +52,7 @@ steps:
         s3:
           profile: "my-s3-profile"
           bucket: "my-unique-s3-bucket-name"
+          compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         paths: [ "Pods/", "Rome/" ]
 ```
 
@@ -93,6 +94,7 @@ steps:
         tarball:
           path: '/tmp/buildkite-cache'
           max: 7 # Optional. Removes tarballs older than 7 days.
+          compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         paths: [ "Pods/", "Rome/" ]
 ```
 
@@ -120,6 +122,7 @@ steps:
         tarball:
           path: '/tmp/buildkite-cache'
           max: 7 # Optional. Removes tarballs older than 7 days. 
+          compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         paths: [ "Pods/", "Rome/" ]
 ```
 
@@ -141,6 +144,7 @@ steps:
         s3:
           profile: "my-s3-profile"
           bucket: "my-unique-s3-bucket-name"
+          compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         paths: [ "Pods/", "Rome/" ]
 ```
 
