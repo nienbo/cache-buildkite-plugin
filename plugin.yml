@@ -4,6 +4,7 @@ author: https://github.com/gencer
 requirements:
   - aws
   - tar
+  - rsync
 configuration:
   properties:
     key:
