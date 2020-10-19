@@ -11,7 +11,7 @@ VERSION=$(<"$BASEDIR/VERSION")
 
 . "$BASEDIR/lib/shared.bash"
 
-echo -e "~~~ :bash: Initializing \033[33mCache\033[0m Buildkite Plugin v$VERSION"
+echo -e "~~~ :bash: \033[33mCache\033[0m Buildkite Plugin v$VERSION"
 
 if [[ "${BUILDKITE_PLUGIN_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
   set -x
