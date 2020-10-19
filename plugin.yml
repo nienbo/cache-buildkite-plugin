@@ -18,6 +18,8 @@ configuration:
         type: string
       bucket:
         type: string
+      compress:
+        type: boolean
     tarball:
       path:
         type: string
