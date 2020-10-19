@@ -1,3 +1,7 @@
+# v2.3.2
+
++ Added `compress` option to `s3` and `tarball` which creates tar.gz instead of tar.
+
 # v2.3.1
 
 + Add Glob Support on `paths`. See #13.
