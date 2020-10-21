@@ -1,3 +1,7 @@
+# v2.3.3
+
++ Added `{{ runner.os }}` helper to separate caches between runner operating systems.
+
 # v2.3.2
 
 + Added `compress` option to `s3` and `tarball` which creates tar.gz instead of tar.

@@ -1,4 +1,4 @@
-# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.3.2-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
+# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.3.3-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
 
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows*
@@ -46,9 +46,9 @@ variables defined in your agent. Content of the paths will be packed with `tar` 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.2:
+    - gencer/cache#v2.3.3:
         backend: s3
-        key: "v1-cache-{{ checksum 'Podfile.lock' }}"
+        key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         s3:
           profile: "my-s3-profile"
           bucket: "my-unique-s3-bucket-name"
@@ -67,9 +67,9 @@ You can also use rsync to store your files using the `rsync` backend. Files will
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.2:
+    - gencer/cache#v2.3.3:
         backend: rsync
-        key: "v1-cache-{{ checksum 'Podfile.lock' }}"
+        key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         rsync:
           path: '/tmp/buildkite-cache'
         paths: [ "Pods/", "Rome/" ]
@@ -88,9 +88,9 @@ You can also use tarballs to store your files using the `tarball` backend. Files
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.2:
+    - gencer/cache#v2.3.3:
         backend: tarball
-        key: "v1-cache-{{ checksum 'Podfile.lock' }}"
+        key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         tarball:
           path: '/tmp/buildkite-cache'
           max: 7 # Optional. Removes tarballs older than 7 days.
@@ -107,7 +107,7 @@ agents/builds.
 The cache key is a string, which support a crude template system. Currently `checksum` is
 the only command supported for now. It can be used as in the example above. In this case
 the cache key will be determined by executing a _checksum_ (actually `sha1sum`) on the
-`Gemfile.lock` file, prepended with `v1-cache-`.
+`Gemfile.lock` file, prepended with `v1-cache-{{ runner.os }}-`.
 
 ## Hashing (checksum) against directory
 
@@ -116,9 +116,9 @@ Along with lock files, you can calculate directory that contains multiple files 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.2:
+    - gencer/cache#v2.3.3:
         backend: tarball
-        key: "v1-cache-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
+        key: "v1-cache-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
         tarball:
           path: '/tmp/buildkite-cache'
           max: 7 # Optional. Removes tarballs older than 7 days. 
@@ -137,9 +137,9 @@ You can skip caching on Pull Requests (Merge Requests) by simply adding `pr: fal
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.2:
+    - gencer/cache#v2.3.3:
         backend: s3
-        key: "v1-cache-{{ checksum 'Podfile.lock' }}"
+        key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         pr: false # Default to `true` which is do cache on PRs.
         s3:
           profile: "my-s3-profile"
@@ -164,7 +164,7 @@ To keep caches and delete them in _for example_ 7 days, use tarball backend and 
 
 ## Globs on paths
 
-You can use glob pattern in paths (to be cached) after `v2.3.2`
+You can use glob pattern in paths (to be cached) after `v2.3.3`
 
 ## Roadmap
 
