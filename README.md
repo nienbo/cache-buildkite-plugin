@@ -164,7 +164,7 @@ To keep caches and delete them in _for example_ 7 days, use tarball backend and 
 
 ## Globs on paths
 
-You can use glob pattern in paths (to be cached) after `v2.3.3`
+You can use glob pattern in paths (to be cached) after `v2.1.x`
 
 ## Roadmap
 
