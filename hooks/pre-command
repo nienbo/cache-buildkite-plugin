@@ -27,17 +27,17 @@ fi
 if [[ -n "${BUILDKITE_PLUGIN_CACHE_KEY:-}" ]]; then
 
   # Defaults...
-  BACKEND="${BUILDKITE_PLUGIN_CACHE_BACKEND:-tarball}"
+  BK_CACHE_BACKEND="${BUILDKITE_PLUGIN_CACHE_BACKEND:-tarball}"
 
   CACHE_KEY="$(expand_templates "$BUILDKITE_PLUGIN_CACHE_KEY")"
 
   echo "🔍 Looking for $CACHE_KEY"
 
-  if [ -f "$BK_BASEDIR/lib/backends/$BACKEND.bash" ]; then
-    . "$BK_BASEDIR/lib/backends/$BACKEND.bash"
+  if [ -f "$BK_BASEDIR/lib/backends/$BK_CACHE_BACKEND.bash" ]; then
+    . "$BK_BASEDIR/lib/backends/$BK_CACHE_BACKEND.bash"
     restore
   else
-    echo "🚨 $BACKEND is not supported or not provided. Soft failing..."
+    echo "🚨 $BK_CACHE_BACKEND is not supported or not provided. Soft failing..."
     exit 0
   fi
 
