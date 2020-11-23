@@ -6,10 +6,10 @@
 
 set -euo pipefail
 
-BK_BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
-BK_CACHE_VERSION=$(<"$BK_BASEDIR/VERSION")
+BK_CACHE_BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
+BK_CACHE_VERSION=$(<"$BK_CACHE_BASEDIR/VERSION")
 
-. "$BK_BASEDIR/lib/shared.bash"
+. "$BK_CACHE_BASEDIR/lib/shared.bash"
 
 echo -e "~~~ :bash: \033[33mCache\033[0m Buildkite Plugin v$BK_CACHE_VERSION"
 
@@ -33,8 +33,8 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_KEY:-}" ]]; then
 
   echo "🔍 Looking for $CACHE_KEY"
 
-  if [ -f "$BK_BASEDIR/lib/backends/$BK_CACHE_BACKEND.bash" ]; then
-    . "$BK_BASEDIR/lib/backends/$BK_CACHE_BACKEND.bash"
+  if [ -f "$BK_CACHE_BASEDIR/lib/backends/$BK_CACHE_BACKEND.bash" ]; then
+    . "$BK_CACHE_BASEDIR/lib/backends/$BK_CACHE_BACKEND.bash"
     restore
   else
     echo "🚨 $BK_CACHE_BACKEND is not supported or not provided. Soft failing..."
