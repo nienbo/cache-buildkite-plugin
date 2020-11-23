@@ -6,8 +6,8 @@
 
 set -euo pipefail
 
-BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
-. "$BASEDIR/lib/shared.bash"
+BK_BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
+. "$BK_BASEDIR/lib/shared.bash"
 
 echo -e "~~~ :bash: Processing Post-Cache..."
 
@@ -47,8 +47,8 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_KEY:-}" ]]; then
     fi
   done < <(env | sort)
 
-  if [ -f "$BASEDIR/lib/backends/$BACKEND.bash" ]; then
-    . "$BASEDIR/lib/backends/$BACKEND.bash"
+  if [ -f "$BK_BASEDIR/lib/backends/$BACKEND.bash" ]; then
+    . "$BK_BASEDIR/lib/backends/$BACKEND.bash"
     cache
   else
     echo "🚨 $BACKEND is not supported or not provided. Soft failing..."
