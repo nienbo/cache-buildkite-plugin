@@ -1,19 +1,19 @@
 #!/bin/bash
 
 # Defaults...
-COMPRESS=${BUILDKITE_PLUGIN_CACHE_TARBALL_COMPRESS:-false}
+BK_CACHE_COMPRESS=${BUILDKITE_PLUGIN_CACHE_TARBALL_COMPRESS:-false}
 TAR_ARGS="--ignore-failed-read -cf"
 TAR_EXTENSION="tar"
 TAR_EXTRACT_ARGS="-xf"
 
-if [[ ! "${COMPRESS:-false}" =~ (false) ]]; then
+if [[ ! "${BK_CACHE_COMPRESS:-false}" =~ (false) ]]; then
   TAR_ARGS="--ignore-failed-read -zcf"
   TAR_EXTENSION="tar.gz"
   TAR_EXTRACT_ARGS="-xzf"
 fi
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  if [[ ! "${COMPRESS:-false}" =~ (false) ]]; then
+  if [[ ! "${BK_CACHE_COMPRESS:-false}" =~ (false) ]]; then
     TAR_ARGS="-zcf"
   else
     TAR_ARGS="-cf"
