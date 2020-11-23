@@ -1,3 +1,7 @@
+# v2.3.4
+
++ Many variables perepended by `BK_CACHE_` to avoid conflict with local variables. More will come.
+
 # v2.3.3
 
 + Added `{{ runner.os }}` helper to separate caches between runner operating systems.

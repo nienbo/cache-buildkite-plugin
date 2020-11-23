@@ -1,4 +1,4 @@
-# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.3.3-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
+# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.3.4-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
 
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows*
@@ -46,14 +46,16 @@ variables defined in your agent. Content of the paths will be packed with `tar` 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.3:
+    - gencer/cache#v2.3.4:
         backend: s3
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         s3:
           profile: "my-s3-profile"
           bucket: "my-unique-s3-bucket-name"
           compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
-        paths: [ "Pods/", "Rome/" ]
+        paths:
+          - 'Pods/'
+          - 'Rome/'
 ```
 
 The paths are synced using Amazon S3 into your bucket using a structure of
@@ -67,12 +69,14 @@ You can also use rsync to store your files using the `rsync` backend. Files will
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.3:
+    - gencer/cache#v2.3.4:
         backend: rsync
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         rsync:
           path: '/tmp/buildkite-cache'
-        paths: [ "Pods/", "Rome/" ]
+        paths:
+          - 'Pods/'
+          - 'Rome/'
 ```
 
 The paths are synced using `rsync_path/cache_key/path`. This is useful for maintaining a local
@@ -88,14 +92,16 @@ You can also use tarballs to store your files using the `tarball` backend. Files
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.3:
+    - gencer/cache#v2.3.4:
         backend: tarball
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         tarball:
           path: '/tmp/buildkite-cache'
           max: 7 # Optional. Removes tarballs older than 7 days.
           compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
-        paths: [ "Pods/", "Rome/" ]
+        paths:
+          - 'Pods/'
+          - 'Rome/'
 ```
 
 The paths are synced using `tarball_path/cache_key.tar`. This is useful for maintaining a local
@@ -116,14 +122,16 @@ Along with lock files, you can calculate directory that contains multiple files 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.3:
+    - gencer/cache#v2.3.4:
         backend: tarball
         key: "v1-cache-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
         tarball:
           path: '/tmp/buildkite-cache'
           max: 7 # Optional. Removes tarballs older than 7 days. 
           compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
-        paths: [ "Pods/", "Rome/" ]
+        paths:
+          - 'Pods/'
+          - 'Rome/'
 ```
 
 For example, you can calculate total checksum of your javascript folder to skip build, If the source didn't changed.
@@ -137,7 +145,7 @@ You can skip caching on Pull Requests (Merge Requests) by simply adding `pr: fal
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.3:
+    - gencer/cache#v2.3.4:
         backend: s3
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         pr: false # Default to `true` which is do cache on PRs.
@@ -145,7 +153,9 @@ steps:
           profile: "my-s3-profile"
           bucket: "my-unique-s3-bucket-name"
           compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
-        paths: [ "Pods/", "Rome/" ]
+        paths:
+          - 'Pods/'
+          - 'Rome/'
 ```
 
 Or you can set this by Environment:
