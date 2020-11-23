@@ -6,8 +6,8 @@
 
 set -euo pipefail
 
-BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
-VERSION=$(<"$BASEDIR/VERSION")
+local BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
+local VERSION=$(<"$BASEDIR/VERSION")
 
 . "$BASEDIR/lib/shared.bash"
 

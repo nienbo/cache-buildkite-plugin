@@ -6,7 +6,7 @@
 
 set -euo pipefail
 
-BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
+local BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
 . "$BASEDIR/lib/shared.bash"
 
 echo -e "~~~ :bash: Processing Post-Cache..."
