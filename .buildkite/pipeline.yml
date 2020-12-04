@@ -1,13 +1,13 @@
 steps:
-  - label: ":sparkles: Lint"
+  - label: ':sparkles: Lint'
     plugins:
       - plugin-linter#v2.0.0:
           id: gencer/cache
-  - label: ":shell: Shellcheck"
+  - label: ':shell: Shellcheck'
     plugins:
       - shellcheck#v1.1.2:
           files: hooks/**
-  - label: ":hammer: Test"
+  - label: ':hammer: Test'
     plugins:
-      - docker-compose#v3.0.0:
+      - docker-compose#v3.7.0:
           run: tests
