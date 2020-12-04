@@ -50,8 +50,8 @@ steps:
         backend: s3
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         s3:
-          profile: "my-s3-profile"
-          bucket: "my-unique-s3-bucket-name"
+          profile: "other-profile" # Optional. Defaults to `default`.
+          bucket: "s3-bucket"
           compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         paths:
           - 'Pods/'
@@ -150,8 +150,8 @@ steps:
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         pr: false # Default to `true` which is do cache on PRs.
         s3:
-          profile: "my-s3-profile"
-          bucket: "my-unique-s3-bucket-name"
+          profile: "other-profile" # Optional. Defaults to `default`.
+          bucket: "s3-bucket"
           compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         paths:
           - 'Pods/'
@@ -179,6 +179,7 @@ You can use glob pattern in paths (to be cached) after `v2.1.x`
 ## Roadmap
 
 + Google Cloud Cache Support.
++ S3 Storage Class Support
 
 Original work by [@danthorpe](https://github.com/danthorpe/cache-buildkite-plugin)
 
