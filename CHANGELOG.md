@@ -1,3 +1,8 @@
+# v2.3.5
+
++ Added `args` and `class` options to `s3` backend. See README for details.
++ Small changes
+
 # v2.3.4
 
 + Many variables perepended by `BK_CACHE_` to avoid conflict with local variables. More will come.

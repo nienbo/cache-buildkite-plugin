@@ -20,6 +20,10 @@ configuration:
         type: string
       compress:
         type: boolean
+      class:
+        type: string
+      args:
+        type: string
     tarball:
       path:
         type: string
