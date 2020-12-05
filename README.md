@@ -60,7 +60,7 @@ The paths are synced using Amazon S3 into your bucket using a structure of
 `organization-slug/pipeline-slug/cache_key.tar`, as determined by the Buildkite environment
 variables.
 
-## Storage Class
+### Storage Class
 
 You can pass `class` option for the following classes:,
 
@@ -69,7 +69,7 @@ You can pass `class` option for the following classes:,
 - `ONEZONE_IA`
 - `INTELLIGENT_TIERING`
 
-## Additional Arguments
+### Additional Arguments
 
 You can pass `args` argument with required options. This arguments will be added to the end of `s3 cp` command. Therefore please do not add following options:
 
@@ -124,14 +124,14 @@ The paths are synced using `tarball_path/cache_key.tar`. This is useful for main
 cache directory, even though this cache is not shared between servers, it can be reused by different
 agents/builds.
 
-## Cache Key Templates
+### Cache Key Templates
 
 The cache key is a string, which support a crude template system. Currently `checksum` is
 the only command supported for now. It can be used as in the example above. In this case
 the cache key will be determined by executing a _checksum_ (actually `sha1sum`) on the
 `Gemfile.lock` file, prepended with `v1-cache-{{ runner.os }}-`.
 
-## Hashing (checksum) against directory
+### Hashing (checksum) against directory
 
 Along with lock files, you can calculate directory that contains multiple files or recursive directories and files.
 
@@ -154,7 +154,7 @@ For example, you can calculate total checksum of your javascript folder to skip 
 
 Note: Before hashing files, we do "sort". This provides exact same sorted and hashed content against very same directory between builds.
 
-## Skip Cache on PRs
+### Skip Cache on PRs
 
 You can skip caching on Pull Requests (Merge Requests) by simply adding `pr: false` to the cache plugin. For example;
 
@@ -184,13 +184,13 @@ Or you can set this by Environment:
 export BUILDKITE_PLUGIN_CACHE_PR=false
 ```
 
-## Auto deletion old caches
+### Auto deletion old caches
 
 To keep caches and delete them in _for example_ 7 days, use tarball backend and use `max`. On S3 side, please use S3 Policy for this routine. Each uploaded file to S3 will be deleted according to your file deletion policy.
 
 **For S3**, Due to expiration policy, we just re-upload the same tarball to refresh expiration date. As long as you use the same cache, S3 will not delete it. Otherwise, It will be deleted from S3-side not used in a manner time.
 
-## Globs on paths
+### Globs on paths
 
 You can use glob pattern in paths (to be cached) after `v2.1.x`
 
