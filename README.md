@@ -68,10 +68,10 @@ variables.
 
 You can pass `class` option for the following classes:,
 
-- STANDARD
-- STANDARD_IA
-- ONEZONE_IA
-- INTELLIGENT_TIERING
+- `STANDARD`
+- `STANDARD_IA`
+- `ONEZONE_IA`
+- `INTELLIGENT_TIERING`
 
 ### Additional Arguments
 
