@@ -16,11 +16,7 @@ For S3, Instead of sync thousands of files, It just creates a tarball before S3 
 
 Plus, In addition to tarball & rsync, we also do not re-create another tarball for same cache key if it's already exists.
 
-## 🚨 Breaking Change
-
-Please see usages below to adopt new `v2.2.x` branch. Please use `v2.1.0` or older to keep old syntax.
-
-## Backends
+# Backends
 
 Please see `lib/backends/*.sh` for available backends. You can fork, add your backend then send a PR here.
 
@@ -32,13 +28,13 @@ Available backends and their requirements:
 | `rsync`     | rsync<br />sha1sum                          | rsync <br />shasum                          | Same as Linux*  |
 | `s3`        | aws-cli (`>= 1, ~> 2`)<br />tar<br/>sha1sum | aws-cli (`>= 1, ~> 2`)<br />tar<br />shasum | Same as Linux   |
 
-### Windows
+### Windows Support
 
 If you install **Git for Windows 2.25 and later**, you will benefit all features of Cache on Windows. Make sure you've added `bash.exe` into your `PATH`.
 
 &ast; Rsync on Windows requires https://itefix.net/cwrsync. To be clear, except `rsync`, you can use `s3` and `tarball` on Windows without an additional app.
 
-### S3
+# S3
 
 This plugin uses AWS S3 `cp` to cache the paths into a bucket as defined by environment
 variables defined in your agent. Content of the paths will be packed with `tar` before upload `cp` and single tarball will be copied to s3.
@@ -64,7 +60,7 @@ The paths are synced using Amazon S3 into your bucket using a structure of
 `organization-slug/pipeline-slug/cache_key.tar`, as determined by the Buildkite environment
 variables.
 
-### Storage Class
+## Storage Class
 
 You can pass `class` option for the following classes:,
 
@@ -73,7 +69,7 @@ You can pass `class` option for the following classes:,
 - `ONEZONE_IA`
 - `INTELLIGENT_TIERING`
 
-### Additional Arguments
+## Additional Arguments
 
 You can pass `args` argument with required options. This arguments will be added to the end of `s3 cp` command. Therefore please do not add following options:
 
@@ -82,7 +78,7 @@ You can pass `args` argument with required options. This arguments will be added
 
 However, If you do not specify `profile` and `class` via YAML, then you can pass those arguments to the `args`.
 
-### rsync
+# rsync
 
 You can also use rsync to store your files using the `rsync` backend. Files will neither compressed nor packed.
 
@@ -103,7 +99,7 @@ The paths are synced using `rsync_path/cache_key/path`. This is useful for maint
 cache directory, even though this cache is not shared between servers, it can be reused by different
 agents/builds.
 
-### tarball
+# tarball
 
 You can also use tarballs to store your files using the `tarball` backend. Files will not be compressed but surely packed into single archive.
 
