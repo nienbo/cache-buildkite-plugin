@@ -40,7 +40,7 @@ function cache() {
     echo "🗑️ Deleting backups older than ${DAYS} day(s)..."
     # On Linux, concurrent deletes race and cause a non-zero exit code. -ignore_readdir_race fixes this.
     # macOS handles this flag but it has no effect since bsdfind already returns zero in this case.
-    find "${CACHE_PREFIX}" -ignore_readdir_race -type f -mtime +"${DAYS}" -delete
+    find "${CACHE_PREFIX}" -type f -mtime +"${DAYS}" -exec rm -f {} \;
   fi
 
   if [ "${#paths[@]}" -eq 1 ]; then
