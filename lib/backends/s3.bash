@@ -3,14 +3,31 @@
 # Defaults...
 BK_AWS_ARGS=""
 BK_CACHE_COMPRESS=${BUILDKITE_PLUGIN_CACHE_S3_COMPRESS:-false}
-BK_TAR_ARGS="--ignore-failed-read -cf"
+BK_TAR_ARGS=""
+BK_TAR_ADDITIONAL_ARGS="--ignore-failed-read"
 BK_TAR_EXTENSION="tar"
 BK_TAR_EXTRACT_ARGS="-xf"
 
+shell_exec=$(
+  exec 2>/dev/null
+  readlink "/proc/$$/exe"
+)
+case "$shell_exec" in
+*/busybox)
+  BK_TAR_ADDITIONAL_ARGS=""
+  ;;
+  # TODO: Add macOS
+  # *)
+  #   BK_TAR_ARGS="--ignore-failed-read -cf"
+  #   ;;
+esac
+
 if [[ ! "${BK_CACHE_COMPRESS:-false}" =~ (false) ]]; then
-  BK_TAR_ARGS="--ignore-failed-read -zcf"
+  BK_TAR_ARGS="${BK_TAR_ADDITIONAL_ARGS} -zcf"
   BK_TAR_EXTENSION="tar.gz"
   BK_TAR_EXTRACT_ARGS="-xzf"
+else
+  BK_TAR_ARGS="${BK_TAR_ADDITIONAL_ARGS} -cf"
 fi
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
