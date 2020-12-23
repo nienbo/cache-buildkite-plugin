@@ -1,7 +1,7 @@
 # master
 
 + Skip tar argument `--ignore-failed-read` if `busybox` detected.
-+ Drop `-ignore_readdir_race``from `find` favor on `-exec`.
++ Drop `-ignore_readdir_race` from `find` favor on `-exec`.
 
 # v2.3.5
 
