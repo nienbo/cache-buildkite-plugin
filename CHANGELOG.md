@@ -1,3 +1,8 @@
+# master
+
++ Skip tar argument `--ignore-failed-read` if `busybox` detected.
++ Drop `-ignore_readdir_race``from `find` favor on `-exec`.
+
 # v2.3.5
 
 + Added `args` and `class` options to `s3` backend. See README for details.
