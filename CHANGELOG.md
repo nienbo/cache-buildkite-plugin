@@ -1,14 +1,7 @@
-<<<<<<< HEAD
 # v2.3.6
 
 + Added checking for `busybox` and fallback to lesser options of `tar`.
 + Use `-exec` with `rm -f` using `find` instead of native `-delete` option.
-=======
-# master
-
-+ Skip tar argument `--ignore-failed-read` if `busybox` detected.
-+ Drop `-ignore_readdir_race` from `find` favor on `-exec`.
->>>>>>> ecc1934847d3ddc6a026657bed62031cfec0f822
 
 # v2.3.5
 
