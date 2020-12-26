@@ -1,4 +1,4 @@
-# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.3.5-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
+# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.3.6-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
 
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows*
@@ -42,7 +42,7 @@ variables defined in your agent. Content of the paths will be packed with `tar` 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.5:
+    - gencer/cache#v2.3.6:
         backend: s3
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         s3:
@@ -85,7 +85,7 @@ You can also use rsync to store your files using the `rsync` backend. Files will
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.5:
+    - gencer/cache#v2.3.6:
         backend: rsync
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         rsync:
@@ -108,7 +108,7 @@ You can also use tarballs to store your files using the `tarball` backend. Files
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.5:
+    - gencer/cache#v2.3.6:
         backend: tarball
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         tarball:
@@ -138,7 +138,7 @@ Along with lock files, you can calculate directory that contains multiple files 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.5:
+    - gencer/cache#v2.3.6:
         backend: tarball
         key: "v1-cache-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
         tarball:
@@ -161,7 +161,7 @@ You can skip caching on Pull Requests (Merge Requests) by simply adding `pr: fal
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.5:
+    - gencer/cache#v2.3.6:
         backend: s3
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         pr: false # Default to `true` which is do cache on PRs.

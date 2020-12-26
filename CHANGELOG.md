@@ -1,3 +1,8 @@
+# v2.3.6
+
++ Added checking for `busybox` and fallback to lesser options of `tar`.
++ Use `-exec` with `rm -f` using `find` instead of native `-delete` option.
+
 # v2.3.5
 
 + Added `args` and `class` options to `s3` backend. See README for details.
