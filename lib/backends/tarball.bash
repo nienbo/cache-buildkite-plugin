@@ -17,18 +17,15 @@ if [[ ! "$OSTYPE" == "darwin"* ]]; then
     BK_TAR_ADDITIONAL_ARGS=""
     ;;
   esac
-fi
-
-if [[ ! "${BK_CACHE_COMPRESS:-false}" =~ (false) ]]; then
-  BK_TAR_ARGS="${BK_TAR_ADDITIONAL_ARGS} -zcf"
-  BK_TAR_EXTENSION="tar.gz"
-  BK_TAR_EXTRACT_ARGS="-xzf"
+  
+  if [[ ! "${BK_CACHE_COMPRESS:-false}" =~ (false) ]]; then
+    BK_TAR_ARGS="${BK_TAR_ADDITIONAL_ARGS} -zcf"
+    BK_TAR_EXTENSION="tar.gz"
+    BK_TAR_EXTRACT_ARGS="-xzf"
+  else
+    BK_TAR_ARGS="${BK_TAR_ADDITIONAL_ARGS} -cf"
+  fi
 else
-  BK_TAR_ARGS="${BK_TAR_ADDITIONAL_ARGS} -cf"
-fi
-
-# Override above if its macOS
-if [[ "$OSTYPE" == "darwin"* ]]; then
   if [[ ! "${BK_CACHE_COMPRESS:-false}" =~ (false) ]]; then
     BK_TAR_ARGS="-zcf"
   else
