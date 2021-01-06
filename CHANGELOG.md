@@ -1,3 +1,7 @@
+# v2.3.7
+
++ Do not check `busybox` on macOS. See #17.
+
 # v2.3.6
 
 + Added checking for `busybox` and fallback to lesser options of `tar`.

@@ -17,7 +17,7 @@ if [[ ! "$OSTYPE" == "darwin"* ]]; then
     BK_TAR_ADDITIONAL_ARGS=""
     ;;
   esac
-  
+
   if [[ ! "${BK_CACHE_COMPRESS:-false}" =~ (false) ]]; then
     BK_TAR_ARGS="${BK_TAR_ADDITIONAL_ARGS} -zcf"
     BK_TAR_EXTENSION="tar.gz"
