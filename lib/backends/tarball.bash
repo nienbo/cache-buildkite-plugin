@@ -7,19 +7,17 @@ BK_TAR_ADDITIONAL_ARGS="--ignore-failed-read"
 BK_TAR_EXTENSION="tar"
 BK_TAR_EXTRACT_ARGS="-xf"
 
-shell_exec=$(
-  exec 2>/dev/null
-  readlink "/proc/$$/exe"
-)
-case "$shell_exec" in
-*/busybox)
-  BK_TAR_ADDITIONAL_ARGS=""
-  ;;
-  # TODO: Add macOS
-  # *)
-  #   BK_TAR_ARGS="--ignore-failed-read -cf"
-  #   ;;
-esac
+if [[ ! "$OSTYPE" == "darwin"* ]]; then
+  shell_exec=$(
+    exec 2>/dev/null
+    readlink "/proc/$$/exe"
+  )
+  case "$shell_exec" in
+  */busybox)
+    BK_TAR_ADDITIONAL_ARGS=""
+    ;;
+  esac
+fi
 
 if [[ ! "${BK_CACHE_COMPRESS:-false}" =~ (false) ]]; then
   BK_TAR_ARGS="${BK_TAR_ADDITIONAL_ARGS} -zcf"
@@ -29,6 +27,7 @@ else
   BK_TAR_ARGS="${BK_TAR_ADDITIONAL_ARGS} -cf"
 fi
 
+// Override above if its macOS
 if [[ "$OSTYPE" == "darwin"* ]]; then
   if [[ ! "${BK_CACHE_COMPRESS:-false}" =~ (false) ]]; then
     BK_TAR_ARGS="-zcf"
