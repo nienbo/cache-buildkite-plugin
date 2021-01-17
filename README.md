@@ -212,6 +212,27 @@ steps:
       - gencer/cache#v2.3.7: *cache
 ```
 
+### Usage with docker
+
+Put cache plugin **before** `docker` or `docker-compose` plugins. Let's cache do the rest restoring and caching afterwards.
+
+```yaml
+steps:
+  - name: ':jest: Run tests'
+    key: jest
+    command: yarn test --runInBand
+    plugins:
+      - gencer/cache#v2.3.7: # Define cache *before* docker plugins.
+        backend: s3
+          key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
+          pr: false
+          s3:
+            bucket: s3-bucket
+          paths:
+            - Pods/
+      - docker#v3.7.0: ~ # Use your config here
+      - docker-compose#3.7.0: ~ # Or compose. Use your config here
+```
 ### Auto deletion old caches
 
 To keep caches and delete them in _for example_ 7 days, use tarball backend and use `max`. On S3 side, please use S3 Policy for this routine. Each uploaded file to S3 will be deleted according to your file deletion policy.
