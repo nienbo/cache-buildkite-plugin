@@ -233,6 +233,7 @@ steps:
       - docker#v3.7.0: ~ # Use your config here
       - docker-compose#3.7.0: ~ # Or compose. Use your config here
 ```
+
 ### Auto deletion old caches
 
 To keep caches and delete them in _for example_ 7 days, use tarball backend and use `max`. On S3 side, please use S3 Policy for this routine. Each uploaded file to S3 will be deleted according to your file deletion policy.
