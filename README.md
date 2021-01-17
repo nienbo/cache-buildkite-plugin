@@ -22,11 +22,11 @@ Please see `lib/backends/*.sh` for available backends. You can fork, add your ba
 
 Available backends and their requirements:
 
-| **Backend** | **Linux (GNU)**                             | **macOS (BSD)**                             | **Windows**     |
-| ----------- | ------------------------------------------- | ------------------------------------------- | --------------- |
-| `tarball`   | tar<br />sha1sum                            | tar<br />shasum                             | Same as Linux   |
-| `rsync`     | rsync<br />sha1sum                          | rsync <br />shasum                          | Same as Linux*  |
-| `s3`        | aws-cli (`>= 1, ~> 2`)<br />tar<br/>sha1sum | aws-cli (`>= 1, ~> 2`)<br />tar<br />shasum | Same as Linux   |
+| **Backend** | **Linux (GNU)**                             | **macOS (BSD)**                             | **Windows**    |
+| ----------- | ------------------------------------------- | ------------------------------------------- | -------------- |
+| `tarball`   | tar<br />sha1sum                            | tar<br />shasum                             | Same as Linux  |
+| `rsync`     | rsync<br />sha1sum                          | rsync <br />shasum                          | Same as Linux* |
+| `s3`        | aws-cli (`>= 1, ~> 2`)<br />tar<br/>sha1sum | aws-cli (`>= 1, ~> 2`)<br />tar<br />shasum | Same as Linux  |
 
 ### Windows Support
 
@@ -182,6 +182,34 @@ Or you can set this by Environment:
 #!/bin/bash
 
 export BUILDKITE_PLUGIN_CACHE_PR=false
+```
+
+### Multiple usages in same pipeline
+
+```yaml
+cache: &cache
+  key: "v1-cache-{{ runner.os }}-{{ checksum 'yarn.lock' }}"
+  backend: s3
+  pr: false
+  s3:
+    bucket: cache-bucket
+  paths:
+    - node_modules
+    # If you have sub-dir then use:
+    # - **/node_modules
+
+steps:
+  - name: ':jest: Run tests'
+    key: jest
+    command: yarn test --runInBand
+    plugins:
+      - gencer/cache#v2.3.7: *cache
+  - name: ':istanbul: Run Istanbul'
+    key: istanbul
+    depends_on: jest
+    command: .buildkite/steps/istanbul.sh
+    plugins:
+      - gencer/cache#v2.3.7: *cache
 ```
 
 ### Auto deletion old caches
