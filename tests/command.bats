@@ -81,7 +81,7 @@ load "$BATS_PATH/load.bash"
   CHECKSUM=355831032f586e782b45744f2ed79316cc830244
 
   stub aws \
-   "s3api head-object --bucket my-bucket --key 'my-org/my-pipeline/v1-cache-key-${CHECKSUM}.tar' : true" \
+   "s3api head-object --bucket my-bucket --key 'my-org/my-pipeline/v1-cache-key-${CHECKSUM}.tar' --profile my-profile : true" \
    "s3 cp --profile my-profile s3://my-bucket/my-org/my-pipeline/v1-cache-key-${CHECKSUM}.tar . : echo Copied from S3"
 
   stub tar \
@@ -114,7 +114,7 @@ load "$BATS_PATH/load.bash"
   CHECKSUM=4cfa4e590847976f26d761074e355e4d95fa8107
 
   stub aws \
-   "s3api head-object --profile my-profile --bucket my-bucket --key 'my-org/my-pipeline/v1-cache-key-${CHECKSUM}.tar' : true" \
+   "s3api head-object --bucket my-bucket --key 'my-org/my-pipeline/v1-cache-key-${CHECKSUM}.tar' --profile my-profile : true" \
    "s3 cp --profile my-profile s3://my-bucket/my-org/my-pipeline/v1-cache-key-${CHECKSUM}.tar . : echo Copied from S3"
 
   stub tar \
@@ -147,7 +147,7 @@ load "$BATS_PATH/load.bash"
   CHECKSUMS=355831032f586e782b45744f2ed79316cc830244-241bc31c8ddc004c48e6d88d7fa51ee981b8ce51
 
   stub aws \
-   "s3api head-object --profile my-profile --bucket my-bucket --key 'my-org/my-pipeline/v1-cache-key-${CHECKSUMS}.tar' : true" \
+   "s3api head-object --bucket my-bucket --key 'my-org/my-pipeline/v1-cache-key-${CHECKSUMS}.tar' --profile my-profile : true" \
    "s3 cp --profile my-profile s3://my-bucket/my-org/my-pipeline/v1-cache-key-${CHECKSUMS}.tar . : echo Copied from S3"
 
   stub tar \
@@ -180,7 +180,7 @@ load "$BATS_PATH/load.bash"
   CHECKSUM=355831032f586e782b45744f2ed79316cc830244
 
   stub aws \
-   "s3api head-object --profile my-profile --bucket my-bucket --key 'my-org/my-pipeline/v1-cache-$CHECKSUM-key.tar' : true" \
+   "s3api head-object --bucket my-bucket --key 'my-org/my-pipeline/v1-cache-$CHECKSUM-key.tar' --profile my-profile : true" \
    "s3 cp --profile my-profile s3://my-bucket/my-org/my-pipeline/v1-cache-$CHECKSUM-key.tar . : echo Copied from S3"
 
   stub tar \
