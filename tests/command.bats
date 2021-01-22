@@ -8,8 +8,8 @@ load "$BATS_PATH/load.bash"
 @test "Pre-command restores cache with basic key" {
 
   stub aws \
-   "s3api head-object --bucket my-bucket --key 'my-org/my-pipeline/v1-cache-key.tar' : true" \
-   "s3 cp s3://my-bucket/my-org/my-pipeline/v1-cache-key.tar . --profile my-profile : echo Copied from S3"
+   "s3api head-object --bucket my-bucket --key 'my-org/my-pipeline/v1-cache-key.tar' --profile my-profile : true" \
+   "s3 cp --profile my-profile s3://my-bucket/my-org/my-pipeline/v1-cache-key.tar . : echo Copied from S3"
 
   stub tar \
    "-xf v1-cache-key.tar -C . : echo Extracted tar archive"
