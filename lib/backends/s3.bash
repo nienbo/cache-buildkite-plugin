@@ -57,7 +57,7 @@ function restore() {
     cache_restore_skip "s3://${BUCKET}/${TAR_FILE}"
   else
     cache_hit "s3://${BUCKET}/${TAR_FILE}"
-    aws s3 cp $BK_AWS_ARGS "s3://${BUCKET}/${TAR_FILE}" . 
+    aws s3 cp $BK_AWS_ARGS "s3://${BUCKET}/${TAR_FILE}" .
     tar ${BK_TAR_EXTRACT_ARGS} "${TAR_FILE}" -C .
   fi
 }
@@ -74,7 +74,7 @@ function cache() {
       tar $BK_TAR_ARGS "${TMP_FILE}" "${paths[*]}"
       mv -f "${TMP_FILE}" "${TAR_FILE}"
     fi
-    aws s3 cp $BK_AWS_ARGS "$TAR_FILE" "s3://${BUCKET}/${TAR_FILE}" 
+    aws s3 cp $BK_AWS_ARGS "$TAR_FILE" "s3://${BUCKET}/${TAR_FILE}"
     rm -f "${TAR_FILE}"
 
   elif
@@ -90,5 +90,4 @@ function cache() {
     aws s3 cp $BK_AWS_ARGS "${TAR_FILE}" "s3://${BUCKET}/${TAR_FILE}"
     rm -f "${TAR_FILE}"
   fi
-
 }
