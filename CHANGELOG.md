@@ -1,3 +1,8 @@
+# v2.3.8
+
++ Add $BK_AWS_ARGS to head-object call See #19.
++ Fix README docker example
+
 # v2.3.7
 
 + Do not check `busybox` on macOS. See #17.
