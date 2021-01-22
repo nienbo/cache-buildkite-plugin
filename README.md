@@ -224,12 +224,12 @@ steps:
     plugins:
       - gencer/cache#v2.3.7: # Define cache *before* docker plugins.
         backend: s3
-          key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
-          pr: false
-          s3:
-            bucket: s3-bucket
-          paths:
-            - Pods/
+        key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
+        pr: false
+        s3:
+          bucket: s3-bucket
+        paths:
+          - Pods/
       - docker#v3.7.0: ~ # Use your config here
       - docker-compose#3.7.0: ~ # Or compose. Use your config here
 ```
