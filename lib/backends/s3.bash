@@ -51,13 +51,13 @@ function restore() {
   BUCKET="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
   TKEY="${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
 
-  aws s3api head-object --bucket "${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}" --key "${TKEY}/${TAR_FILE}" || no_head=true
+  aws s3api head-object --bucket "${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}" --key "${TKEY}/${TAR_FILE}" $BK_AWS_ARGS || no_head=true
 
   if ${no_head:-false}; then
     cache_restore_skip "s3://${BUCKET}/${TAR_FILE}"
   else
     cache_hit "s3://${BUCKET}/${TAR_FILE}"
-    aws s3 cp "s3://${BUCKET}/${TAR_FILE}" . $BK_AWS_ARGS
+    aws s3 cp $BK_AWS_ARGS "s3://${BUCKET}/${TAR_FILE}" . 
     tar ${BK_TAR_EXTRACT_ARGS} "${TAR_FILE}" -C .
   fi
 }
@@ -74,7 +74,7 @@ function cache() {
       tar $BK_TAR_ARGS "${TMP_FILE}" "${paths[*]}"
       mv -f "${TMP_FILE}" "${TAR_FILE}"
     fi
-    aws s3 cp "$TAR_FILE" "s3://${BUCKET}/${TAR_FILE}" $BK_AWS_ARGS
+    aws s3 cp $BK_AWS_ARGS "$TAR_FILE" "s3://${BUCKET}/${TAR_FILE}" 
     rm -f "${TAR_FILE}"
 
   elif
@@ -87,7 +87,7 @@ function cache() {
       tar $BK_TAR_ARGS "${TMP_FILE}" "${paths[@]}"
       mv -f "${TMP_FILE}" "${TAR_FILE}"
     fi
-    aws s3 cp "${TAR_FILE}" "s3://${BUCKET}/${TAR_FILE}" $BK_AWS_ARGS
+    aws s3 cp $BK_AWS_ARGS "${TAR_FILE}" "s3://${BUCKET}/${TAR_FILE}"
     rm -f "${TAR_FILE}"
   fi
 
