@@ -247,7 +247,6 @@ You can use glob pattern in paths (to be cached) after `v2.1.x`
 ## Roadmap
 
 + Google Cloud Cache Support.
-+ S3 Storage Class Support
 
 Original work by [@danthorpe](https://github.com/danthorpe/cache-buildkite-plugin)
 
