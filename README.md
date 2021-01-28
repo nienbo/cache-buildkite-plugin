@@ -89,7 +89,7 @@ steps:
         backend: rsync
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         rsync:
-          path: '/tmp/buildkite-cache'
+          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.3.9+
         paths:
           - 'Pods/'
           - 'Rome/'
@@ -112,7 +112,7 @@ steps:
         backend: tarball
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         tarball:
-          path: '/tmp/buildkite-cache'
+          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.3.9+
           max: 7 # Optional. Removes tarballs older than 7 days.
           compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         paths:
@@ -142,7 +142,7 @@ steps:
         backend: tarball
         key: "v1-cache-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
         tarball:
-          path: '/tmp/buildkite-cache'
+          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.3.9+
           max: 7 # Optional. Removes tarballs older than 7 days. 
           compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         paths:
