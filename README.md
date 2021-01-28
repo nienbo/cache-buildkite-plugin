@@ -60,9 +60,13 @@ The paths are synced using Amazon S3 into your bucket using a structure of
 `organization-slug/pipeline-slug/cache_key.tar`, as determined by the Buildkite environment
 variables.
 
+### S3-compatible Providers
+
+Use `args` field to pass host and region parameters to be able to use S3-compatible providers.
+
 ### Storage Class
 
-You can pass `class` option for the following classes:,
+You can pass `class` option for the following classes:
 
 - `STANDARD`
 - `STANDARD_IA`
