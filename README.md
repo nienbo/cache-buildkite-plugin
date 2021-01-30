@@ -81,6 +81,14 @@ steps:
           - 'Rome/'
 ```
 
+Or, alternatively you can define them in your `environment` file like this:
+
+```bash
+export BUILDKITE_PLUGIN_CACHE_S3_ENDPOINT="https://s3.nl-ams.scw.cloud"
+# Optionally specify region:
+export BUILDKITE_PLUGIN_CACHE_S3_REGION="nl-ams"
+```
+
 ### Storage Class
 
 You can pass `class` option for the following classes:
