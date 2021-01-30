@@ -36,8 +36,7 @@ If you install **Git for Windows 2.25 and later**, you will benefit all features
 
 # S3
 
-This plugin uses AWS S3 `cp` to cache the paths into a bucket as defined by environment
-variables defined in your agent. Content of the paths will be packed with `tar` before upload `cp` and single tarball will be copied to s3.
+S3 backend uses **AWS CLI** v**1** or v**2** to copy and download from/to S3 bucket or s3-compatible bucket. To be precisely, backend simply uses `aws s3 cp` command for all operations. Before that, we do `head-object` to check existence of the cache key on target bucket. While tarball is the default backend, S3 backend is heavily tested and ready for use in production. See some examples below for S3 backend.
 
 ```yml
 steps:
@@ -98,14 +97,18 @@ You can pass `class` option for the following classes:
 - `ONEZONE_IA`
 - `INTELLIGENT_TIERING`
 
+Default value will always be empty. This means, AWS or Compatible provider will use its default value for stored object or a value that given by Lifecycle policy.
+
 ### Additional Arguments
 
 You can pass `args` argument with required options. This arguments will be added to the end of `s3 cp` command. Therefore please do not add following options:
 
 - `--storage-class`
 - `--profile`
+- `--endpoint-url`
+- `--region`
 
-However, If you do not specify `profile` and `class` via YAML, then you can pass those arguments to the `args`.
+However, If you do not specify `profile`, `endpoint`, `region` and `class` via YAML configuration, then you can pass those arguments to the `args`.
 
 # rsync
 
@@ -138,7 +141,7 @@ You can also use tarballs to store your files using the `tarball` backend. Files
 steps:
   - plugins:
     - gencer/cache#v2.3.9:
-        backend: tarball
+        backend: tarball # Optional. Default `backend` is already set to `tarball` 
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         tarball:
           path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.3.9+
@@ -168,7 +171,7 @@ Along with lock files, you can calculate directory that contains multiple files 
 steps:
   - plugins:
     - gencer/cache#v2.3.9:
-        backend: tarball
+        backend: tarball # Optional. Default `backend` is already set to `tarball` 
         key: "v1-cache-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
         tarball:
           path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.3.9+
