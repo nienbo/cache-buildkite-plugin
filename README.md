@@ -62,7 +62,23 @@ variables.
 
 ### S3-compatible Providers
 
-Use `args` field to pass host and region parameters to be able to use S3-compatible providers.
+Use `args` field to pass host and region parameters to be able to use S3-compatible providers. For example: `args: "--endpoint-url=https://s3.nl-ams.scw.cloud"`
+
+```yml
+steps:
+  - plugins:
+    - gencer/cache#v2.3.8:
+        backend: s3
+        key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
+        s3:
+          bucket: "s3-compatible-bucket"
+          args: "--endpoint-url=https://s3.nl-ams.scw.cloud"
+          # If you strictly need to specify region, then use like this:
+          # args: "--endpoint-url=https://s3.nl-ams.scw.cloud --region=nl-ams"
+        paths:
+          - 'Pods/'
+          - 'Rome/'
+```
 
 ### Storage Class
 
