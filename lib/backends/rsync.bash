@@ -8,9 +8,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   RSYNC_ARGS=""
 fi
 
-if [ -n "$BUILDKITE_PLUGIN_CACHE_RSYNC_PATH" ]; then
+if [ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_PATH:-}" ]; then
   # Override /tmp with given param
-  BK_BASE_DIR="$BUILDKITE_PLUGIN_CACHE_RSYNC_PATH"
+  BK_BASE_DIR="${BUILDKITE_PLUGIN_CACHE_RSYNC_PATH}"
 fi
 
 function restore() {

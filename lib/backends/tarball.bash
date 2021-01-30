@@ -8,9 +8,9 @@ BK_TAR_EXTENSION="tar"
 BK_TAR_EXTRACT_ARGS="-xf"
 BK_BASE_DIR="/tmp"
 
-if [ -n "$BUILDKITE_PLUGIN_CACHE_TARBALL_PATH" ]; then
+if [ -n "${BUILDKITE_PLUGIN_CACHE_TARBALL_PATH:-}" ]; then
   # Override /tmp with given param
-  BK_BASE_DIR="$BUILDKITE_PLUGIN_CACHE_TARBALL_PATH"
+  BK_BASE_DIR="${BUILDKITE_PLUGIN_CACHE_TARBALL_PATH}"
 fi
 
 if [[ ! "$OSTYPE" == "darwin"* ]]; then
