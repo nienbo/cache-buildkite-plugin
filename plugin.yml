@@ -22,6 +22,10 @@ configuration:
         type: boolean
       class:
         type: string
+      endpoint:
+        type: string
+      region:
+        type: string
       args:
         type: string
     tarball:

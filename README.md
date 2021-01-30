@@ -1,4 +1,4 @@
-# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.3.8-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
+# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.3.9-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
 
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows*
@@ -42,7 +42,7 @@ variables defined in your agent. Content of the paths will be packed with `tar` 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.8:
+    - gencer/cache#v2.3.9:
         backend: s3
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         s3:
@@ -62,18 +62,19 @@ variables.
 
 ### S3-compatible Providers
 
-Use `args` field to pass host and region parameters to be able to use S3-compatible providers. For example: `args: "--endpoint-url=https://s3.nl-ams.scw.cloud"`
+Use `endpoint` and `region` fields to pass host and region parameters to be able to use S3-compatible providers. For example:
 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.8:
+    - gencer/cache#v2.3.9:
         backend: s3
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         s3:
-          bucket: "s3-compatible-bucket"
-          args: "--endpoint-url=https://s3.nl-ams.scw.cloud"
-          # If you strictly need to specify region, then use like this:
+          bucket: "s3-bucket"
+          endpoint: "https://s3.nl-ams.scw.cloud"
+          region: "nl-ams" # Optional. Defaults to `host` one.
+          # Alternative: If you strictly need to specify host and region manually, then use like this:
           # args: "--endpoint-url=https://s3.nl-ams.scw.cloud --region=nl-ams"
         paths:
           - 'Pods/'
@@ -105,7 +106,7 @@ You can also use rsync to store your files using the `rsync` backend. Files will
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.8:
+    - gencer/cache#v2.3.9:
         backend: rsync
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         rsync:
@@ -128,7 +129,7 @@ You can also use tarballs to store your files using the `tarball` backend. Files
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.8:
+    - gencer/cache#v2.3.9:
         backend: tarball
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         tarball:
@@ -158,7 +159,7 @@ Along with lock files, you can calculate directory that contains multiple files 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.8:
+    - gencer/cache#v2.3.9:
         backend: tarball
         key: "v1-cache-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
         tarball:
@@ -181,7 +182,7 @@ You can skip caching on Pull Requests (Merge Requests) by simply adding `pr: fal
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.8:
+    - gencer/cache#v2.3.9:
         backend: s3
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         pr: false # Default to `true` which is do cache on PRs.
@@ -223,13 +224,13 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - gencer/cache#v2.3.8: *cache
+      - gencer/cache#v2.3.9: *cache
   - name: ':istanbul: Run Istanbul'
     key: istanbul
     depends_on: jest
     command: .buildkite/steps/istanbul.sh
     plugins:
-      - gencer/cache#v2.3.8: *cache
+      - gencer/cache#v2.3.9: *cache
 ```
 
 ### Usage with docker
@@ -242,7 +243,7 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - gencer/cache#v2.3.8: # Define cache *before* docker plugins.
+      - gencer/cache#v2.3.9: # Define cache *before* docker plugins.
         backend: s3
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         pr: false

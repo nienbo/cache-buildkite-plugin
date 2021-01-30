@@ -1,3 +1,8 @@
+# v2.3.9
+
++ Add `endpoint` and `region` support to S3 backend. See README for this change.
++ Default path for `tarball` and `rsync` is now set to `/tmp`.
+
 # v2.3.8
 
 + Add $BK_AWS_ARGS to head-object call See #19.
