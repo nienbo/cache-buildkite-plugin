@@ -3,7 +3,7 @@
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows*
 
-&ast; Windows requires **Git for Windows 2.25 and later**.
+&ast; Windows requires **Git for Windows 2.25 or later**.
 
 
 A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) to restore and save
@@ -30,7 +30,7 @@ Available backends and their requirements:
 
 ### Windows Support
 
-If you install **Git for Windows 2.25 and later**, you will benefit all features of Cache on Windows. Make sure you've added `bash.exe` into your `PATH`.
+If you install **Git for Windows 2.25 or later**, you will benefit all features of Cache on Windows. Make sure you've added `bash.exe` into your `PATH`.
 
 &ast; Rsync on Windows requires https://itefix.net/cwrsync. To be clear, except `rsync`, you can use `s3` and `tarball` on Windows without an additional app.
 
