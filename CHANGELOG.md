@@ -1,3 +1,7 @@
+# v2.3.10
+
++ Don't upload unconditionally to S3. See #21.
+
 # v2.3.9
 
 + Add `endpoint` and `region` support to S3 backend. See README for this change.
