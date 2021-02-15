@@ -1,11 +1,25 @@
-version: "3.4"
+version: '3.7'
 services:
   tests:
     image: buildkite/plugin-tester
     volumes:
-      - ".:/plugin:ro"
+      - '.:/plugin:ro'
   lint:
     image: buildkite/plugin-linter
-    command: ["--id", "gencer/cache"]
+    command: ['--id', 'gencer/cache']
     volumes:
-      - ".:/plugin:ro"
+      - '.:/plugin:ro'
+  shellcheck:
+    image: koalaman/shellcheck-alpine:latest
+    working_dir: '/plugin'
+    command:
+      [
+        'shellcheck',
+        'lib/shared.bash',
+        'hooks/pre-command',
+        'hooks/post-command',
+        'lib/backends/s3.bash',
+        'lib/backends/tarball.bash',
+      ]
+    volumes:
+      - '.:/plugin'
