@@ -1,4 +1,4 @@
-name: buildkite-pipeline
+name: CI
 
 on:
   push:
