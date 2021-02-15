@@ -1,4 +1,4 @@
-# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.3.9-blue?style=flat-square)](https://buildkite.com/plugins) [![Build status](https://badge.buildkite.com/eb76936a02fe8d522fe8cc986c034a6a8d83c7ec75e607f7bb.svg)](https://buildkite.com/gencer/buildkite-cache)
+# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.3.10-blue?style=flat-square)](https://buildkite.com/plugins)
 
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows*
@@ -41,7 +41,7 @@ S3 backend uses **AWS CLI** v**1** or v**2** to copy and download from/to S3 buc
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.9:
+    - gencer/cache#v2.3.10:
         backend: s3
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         s3:
@@ -66,7 +66,7 @@ Use `endpoint` and `region` fields to pass host and region parameters to be able
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.9:
+    - gencer/cache#v2.3.10:
         backend: s3
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         s3:
@@ -117,11 +117,11 @@ You can also use rsync to store your files using the `rsync` backend. Files will
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.9:
+    - gencer/cache#v2.3.10:
         backend: rsync
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         rsync:
-          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.3.9+
+          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.3.10+
         paths:
           - 'Pods/'
           - 'Rome/'
@@ -140,11 +140,11 @@ You can also use tarballs to store your files using the `tarball` backend. Files
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.9:
+    - gencer/cache#v2.3.10:
         backend: tarball # Optional. Default `backend` is already set to `tarball` 
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         tarball:
-          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.3.9+
+          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.3.10+
           max: 7 # Optional. Removes tarballs older than 7 days.
           compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         paths:
@@ -170,11 +170,11 @@ Along with lock files, you can calculate directory that contains multiple files 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.9:
+    - gencer/cache#v2.3.10:
         backend: tarball # Optional. Default `backend` is already set to `tarball` 
         key: "v1-cache-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
         tarball:
-          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.3.9+
+          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.3.10+
           max: 7 # Optional. Removes tarballs older than 7 days. 
           compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         paths:
@@ -193,7 +193,7 @@ You can skip caching on Pull Requests (Merge Requests) by simply adding `pr: fal
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.9:
+    - gencer/cache#v2.3.10:
         backend: s3
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         pr: false # Default to `true` which is do cache on PRs.
@@ -235,13 +235,13 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - gencer/cache#v2.3.9: *cache
+      - gencer/cache#v2.3.10: *cache
   - name: ':istanbul: Run Istanbul'
     key: istanbul
     depends_on: jest
     command: .buildkite/steps/istanbul.sh
     plugins:
-      - gencer/cache#v2.3.9: *cache
+      - gencer/cache#v2.3.10: *cache
 ```
 
 ### Usage with docker
@@ -254,7 +254,7 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - gencer/cache#v2.3.9: # Define cache *before* docker plugins.
+      - gencer/cache#v2.3.10: # Define cache *before* docker plugins.
         backend: s3
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         pr: false
