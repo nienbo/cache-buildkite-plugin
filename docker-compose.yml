@@ -18,8 +18,8 @@ services:
         'lib/shared.bash',
         'hooks/pre-command',
         'hooks/post-command',
-        'lib/backends/s3.bash',
-        'lib/backends/tarball.bash',
       ]
+    # 'lib/backends/s3.bash',
+    # 'lib/backends/tarball.bash',
     volumes:
       - '.:/plugin'
