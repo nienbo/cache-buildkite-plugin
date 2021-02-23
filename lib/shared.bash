@@ -52,10 +52,12 @@ function expand_templates() {
 
 function cache_hit() {
   echo "🔥 Cache hit: $1"
+  export BUILDKITE_PLUGIN_CACHE_HIT="true"
 }
 
 function cache_restore_skip() {
   echo "🚨 Cache restore is skipped because $1 does not exist"
+  export BUILDKITE_PLUGIN_CACHE_HIT="false"
 }
 
 function source_locating() {
