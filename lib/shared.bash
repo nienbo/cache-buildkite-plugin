@@ -18,32 +18,39 @@ function expand_templates() {
   while [[ "$CACHE_KEY" =~ (.*)\{\{\ *(.*)\ *\}\}(.*) ]]; do
     TEMPLATE_VALUE="${BASH_REMATCH[2]}"
     EXPANDED_VALUE=""
-    if [[ $TEMPLATE_VALUE == "checksum "* ]]; then
+    case $TEMPLATE_VALUE in
+    "checksum "*)
       TARGET="$(echo -e "${TEMPLATE_VALUE/"checksum"/""}" | tr -d \' | tr -d \" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
       EXPANDED_VALUE=$(find "$TARGET" -type f -exec $HASHER_BIN {} \; | sort -k 2 | $HASHER_BIN | awk '{print $1}')
-    elif [[ $TEMPLATE_VALUE == "runner.os"* ]]; then
-      if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+      ;;
+    "git.branch"*)
+      EXPANDED_VALUE="${BUILDKITE_BRANCH}"
+      ;;
+    "git.commit"*)
+      EXPANDED_VALUE="${BUILDKITE_COMMIT}"
+      ;;
+    "runner.os"*)
+      case $OSTYPE in
+      "linux-gnu"* | "freebsd"*)
         OS="Linux"
-      elif [[ "$OSTYPE" == "darwin"* ]]; then
+        ;;
+      "darwin"*)
         OS="macOS"
-      elif [[ "$OSTYPE" == "cygwin" ]]; then
+        ;;
+      "cygwin" | "msys" | "win32" | "mingw"*)
         OS="Windows"
-      elif [[ "$OSTYPE" == "msys" ]]; then
-        OS="Windows"
-      elif [[ "$OSTYPE" == "win32" ]]; then
-        OS="Windows"
-      elif [[ "$OSTYPE" == "mingw"* ]]; then
-        OS="Windows"
-      elif [[ "$OSTYPE" == "freebsd"* ]]; then
-        OS="Linux" # FreeBSD but still Linux? Should we exclude FreeBSD?
-      else
+        ;;
+      *)
         OS="Generic"
-      fi
+        ;;
+      esac
       EXPANDED_VALUE="${OS}"
-    else
+      ;;
+    *)
       echo >&2 "Invalid template expression: $TEMPLATE_VALUE"
       return 1
-    fi
+      ;;
+    esac
     CACHE_KEY="${BASH_REMATCH[1]}${EXPANDED_VALUE}${BASH_REMATCH[3]}"
   done
 
@@ -56,6 +63,10 @@ function cache_hit() {
 
 function cache_restore_skip() {
   echo "🚨 Cache restore is skipped because $1 does not exist"
+}
+
+function error() {
+  echo "🚨 $1"
 }
 
 function source_locating() {

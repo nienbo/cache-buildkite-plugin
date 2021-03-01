@@ -1,4 +1,4 @@
-# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.3.10-blue?style=flat-square)](https://buildkite.com/plugins)
+# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.4.0-blue?style=flat-square)](https://buildkite.com/plugins) [![CI](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml)
 
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows*
@@ -22,17 +22,23 @@ Please see `lib/backends/*.sh` for available backends. You can fork, add your ba
 
 Available backends and their requirements:
 
-| **Backend** | **Linux (GNU)**                             | **macOS (BSD)**                             | **Windows**    |
-| ----------- | ------------------------------------------- | ------------------------------------------- | -------------- |
-| `tarball`   | tar<br />sha1sum                            | tar<br />shasum                             | Same as Linux  |
-| `rsync`     | rsync<br />sha1sum                          | rsync <br />shasum                          | Same as Linux* |
-| `s3`        | aws-cli (`>= 1, ~> 2`)<br />tar<br/>sha1sum | aws-cli (`>= 1, ~> 2`)<br />tar<br />shasum | Same as Linux  |
+| **Backend** | **Linux (GNU)**                                     | **macOS (BSD)**                                     | **Windows**    |
+| ----------- | --------------------------------------------------- | --------------------------------------------------- | -------------- |
+| `tarball`   | tar<br />sha1sum<br />jq                            | tar<br />shasum<br />jq                             | Same as Linux  |
+| `rsync`     | rsync<br />sha1sum                                  | rsync <br />shasum                                  | Same as Linux* |
+| `s3`        | aws-cli (`>= 1, ~> 2`)<br />tar<br/>sha1sum<br />jq | aws-cli (`>= 1, ~> 2`)<br />tar<br />shasum<br />jq | Same as Linux  |
 
 ### Windows Support
 
 If you install **Git for Windows 2.25 or later**, you will benefit all features of Cache on Windows. Make sure you've added `bash.exe` into your `PATH`.
 
 &ast; Rsync on Windows requires https://itefix.net/cwrsync. To be clear, except `rsync`, you can use `s3` and `tarball` on Windows without an additional app.
+
+For `restore-keys` support, please download `jq` and add it to the `PATH`: https://stedolan.github.io/jq/download/
+
+### jq
+
+To `restore-keys` support works, you need `jq` command available in your `PATH`. Buildkite AWS EC2 Stack already has `jq` installed by default. But, If you use custom environment or Windows, please install `jq` or stick with `key` only.
 
 # S3
 
@@ -41,9 +47,12 @@ S3 backend uses **AWS CLI** v**1** or v**2** to copy and download from/to S3 buc
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.10:
+    - gencer/cache#v2.4.0:
         backend: s3
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
+        restore-keys:
+          - 'v1-cache-{{ runner.os }}-'
+          - 'v1-cache-'
         s3:
           profile: "other-profile" # Optional. Defaults to `default`.
           bucket: "s3-bucket"
@@ -66,9 +75,12 @@ Use `endpoint` and `region` fields to pass host and region parameters to be able
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.10:
+    - gencer/cache#v2.4.0:
         backend: s3
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
+        restore-keys:
+          - 'v1-cache-{{ runner.os }}-'
+          - 'v1-cache-'
         s3:
           bucket: "s3-bucket"
           endpoint: "https://s3.nl-ams.scw.cloud"
@@ -117,11 +129,11 @@ You can also use rsync to store your files using the `rsync` backend. Files will
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.10:
+    - gencer/cache#v2.4.0:
         backend: rsync
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         rsync:
-          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.3.10+
+          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.0+
         paths:
           - 'Pods/'
           - 'Rome/'
@@ -140,11 +152,11 @@ You can also use tarballs to store your files using the `tarball` backend. Files
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.10:
+    - gencer/cache#v2.4.0:
         backend: tarball # Optional. Default `backend` is already set to `tarball` 
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         tarball:
-          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.3.10+
+          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.0+
           max: 7 # Optional. Removes tarballs older than 7 days.
           compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         paths:
@@ -163,6 +175,15 @@ the only command supported for now. It can be used as in the example above. In t
 the cache key will be determined by executing a _checksum_ (actually `sha1sum`) on the
 `Gemfile.lock` file, prepended with `v1-cache-{{ runner.os }}-`.
 
+#### Supported templates:
+
+| **Template**                                                | **Translated**                                                                     |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `runner.os`                                                 | **One of**:<br />Windows<br />Linux<br />macOS<br />Generic                        |
+| `checksum 'file_name'` - or -<br />`checksum './directory'` | File: sha1 of that file<br />Directory: **sorted** hashing of the whole directory. |
+| `git.branch`                                                | For example: `master`.<br />Derived from `${BUILDKITE_BRANCH}`                     |
+| `git.commit`                                                | For example: `9576a34...`. (Full SHA).<br />Derived from `${BUILDKITE_COMMIT}`     |
+
 ### Hashing (checksum) against directory
 
 Along with lock files, you can calculate directory that contains multiple files or recursive directories and files.
@@ -170,11 +191,11 @@ Along with lock files, you can calculate directory that contains multiple files 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.10:
+    - gencer/cache#v2.4.0:
         backend: tarball # Optional. Default `backend` is already set to `tarball` 
         key: "v1-cache-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
         tarball:
-          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.3.10+
+          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.0+
           max: 7 # Optional. Removes tarballs older than 7 days. 
           compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         paths:
@@ -193,9 +214,12 @@ You can skip caching on Pull Requests (Merge Requests) by simply adding `pr: fal
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.3.10:
+    - gencer/cache#v2.4.0:
         backend: s3
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
+        restore-keys:
+          - 'v1-cache-{{ runner.os }}-'
+          - 'v1-cache-'
         pr: false # Default to `true` which is do cache on PRs.
         s3:
           profile: "other-profile" # Optional. Defaults to `default`.
@@ -221,6 +245,9 @@ export BUILDKITE_PLUGIN_CACHE_PR=false
 ```yaml
 cache: &cache
   key: "v1-cache-{{ runner.os }}-{{ checksum 'yarn.lock' }}"
+  restore-keys:
+    - 'v1-cache-{{ runner.os }}-'
+    - 'v1-cache-'
   backend: s3
   pr: false
   s3:
@@ -235,13 +262,13 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - gencer/cache#v2.3.10: *cache
+      - gencer/cache#v2.4.0: *cache
   - name: ':istanbul: Run Istanbul'
     key: istanbul
     depends_on: jest
     command: .buildkite/steps/istanbul.sh
     plugins:
-      - gencer/cache#v2.3.10: *cache
+      - gencer/cache#v2.4.0: *cache
 ```
 
 ### Usage with docker
@@ -254,9 +281,12 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - gencer/cache#v2.3.10: # Define cache *before* docker plugins.
+      - gencer/cache#v2.4.0: # Define cache *before* docker plugins.
         backend: s3
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
+        restore-keys:
+          - 'v1-cache-{{ runner.os }}-'
+          - 'v1-cache-'
         pr: false
         s3:
           bucket: s3-bucket

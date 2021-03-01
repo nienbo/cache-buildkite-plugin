@@ -56,17 +56,47 @@ fi
 
 function restore() {
   TAR_FILE="${CACHE_KEY}.${BK_TAR_EXTENSION}"
-  BUCKET="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
   TKEY="${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
+  BUCKET="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}/${TKEY}"
+  BK_AWS_FOUND=false
 
   aws s3api head-object --bucket "${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}" --key "${TKEY}/${TAR_FILE}" $BK_AWS_ARGS || no_head=true
 
   if ${no_head:-false}; then
-    cache_restore_skip "s3://${BUCKET}/${TAR_FILE}"
+    # Check `jq` first
+    if command -v jq &>/dev/null; then
+      # Now, lets try one of the restore keys...
+      if [ "${#keys[@]}" -gt 0 ]; then
+        for key in "${keys[@]}"; do
+          key="$(expand_templates "${key}")"
+          echo "🔍 Looking using restore-key: ${key}"
+          PKEY=$(aws s3api list-objects --bucket "${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}" $BK_AWS_ARGS --prefix="${TKEY}/${key}" --query 'Contents[].{Key: Key, LastModified: LastModified}' | jq 'try(. |= sort_by(.LastModified)  |  first(reverse[]) | .["Key"]) catch "NULL"')
+          PKEY="${PKEY%\"}"
+          PKEY="${PKEY#\"}"
+          if [ "${PKEY}" == "NULL" ]; then
+            continue
+          else
+            # Actually, we can use PKEY as-is. But we still need the only last part of the key.
+            TAR_FILE="${PKEY##*/}"
+            BK_AWS_FOUND=true
+            cache_hit "s3://${BUCKET}/${TAR_FILE} by using restore key: ${key}"
+            break
+          fi
+        done
+      fi
+    else
+      error "'jq' command not found. 'restore-keys' will be discarded."
+    fi
   else
+    BK_AWS_FOUND=true
     cache_hit "s3://${BUCKET}/${TAR_FILE}"
+  fi
+
+  if [[ ! "${BK_AWS_FOUND}" =~ (false) ]]; then
     aws s3 cp $BK_AWS_ARGS "s3://${BUCKET}/${TAR_FILE}" .
     tar ${BK_TAR_EXTRACT_ARGS} "${TAR_FILE}" -C .
+  else
+    cache_restore_skip "s3://${BUCKET}/${TAR_FILE}"
   fi
 }
 

@@ -9,6 +9,8 @@ configuration:
   properties:
     key:
       type: string
+    restore-keys:
+      type: [string, array]
     backend:
       type: string
     pr:

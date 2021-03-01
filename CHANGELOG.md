@@ -1,3 +1,8 @@
+# v2.4.0
+
++ `restore-keys` support for incremental cache and key lookup. **Requires** `jq`. See #20.
++ `git.commit` and `git.branch` support in cache key templates. See README.
+
 # v2.3.10
 
 + Don't upload unconditionally to S3. See #21.
