@@ -17,8 +17,8 @@ Plus, In addition to tarball & rsync, we also do not re-create another tarball f
 
 
 - [Backends](#backends)
-      - [Windows Support](#windows-support)
-      - [jq](#jq)
+  - [Windows Support](#windows-support)
+  - [jq](#jq)
   - [S3](#s3)
     - [S3-compatible Providers](#s3-compatible-providers)
     - [Storage Class](#storage-class)
@@ -48,7 +48,7 @@ Available backends and their requirements:
 | `rsync`     | rsync<br />sha1sum                                  | rsync <br />shasum                                  | Same as Linux* |
 | `s3`        | aws-cli (`>= 1, ~> 2`)<br />tar<br/>sha1sum<br />jq | aws-cli (`>= 1, ~> 2`)<br />tar<br />shasum<br />jq | Same as Linux  |
 
-#### Windows Support
+## Windows Support
 
 If you install **Git for Windows 2.25 or later**, you will benefit all features of Cache on Windows. Make sure you've added `bash.exe` into your `PATH`.
 
@@ -56,7 +56,7 @@ If you install **Git for Windows 2.25 or later**, you will benefit all features 
 
 For `restore-keys` support, please download `jq` and add it to the `PATH`: https://stedolan.github.io/jq/download/
 
-#### jq
+## jq
 
 To `restore-keys` support works, you need `jq` command available in your `PATH`. Buildkite AWS EC2 Stack already has `jq` installed by default. But, If you use custom environment or Windows, please install `jq` or stick with `key` only.
 
