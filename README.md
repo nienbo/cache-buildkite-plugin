@@ -56,7 +56,7 @@ For `restore-keys` support, please download `jq` and add it to the `PATH`: https
 
 ### jq <!-- omit in toc -->
 
-To `restore-keys` support works, you need `jq` command available in your `PATH`. Buildkite **AWS EC2 Elastic Stack** already has `jq` installed by default. But, If you use custom environment or on Windows, please install `jq` (or `jq.exe`) first or stick with `key` only. If no `jq` found on your system, even if you provide restore-keys, it will be silently discarded.
+To `restore-keys` support works, you need `jq` command available in your `PATH`. Buildkite **AWS EC2 Elastic Stack** already has `jq` installed by default. But, If you use custom environment or on Windows, please install `jq` (or `jq.exe`) first or stick with `key` only. If no `jq` found on your system, even if you provide restore-keys, it will be silently discarded. **You do not need `jq` if you are not using `s3` backend.**
 
 ## S3
 
@@ -263,7 +263,7 @@ steps:
 
 Or you can set this by Environment:
 
-```
+```bash
 #!/bin/bash
 
 export BUILDKITE_PLUGIN_CACHE_PR=false
@@ -337,7 +337,9 @@ You can use glob pattern in paths (to be cached) after `v2.1.x`
 
 # Roadmap
 
-+ Google Cloud Cache Support.
++ Google Cloud Storage support.
++ BitPaket Easy Storage support.
++ Azure Blob Storage support.
 
 Original work by [@danthorpe](https://github.com/danthorpe/cache-buildkite-plugin)
 
