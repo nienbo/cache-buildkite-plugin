@@ -155,6 +155,9 @@ steps:
     - gencer/cache#v2.4.0:
         backend: tarball # Optional. Default `backend` is already set to `tarball` 
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
+        restore-keys:
+          - 'v1-cache-{{ runner.os }}-'
+          - 'v1-cache-'
         tarball:
           path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.0+
           max: 7 # Optional. Removes tarballs older than 7 days.
@@ -194,6 +197,9 @@ steps:
     - gencer/cache#v2.4.0:
         backend: tarball # Optional. Default `backend` is already set to `tarball` 
         key: "v1-cache-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
+        restore-keys:
+          - 'v1-cache-{{ runner.os }}-'
+          - 'v1-cache-'
         tarball:
           path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.0+
           max: 7 # Optional. Removes tarballs older than 7 days. 
