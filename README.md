@@ -56,11 +56,13 @@ For `restore-keys` support, please download `jq` and add it to the `PATH`: https
 
 ### jq <!-- omit in toc -->
 
-To `restore-keys` support works, you need `jq` command available in your `PATH`. Buildkite AWS EC2 Stack already has `jq` installed by default. But, If you use custom environment or Windows, please install `jq` or stick with `key` only.
+To `restore-keys` support works, you need `jq` command available in your `PATH`. Buildkite **AWS EC2 Elastic Stack** already has `jq` installed by default. But, If you use custom environment or on Windows, please install `jq` (or `jq.exe`) first or stick with `key` only. If no `jq` found on your system, even if you provide restore-keys, it will be silently discarded.
 
 ## S3
 
 S3 backend uses **AWS CLI** v**1** or v**2** to copy and download from/to S3 bucket or s3-compatible bucket. To be precisely, backend simply uses `aws s3 cp` command for all operations. Before that, we do `head-object` to check existence of the cache key on target bucket. While tarball is the default backend, S3 backend is heavily tested and ready for use in production. See some examples below for S3 backend.
+
+**As of v2.4.0, this is the Recommended backend for cache**
 
 ```yml
 steps:
@@ -165,7 +167,9 @@ agents/builds.
 
 You can also use tarballs to store your files using the `tarball` backend. Files will not be compressed but surely packed into single archive.
 
-**This is the Default and Recommended backend for cache**
+*As of v2.4.0, tarball is no longer recommended backend. Especially but not limited to If you are on AWS Elastic Stack, please use S3 backend.*
+
+**tarball is still the default backend.**
 
 ```yml
 steps:
