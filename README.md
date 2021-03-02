@@ -1,4 +1,4 @@
-# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.4.0-blue?style=flat-square)](https://buildkite.com/plugins) [![CI](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml)  <!-- omit in toc -->
+# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.4.0-blue?style=flat-square)](https://buildkite.com/plugins) [![CI](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml) <!-- omit in toc -->
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows* <!-- omit in toc -->
 
@@ -17,8 +17,6 @@ Plus, In addition to tarball & rsync, we also do not re-create another tarball f
 
 
 - [Backends](#backends)
-  - [Windows Support](#windows-support)
-  - [jq](#jq)
   - [S3](#s3)
     - [S3-compatible Providers](#s3-compatible-providers)
     - [Storage Class](#storage-class)
@@ -26,14 +24,14 @@ Plus, In addition to tarball & rsync, we also do not re-create another tarball f
   - [rsync](#rsync)
   - [tarball](#tarball)
 - [Configurations](#configurations)
-    - [Cache Key Templates](#cache-key-templates)
-      - [Supported templates](#supported-templates)
-    - [Hashing (checksum) against directory](#hashing-checksum-against-directory)
-    - [Skip Cache on PRs](#skip-cache-on-prs)
-    - [Multiple usages in same pipeline](#multiple-usages-in-same-pipeline)
-    - [Usage with docker](#usage-with-docker)
-    - [Auto deletion old caches](#auto-deletion-old-caches)
-    - [Globs on paths](#globs-on-paths)
+  - [Cache Key Templates](#cache-key-templates)
+    - [Supported templates](#supported-templates)
+  - [Hashing (checksum) against directory](#hashing-checksum-against-directory)
+  - [Skip Cache on PRs](#skip-cache-on-prs)
+  - [Multiple usages in same pipeline](#multiple-usages-in-same-pipeline)
+  - [Usage with docker](#usage-with-docker)
+  - [Auto deletion old caches](#auto-deletion-old-caches)
+  - [Globs on paths](#globs-on-paths)
 - [Roadmap](#roadmap)
 
 # Backends
@@ -48,7 +46,7 @@ Available backends and their requirements:
 | `rsync`     | rsync<br />sha1sum                                  | rsync <br />shasum                                  | Same as Linux* |
 | `s3`        | aws-cli (`>= 1, ~> 2`)<br />tar<br/>sha1sum<br />jq | aws-cli (`>= 1, ~> 2`)<br />tar<br />shasum<br />jq | Same as Linux  |
 
-## Windows Support
+### Windows Support  <!-- omit in toc -->
 
 If you install **Git for Windows 2.25 or later**, you will benefit all features of Cache on Windows. Make sure you've added `bash.exe` into your `PATH`.
 
@@ -56,7 +54,7 @@ If you install **Git for Windows 2.25 or later**, you will benefit all features 
 
 For `restore-keys` support, please download `jq` and add it to the `PATH`: https://stedolan.github.io/jq/download/
 
-## jq
+### jq <!-- omit in toc -->
 
 To `restore-keys` support works, you need `jq` command available in your `PATH`. Buildkite AWS EC2 Stack already has `jq` installed by default. But, If you use custom environment or Windows, please install `jq` or stick with `key` only.
 
@@ -192,14 +190,14 @@ cache directory, even though this cache is not shared between servers, it can be
 agents/builds.
 
 # Configurations
-### Cache Key Templates
+## Cache Key Templates
 
 The cache key is a string, which support a crude template system. Currently `checksum` is
 the only command supported for now. It can be used as in the example above. In this case
 the cache key will be determined by executing a _checksum_ (actually `sha1sum`) on the
 `Gemfile.lock` file, prepended with `v1-cache-{{ runner.os }}-`.
 
-#### Supported templates
+### Supported templates
 
 | **Template**                                                | **Translated**                                                                     |
 | ----------------------------------------------------------- | ---------------------------------------------------------------------------------- |
@@ -208,7 +206,7 @@ the cache key will be determined by executing a _checksum_ (actually `sha1sum`) 
 | `git.branch`                                                | For example: `master`.<br />Derived from `${BUILDKITE_BRANCH}`                     |
 | `git.commit`                                                | For example: `9576a34...`. (Full SHA).<br />Derived from `${BUILDKITE_COMMIT}`     |
 
-### Hashing (checksum) against directory
+## Hashing (checksum) against directory
 
 Along with lock files, you can calculate directory that contains multiple files or recursive directories and files.
 
@@ -234,7 +232,7 @@ For example, you can calculate total checksum of your javascript folder to skip 
 
 Note: Before hashing files, we do "sort". This provides exact same sorted and hashed content against very same directory between builds.
 
-### Skip Cache on PRs
+## Skip Cache on PRs
 
 You can skip caching on Pull Requests (Merge Requests) by simply adding `pr: false` to the cache plugin. For example;
 
@@ -267,7 +265,7 @@ Or you can set this by Environment:
 export BUILDKITE_PLUGIN_CACHE_PR=false
 ```
 
-### Multiple usages in same pipeline
+## Multiple usages in same pipeline
 
 ```yaml
 cache: &cache
@@ -298,7 +296,7 @@ steps:
       - gencer/cache#v2.4.0: *cache
 ```
 
-### Usage with docker
+## Usage with docker
 
 Put cache plugin **before** `docker` or `docker-compose` plugins. Let's cache do the rest restoring and caching afterwards.
 
@@ -323,13 +321,13 @@ steps:
       - docker-compose#3.7.0: ~ # Or compose. Use your config here
 ```
 
-### Auto deletion old caches
+## Auto deletion old caches
 
 To keep caches and delete them in _for example_ 7 days, use tarball backend and use `max`. On S3 side, please use S3 Policy for this routine. Each uploaded file to S3 will be deleted according to your file deletion policy.
 
 **For S3**, Due to expiration policy, we just re-upload the same tarball to refresh expiration date. As long as you use the same cache, S3 will not delete it. Otherwise, It will be deleted from S3-side not used in a manner time.
 
-### Globs on paths
+## Globs on paths
 
 You can use glob pattern in paths (to be cached) after `v2.1.x`
 
