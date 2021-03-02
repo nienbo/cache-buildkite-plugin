@@ -1,10 +1,8 @@
-# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.4.0-blue?style=flat-square)](https://buildkite.com/plugins) [![CI](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml)
+# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.4.0-blue?style=flat-square)](https://buildkite.com/plugins) [![CI](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml)  <!-- omit in toc -->
 
-
-### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows*
+### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows* <!-- omit in toc -->
 
 &ast; Windows requires **Git for Windows 2.25 or later**.
-
 
 A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) to restore and save
 directories by cache keys. For example, use the checksum of a `.resolved` or `.lock` file
@@ -15,6 +13,28 @@ With tarball or rsync, if source folder has changes, this will not fail your bui
 For S3, Instead of sync thousands of files, It just creates a tarball before S3 operation then copy this tarball to s3 at one time. This will reduce both time and cost on AWS billing.
 
 Plus, In addition to tarball & rsync, we also do not re-create another tarball for same cache key if it's already exists.
+<br /><br />
+
+
+- [Backends](#backends)
+      - [Windows Support](#windows-support)
+      - [jq](#jq)
+  - [S3](#s3)
+    - [S3-compatible Providers](#s3-compatible-providers)
+    - [Storage Class](#storage-class)
+    - [Additional Arguments](#additional-arguments)
+  - [rsync](#rsync)
+  - [tarball](#tarball)
+- [Configurations](#configurations)
+    - [Cache Key Templates](#cache-key-templates)
+      - [Supported templates](#supported-templates)
+    - [Hashing (checksum) against directory](#hashing-checksum-against-directory)
+    - [Skip Cache on PRs](#skip-cache-on-prs)
+    - [Multiple usages in same pipeline](#multiple-usages-in-same-pipeline)
+    - [Usage with docker](#usage-with-docker)
+    - [Auto deletion old caches](#auto-deletion-old-caches)
+    - [Globs on paths](#globs-on-paths)
+- [Roadmap](#roadmap)
 
 # Backends
 
@@ -28,7 +48,7 @@ Available backends and their requirements:
 | `rsync`     | rsync<br />sha1sum                                  | rsync <br />shasum                                  | Same as Linux* |
 | `s3`        | aws-cli (`>= 1, ~> 2`)<br />tar<br/>sha1sum<br />jq | aws-cli (`>= 1, ~> 2`)<br />tar<br />shasum<br />jq | Same as Linux  |
 
-### Windows Support
+#### Windows Support
 
 If you install **Git for Windows 2.25 or later**, you will benefit all features of Cache on Windows. Make sure you've added `bash.exe` into your `PATH`.
 
@@ -36,11 +56,11 @@ If you install **Git for Windows 2.25 or later**, you will benefit all features 
 
 For `restore-keys` support, please download `jq` and add it to the `PATH`: https://stedolan.github.io/jq/download/
 
-### jq
+#### jq
 
 To `restore-keys` support works, you need `jq` command available in your `PATH`. Buildkite AWS EC2 Stack already has `jq` installed by default. But, If you use custom environment or Windows, please install `jq` or stick with `key` only.
 
-# S3
+## S3
 
 S3 backend uses **AWS CLI** v**1** or v**2** to copy and download from/to S3 bucket or s3-compatible bucket. To be precisely, backend simply uses `aws s3 cp` command for all operations. Before that, we do `head-object` to check existence of the cache key on target bucket. While tarball is the default backend, S3 backend is heavily tested and ready for use in production. See some examples below for S3 backend.
 
@@ -122,7 +142,7 @@ You can pass `args` argument with required options. This arguments will be added
 
 However, If you do not specify `profile`, `endpoint`, `region` and `class` via YAML configuration, then you can pass those arguments to the `args`.
 
-# rsync
+## rsync
 
 You can also use rsync to store your files using the `rsync` backend. Files will neither compressed nor packed.
 
@@ -143,7 +163,7 @@ The paths are synced using `rsync_path/cache_key/path`. This is useful for maint
 cache directory, even though this cache is not shared between servers, it can be reused by different
 agents/builds.
 
-# tarball
+## tarball
 
 You can also use tarballs to store your files using the `tarball` backend. Files will not be compressed but surely packed into single archive.
 
@@ -171,6 +191,7 @@ The paths are synced using `tarball_path/cache_key.tar`. This is useful for main
 cache directory, even though this cache is not shared between servers, it can be reused by different
 agents/builds.
 
+# Configurations
 ### Cache Key Templates
 
 The cache key is a string, which support a crude template system. Currently `checksum` is
@@ -178,7 +199,7 @@ the only command supported for now. It can be used as in the example above. In t
 the cache key will be determined by executing a _checksum_ (actually `sha1sum`) on the
 `Gemfile.lock` file, prepended with `v1-cache-{{ runner.os }}-`.
 
-#### Supported templates:
+#### Supported templates
 
 | **Template**                                                | **Translated**                                                                     |
 | ----------------------------------------------------------- | ---------------------------------------------------------------------------------- |
@@ -312,7 +333,7 @@ To keep caches and delete them in _for example_ 7 days, use tarball backend and 
 
 You can use glob pattern in paths (to be cached) after `v2.1.x`
 
-## Roadmap
+# Roadmap
 
 + Google Cloud Cache Support.
 
