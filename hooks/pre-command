@@ -31,6 +31,18 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_KEY:-}" ]]; then
 
   CACHE_KEY="$(expand_templates "$BUILDKITE_PLUGIN_CACHE_KEY")"
 
+  keys=()
+
+  if [[ -n "${BUILDKITE_PLUGIN_CACHE_RESTORE_KEYS:-}" ]]; then
+    keys+=("$BUILDKITE_PLUGIN_CACHE_RESTORE_KEYS")
+  fi
+
+  while IFS='=' read -r key _; do
+    if [[ $key =~ ^(BUILDKITE_PLUGIN_CACHE_RESTORE_KEYS_[0-9]+) ]]; then
+      keys+=("${!key}")
+    fi
+  done < <(env | sort)
+
   echo "🔍 Looking for $CACHE_KEY"
 
   if [ -f "$BK_CACHE_BASEDIR/lib/backends/$BK_CACHE_BACKEND.bash" ]; then

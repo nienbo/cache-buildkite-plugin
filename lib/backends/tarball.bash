@@ -43,10 +43,42 @@ function restore() {
   CACHE_PREFIX="${BK_BASE_DIR}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
   mkdir -p "${CACHE_PREFIX}/${BUILDKITE_PIPELINE_SLUG}"
   TAR_FILE="${CACHE_PREFIX}/${CACHE_KEY}.${BK_TAR_EXTENSION}"
+  BK_TAR_FOUND=false
 
   if [ -f "$TAR_FILE" ]; then
+    BK_TAR_FOUND=true
     cache_hit "tar://${TAR_FILE}"
+  else
+    # Now, lets try one of the restore keys...
+    if [ "${#keys[@]}" -gt 0 ]; then
+      for key in "${keys[@]}"; do
+        key="$(expand_templates "${key}")"
+        echo "🔍 Looking using restore-key: ${key}"
+        search_for="${CACHE_PREFIX}/${key}*"
+        PKEY=""
+        for f in $search_for; do
+          [[ -d $f ]] && continue
+          [[ $f -nt $PKEY ]] && PKEY=$f
+        done
+        PKEY="${PKEY%\"}"
+        PKEY="${PKEY#\"}"
+        if [ "${PKEY}" == "" ]; then
+          continue
+        else
+          # Actually, we can use PKEY as-is. But we still need the only last part of the key.
+          TAR_FILE="${PKEY##*/}"
+          BK_TAR_FOUND=true
+          cache_hit "tar://${TAR_FILE} by using restore key: ${key}"
+          break
+        fi
+      done
+    fi
+  fi
+
+  if [[ ! "${BK_TAR_FOUND}" =~ (false) ]]; then
     tar ${BK_TAR_EXTRACT_ARGS} "${TAR_FILE}" -C .
+  else
+    cache_restore_skip "tar://${TAR_FILE}"
   fi
 }
 
