@@ -147,7 +147,7 @@ steps:
 However, as GCS does not support multipart uploads, it is required to disable this in the AWS CLI. This
 can be done in a variety of ways, but a simple approach is using a `pre-command` hook:
 
-```
+```bash
 # The AWS CLI is used for uploading cached deps to GCS. Multipart uploads need
 # to be disabled as they don't work in GCS but the only way to disable them is
 # to just set a very high threshold
