@@ -19,6 +19,7 @@ Plus, In addition to tarball & rsync, we also do not re-create another tarball f
 - [Backends](#backends)
   - [S3](#s3)
     - [S3-compatible Providers](#s3-compatible-providers)
+    - [Google Cloud Storage Interoperability](#google-cloud-storage-interoperability)
     - [Storage Class](#storage-class)
     - [Additional Arguments](#additional-arguments)
   - [rsync](#rsync)
@@ -120,6 +121,40 @@ export BUILDKITE_PLUGIN_CACHE_S3_ENDPOINT="https://s3.nl-ams.scw.cloud"
 export BUILDKITE_PLUGIN_CACHE_S3_REGION="nl-ams"
 ```
 
+### Google Cloud Storage Interoperability
+
+Though native Google Cloud Storage is on the roadmap, it is possible to use
+this plugin via [Google Cloud Storage interoperability](https://cloud.google.com/storage/docs/interoperability).
+
+Enabling this interoperability in Google Cloud Storage will generate the respective HMAC keys that are equivalent to the
+`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. An example configuration is:
+
+```yml
+steps:
+  - plugins:
+    - gencer/cache#v2.4.0:
+        key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
+        restore-keys:
+          - 'v1-cache-{{ runner.os }}-'
+          - 'v1-cache-'
+        backend: s3
+        s3:
+          bucket: 'gcs-bucket'
+          args: '--endpoint-url=https://storage.googleapis.com --region=us-east1'
+          compress: true
+```
+
+However, as GCS does not support multipart uploads, it is required to disable this in the AWS CLI. This
+can be done in a variety of ways, but a simple approach is using a `pre-command` hook:
+
+```
+# The AWS CLI is used for uploading cached deps to GCS. Multipart uploads need
+# to be disabled as they don't work in GCS but the only way to disable them is
+# to just set a very high threshold
+echo '--- :aws: Disable multipart uploads in AWS CLI'
+aws configure set default.s3.multipart_threshold 5GB
+```
+
 ### Storage Class
 
 You can pass `class` option for the following classes:
@@ -175,7 +210,7 @@ You can also use tarballs to store your files using the `tarball` backend. Files
 steps:
   - plugins:
     - gencer/cache#v2.4.0:
-        backend: tarball # Optional. Default `backend` is already set to `tarball` 
+        backend: tarball # Optional. Default `backend` is already set to `tarball`
         key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
         restore-keys:
           - 'v1-cache-{{ runner.os }}-'
@@ -218,14 +253,14 @@ Along with lock files, you can calculate directory that contains multiple files 
 steps:
   - plugins:
     - gencer/cache#v2.4.0:
-        backend: tarball # Optional. Default `backend` is already set to `tarball` 
+        backend: tarball # Optional. Default `backend` is already set to `tarball`
         key: "v1-cache-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
         restore-keys:
           - 'v1-cache-{{ runner.os }}-'
           - 'v1-cache-'
         tarball:
           path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.0+
-          max: 7 # Optional. Removes tarballs older than 7 days. 
+          max: 7 # Optional. Removes tarballs older than 7 days.
           compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         paths:
           - 'Pods/'
