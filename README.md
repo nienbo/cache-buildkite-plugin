@@ -238,12 +238,13 @@ the cache key will be determined by executing a _checksum_ (actually `sha1sum`) 
 
 ### Supported templates
 
-| **Template**                                                | **Translated**                                                                     |
-| ----------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `runner.os`                                                 | **One of**:<br />Windows<br />Linux<br />macOS<br />Generic                        |
+| **Template**                                                | **Translated**                                               |
+| ----------------------------------------------------------- | ------------------------------------------------------------ |
+| `id`                                                        | `id` of your cache. Defaults to **empty**.                   |
+| `runner.os`                                                 | **One of**:<br />Windows<br />Linux<br />macOS<br />Generic  |
 | `checksum 'file_name'` - or -<br />`checksum './directory'` | File: sha1 of that file<br />Directory: **sorted** hashing of the whole directory. |
-| `git.branch`                                                | For example: `master`.<br />Derived from `${BUILDKITE_BRANCH}`                     |
-| `git.commit`                                                | For example: `9576a34...`. (Full SHA).<br />Derived from `${BUILDKITE_COMMIT}`     |
+| `git.branch`                                                | For example: `master`.<br />Derived from `${BUILDKITE_BRANCH}` |
+| `git.commit`                                                | For example: `9576a34...`. (Full SHA).<br />Derived from `${BUILDKITE_COMMIT}` |
 
 ## Hashing (checksum) against directory
 
