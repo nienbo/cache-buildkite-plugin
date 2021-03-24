@@ -1,3 +1,7 @@
+# v2.4.1
+
++ Added `id` support to identify cache's by ID.
+
 # v2.4.0
 
 + `restore-keys` support for incremental cache and key lookup. **Requires** `jq`. See #20.

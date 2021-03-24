@@ -7,6 +7,8 @@ requirements:
   - rsync
 configuration:
   properties:
+    id:
+      type: string
     key:
       type: string
     restore-keys:

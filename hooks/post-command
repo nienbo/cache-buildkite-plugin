@@ -7,22 +7,32 @@
 set -euo pipefail
 
 BK_CACHE_BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
+BK_CACHE_ID=""
+BK_LOG_PREFIX="(*) - "
+
 . "$BK_CACHE_BASEDIR/lib/shared.bash"
 
-echo -e "~~~ :bash: Processing Post-Cache..."
+if [[ -n "${BK_CACHE_ID:-}" ]]; then
+  BK_CACHE_ID="${BUILDKITE_PLUGIN_CACHE_ID:-}"
+  BK_LOG_PREFIX="(${BK_CACHE_ID}) - "
+  echo -e "~~~ :bash: Processing Post-Cache for \033[33m$BK_CACHE_ID\033[0m"
+else
+  echo -e "~~~ :bash: Processing Post-Cache..."
+  echo "Please use 'id' key to identify caches"
+fi
 
 if [[ "${BUILDKITE_PLUGIN_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
   set -x
 fi
 
 if [ "${BUILDKITE_COMMAND_EXIT_STATUS}" -ne 0 ]; then
-  echo "--- 🚨 Cache is skipped because step returned ${BUILDKITE_COMMAND_EXIT_STATUS}"
+  echo "--- ${BK_LOG_PREFIX}🚨 Cache is skipped because step returned ${BUILDKITE_COMMAND_EXIT_STATUS}"
   exit 0
 fi
 
 if [[ "${BUILDKITE_PLUGIN_CACHE_PR:-true}" =~ (false|off|0) ]]; then
   if [[ ! "${BUILDKITE_PULL_REQUEST:-false}" =~ (false) ]]; then
-    echo "PR Detected. Skipping..."
+    echo "${BK_LOG_PREFIX}PR Detected. Skipping..."
     exit 0
   fi
 fi
@@ -51,10 +61,10 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_KEY:-}" ]]; then
     . "$BK_CACHE_BASEDIR/lib/backends/$BK_CACHE_BACKEND.bash"
     cache
   else
-    echo "🚨 $BK_CACHE_BACKEND is not supported or not provided. Soft failing..."
+    echo "${BK_LOG_PREFIX}🚨 $BK_CACHE_BACKEND is not supported or not provided. Soft failing..."
     exit 0
   fi
 else
-  echo "🚨 Cache is skipped because no cache key provided."
+  echo "${BK_LOG_PREFIX}🚨 Cache is skipped because no cache key provided."
   exit 0
 fi

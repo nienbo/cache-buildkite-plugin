@@ -53,7 +53,7 @@ function restore() {
     if [ "${#keys[@]}" -gt 0 ]; then
       for key in "${keys[@]}"; do
         key="$(expand_templates "${key}")"
-        echo "🔍 Looking using restore-key: ${key}"
+        echo "${BK_LOG_PREFIX}🔍 Looking using restore-key: ${key}"
         search_for="${CACHE_PREFIX}/${key}*"
         PKEY=""
         for f in $search_for; do
@@ -88,7 +88,7 @@ function cache() {
   mkdir -p "${CACHE_PREFIX}"
   DAYS="${BUILDKITE_PLUGIN_CACHE_TARBALL_MAX:-}"
   if [ -n "$DAYS" ] && [ "$DAYS" -gt 0 ]; then
-    echo "🗑️ Deleting backups older than ${DAYS} day(s)..."
+    echo "${BK_LOG_PREFIX}🗑️ Deleting backups older than ${DAYS} day(s)..."
     # On Linux, concurrent deletes race and cause a non-zero exit code. -ignore_readdir_race fixes this.
     # macOS handles this flag but it has no effect since bsdfind already returns zero in this case.
     find "${CACHE_PREFIX}" -type f -mtime +"${DAYS}" -exec rm -f {} \;
