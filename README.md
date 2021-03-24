@@ -69,11 +69,12 @@ S3 backend uses **AWS CLI** v**1** or v**2** to copy and download from/to S3 buc
 steps:
   - plugins:
     - gencer/cache#v2.4.1:
+        id: ruby
         backend: s3
-        key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
+        key: "v1-cache-ruby-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
-          - 'v1-cache-{{ runner.os }}-'
-          - 'v1-cache-'
+          - 'v1-cache-ruby-{{ runner.os }}-'
+          - 'v1-cache-ruby-'
         s3:
           profile: "other-profile" # Optional. Defaults to `default`.
           bucket: "s3-bucket"
@@ -97,11 +98,12 @@ Use `endpoint` and `region` fields to pass host and region parameters to be able
 steps:
   - plugins:
     - gencer/cache#v2.4.1:
+        id: ruby
         backend: s3
-        key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
+        key: "v1-cache-ruby-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
-          - 'v1-cache-{{ runner.os }}-'
-          - 'v1-cache-'
+          - 'v1-cache-ruby-{{ runner.os }}-'
+          - 'v1-cache-ruby-'
         s3:
           bucket: "s3-bucket"
           endpoint: "https://s3.nl-ams.scw.cloud"
@@ -132,11 +134,13 @@ Enabling this interoperability in Google Cloud Storage will generate the respect
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.4.0:
-        key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
+    - gencer/cache#v2.4.1:
+        id: ruby
+        backend: s3
+        key: "v1-cache-ruby-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
-          - 'v1-cache-{{ runner.os }}-'
-          - 'v1-cache-'
+          - 'v1-cache-ruby-{{ runner.os }}-'
+          - 'v1-cache-ruby-'
         backend: s3
         s3:
           bucket: 'gcs-bucket'
@@ -185,8 +189,9 @@ You can also use rsync to store your files using the `rsync` backend. Files will
 steps:
   - plugins:
     - gencer/cache#v2.4.1:
+        id: ruby
         backend: rsync
-        key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
+        key: "v1-cache-ruby-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         rsync:
           path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.1+
         paths:
@@ -210,11 +215,12 @@ You can also use tarballs to store your files using the `tarball` backend. Files
 steps:
   - plugins:
     - gencer/cache#v2.4.1:
-        backend: tarball # Optional. Default `backend` is already set to `tarball` 
-        key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
+        id: ruby
+        backend: tarball
+        key: "v1-cache-ruby-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
-          - 'v1-cache-{{ runner.os }}-'
-          - 'v1-cache-'
+          - 'v1-cache-ruby-{{ runner.os }}-'
+          - 'v1-cache-ruby-'
         tarball:
           path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.1+
           max: 7 # Optional. Removes tarballs older than 7 days.
@@ -253,11 +259,12 @@ Along with lock files, you can calculate directory that contains multiple files 
 steps:
   - plugins:
     - gencer/cache#v2.4.1:
+        id: node
         backend: tarball # Optional. Default `backend` is already set to `tarball` 
-        key: "v1-cache-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
+        key: "v1-cache-node-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
         restore-keys:
-          - 'v1-cache-{{ runner.os }}-'
-          - 'v1-cache-'
+          - 'v1-cache-node-{{ runner.os }}-'
+          - 'v1-cache-node-'
         tarball:
           path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.1+
           max: 7 # Optional. Removes tarballs older than 7 days. 
@@ -279,11 +286,12 @@ You can skip caching on Pull Requests (Merge Requests) by simply adding `pr: fal
 steps:
   - plugins:
     - gencer/cache#v2.4.1:
+        id: ruby
         backend: s3
-        key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
+        key: "v1-cache-ruby-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
-          - 'v1-cache-{{ runner.os }}-'
-          - 'v1-cache-'
+          - 'v1-cache-ruby-{{ runner.os }}-'
+          - 'v1-cache-ruby-'
         pr: false # Default to `true` which is do cache on PRs.
         s3:
           profile: "other-profile" # Optional. Defaults to `default`.
@@ -308,10 +316,11 @@ export BUILDKITE_PLUGIN_CACHE_PR=false
 
 ```yaml
 cache: &cache
-  key: "v1-cache-{{ runner.os }}-{{ checksum 'yarn.lock' }}"
+  id: node
+  key: "v1-cache-node-{{ runner.os }}-{{ checksum 'yarn.lock' }}"
   restore-keys:
-    - 'v1-cache-{{ runner.os }}-'
-    - 'v1-cache-'
+    - 'v1-cache-node-{{ runner.os }}-'
+    - 'v1-cache-node-'
   backend: s3
   pr: false
   s3:
