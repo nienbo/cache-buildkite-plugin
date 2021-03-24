@@ -1,3 +1,7 @@
+# v2.4.2
+
++ Added `id` support to supported cache key templates. You can use in your keys as `{{ id }}`
+
 # v2.4.1
 
 + Added `id` support to identify cache's by ID.

@@ -29,6 +29,9 @@ function expand_templates() {
     "git.commit"*)
       EXPANDED_VALUE="${BUILDKITE_COMMIT}"
       ;;
+    "id"*)
+      EXPANDED_VALUE="${BK_CACHE_ID}"
+      ;;
     "runner.os"*)
       case $OSTYPE in
       "linux-gnu"* | "freebsd"*)

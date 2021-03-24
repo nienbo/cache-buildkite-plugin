@@ -1,4 +1,4 @@
-# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.4.1-blue?style=flat-square)](https://buildkite.com/plugins) [![CI](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml) <!-- omit in toc -->
+# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.4.2-blue?style=flat-square)](https://buildkite.com/plugins) [![CI](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml) <!-- omit in toc -->
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows* <!-- omit in toc -->
 
@@ -63,18 +63,18 @@ To `restore-keys` support works, you need `jq` command available in your `PATH`.
 
 S3 backend uses **AWS CLI** v**1** or v**2** to copy and download from/to S3 bucket or s3-compatible bucket. To be precisely, backend simply uses `aws s3 cp` command for all operations. Before that, we do `head-object` to check existence of the cache key on target bucket. While tarball is the default backend, S3 backend is heavily tested and ready for use in production. See some examples below for S3 backend.
 
-**As of v2.4.1, this is the Recommended backend for cache**
+**As of v2.4.2, this is the Recommended backend for cache**
 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.4.1:
+    - gencer/cache#v2.4.2:
         id: ruby
         backend: s3
-        key: "v1-cache-ruby-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
+        key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
-          - 'v1-cache-ruby-{{ runner.os }}-'
-          - 'v1-cache-ruby-'
+          - 'v1-cache-{{ id }}-{{ runner.os }}-'
+          - 'v1-cache-{{ id }}-'
         s3:
           profile: "other-profile" # Optional. Defaults to `default`.
           bucket: "s3-bucket"
@@ -82,8 +82,7 @@ steps:
           class: STANDARD # Optional. Defaults to empty which is usually STANDARD or based on policy.
           args: '--option 1' # Optional. Defaults to empty. Any optional argument that can be passed to aws s3 cp command.
         paths:
-          - 'Pods/'
-          - 'Rome/'
+          - 'bundle/vendor'
 ```
 
 The paths are synced using Amazon S3 into your bucket using a structure of
@@ -97,13 +96,13 @@ Use `endpoint` and `region` fields to pass host and region parameters to be able
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.4.1:
+    - gencer/cache#v2.4.2:
         id: ruby
         backend: s3
-        key: "v1-cache-ruby-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
+        key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
-          - 'v1-cache-ruby-{{ runner.os }}-'
-          - 'v1-cache-ruby-'
+          - 'v1-cache-{{ id }}-{{ runner.os }}-'
+          - 'v1-cache-{{ id }}-'
         s3:
           bucket: "s3-bucket"
           endpoint: "https://s3.nl-ams.scw.cloud"
@@ -111,8 +110,7 @@ steps:
           # Alternative: If you strictly need to specify host and region manually, then use like this:
           # args: "--endpoint-url=https://s3.nl-ams.scw.cloud --region=nl-ams"
         paths:
-          - 'Pods/'
-          - 'Rome/'
+          - 'bundle/vendor'
 ```
 
 Or, alternatively you can define them in your `environment` file like this:
@@ -134,12 +132,12 @@ Enabling this interoperability in Google Cloud Storage will generate the respect
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.4.1:
+    - gencer/cache#v2.4.2:
         id: ruby
         backend: s3
-        key: "v1-cache-ruby-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
+        key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
-          - 'v1-cache-ruby-{{ runner.os }}-'
+          - 'v1-cache-{{ id }}-{{ runner.os }}-'
         s3:
           bucket: 'gcs-bucket'
           args: '--endpoint-url=https://storage.googleapis.com --region=us-east1'
@@ -186,15 +184,14 @@ You can also use rsync to store your files using the `rsync` backend. Files will
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.4.1:
+    - gencer/cache#v2.4.2:
         id: ruby
         backend: rsync
-        key: "v1-cache-ruby-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
+        key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         rsync:
-          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.1+
+          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.2+
         paths:
-          - 'Pods/'
-          - 'Rome/'
+          - 'bundle/vendor'
 ```
 
 The paths are synced using `rsync_path/cache_key/path`. This is useful for maintaining a local
@@ -205,27 +202,26 @@ agents/builds.
 
 You can also use tarballs to store your files using the `tarball` backend. Files will not be compressed but surely packed into single archive.
 
-*As of v2.4.1, tarball is no longer recommended backend. Especially but not limited to If you are on AWS Elastic Stack, please use S3 backend.*
+*As of v2.4.2, tarball is no longer recommended backend. Especially but not limited to If you are on AWS Elastic Stack, please use S3 backend.*
 
 **tarball is still the default backend.**
 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.4.1:
+    - gencer/cache#v2.4.2:
         id: ruby
         backend: tarball
-        key: "v1-cache-ruby-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
+        key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
-          - 'v1-cache-ruby-{{ runner.os }}-'
-          - 'v1-cache-ruby-'
+          - 'v1-cache-{{ id }}-{{ runner.os }}-'
+          - 'v1-cache-{{ id }}-'
         tarball:
-          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.1+
+          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.2+
           max: 7 # Optional. Removes tarballs older than 7 days.
           compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         paths:
-          - 'Pods/'
-          - 'Rome/'
+          - 'bundle/vendor'
 ```
 
 The paths are synced using `tarball_path/cache_key.tar`. This is useful for maintaining a local
@@ -256,20 +252,19 @@ Along with lock files, you can calculate directory that contains multiple files 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.4.1:
+    - gencer/cache#v2.4.2:
         id: node
         backend: tarball # Optional. Default `backend` is already set to `tarball` 
-        key: "v1-cache-node-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
+        key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
         restore-keys:
-          - 'v1-cache-node-{{ runner.os }}-'
-          - 'v1-cache-node-'
+          - 'v1-cache-{{ id }}-{{ runner.os }}-'
+          - 'v1-cache-{{ id }}-'
         tarball:
-          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.1+
+          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.2+
           max: 7 # Optional. Removes tarballs older than 7 days. 
           compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         paths:
-          - 'Pods/'
-          - 'Rome/'
+          - node_modules
 ```
 
 For example, you can calculate total checksum of your javascript folder to skip build, If the source didn't changed.
@@ -283,13 +278,13 @@ You can skip caching on Pull Requests (Merge Requests) by simply adding `pr: fal
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.4.1:
+    - gencer/cache#v2.4.2:
         id: ruby
         backend: s3
-        key: "v1-cache-ruby-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
+        key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
-          - 'v1-cache-ruby-{{ runner.os }}-'
-          - 'v1-cache-ruby-'
+          - 'v1-cache-{{ id }}-{{ runner.os }}-'
+          - 'v1-cache-{{ id }}-'
         pr: false # Default to `true` which is do cache on PRs.
         s3:
           profile: "other-profile" # Optional. Defaults to `default`.
@@ -298,8 +293,7 @@ steps:
           class: STANDARD # Optional. Defaults to empty which is usually STANDARD or based on policy.
           args: '--option 1' # Optional. Defaults to empty. Any optional argument that can be passed to aws s3 cp command.
         paths:
-          - 'Pods/'
-          - 'Rome/'
+          - 'bundle/vendor'
 ```
 
 Or you can set this by Environment:
@@ -315,10 +309,10 @@ export BUILDKITE_PLUGIN_CACHE_PR=false
 ```yaml
 cache: &cache
   id: node
-  key: "v1-cache-node-{{ runner.os }}-{{ checksum 'yarn.lock' }}"
+  key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'yarn.lock' }}"
   restore-keys:
-    - 'v1-cache-node-{{ runner.os }}-'
-    - 'v1-cache-node-'
+    - 'v1-cache-{{ id }}-{{ runner.os }}-'
+    - 'v1-cache-{{ id }}-'
   backend: s3
   pr: false
   s3:
@@ -333,13 +327,13 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - gencer/cache#v2.4.1: *cache
+      - gencer/cache#v2.4.2: *cache
   - name: ':istanbul: Run Istanbul'
     key: istanbul
     depends_on: jest
     command: .buildkite/steps/istanbul.sh
     plugins:
-      - gencer/cache#v2.4.1: *cache
+      - gencer/cache#v2.4.2: *cache
 ```
 
 ## Usage with docker
@@ -352,17 +346,18 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - gencer/cache#v2.4.1: # Define cache *before* docker plugins.
+      - gencer/cache#v2.4.2: # Define cache *before* docker plugins.
+        id: ruby
         backend: s3
-        key: "v1-cache-{{ runner.os }}-{{ checksum 'Podfile.lock' }}"
+        key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
-          - 'v1-cache-{{ runner.os }}-'
-          - 'v1-cache-'
+          - 'v1-cache-{{ id }}-{{ runner.os }}-'
+          - 'v1-cache-{{ id }}-'
         pr: false
         s3:
           bucket: s3-bucket
         paths:
-          - Pods/
+          - bundle/vendor
       - docker#v3.7.0: ~ # Use your config here
       - docker-compose#3.7.0: ~ # Or compose. Use your config here
 ```
