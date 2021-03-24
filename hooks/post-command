@@ -12,7 +12,7 @@ BK_LOG_PREFIX="(*) - "
 
 . "$BK_CACHE_BASEDIR/lib/shared.bash"
 
-if [[ -n "${BK_CACHE_ID:-}" ]]; then
+if [[ -n "${BUILDKITE_PLUGIN_CACHE_ID:-}" ]]; then
   BK_CACHE_ID="${BUILDKITE_PLUGIN_CACHE_ID:-}"
   BK_LOG_PREFIX="(${BK_CACHE_ID}) - "
   echo -e "~~~ :bash: Processing Post-Cache for \033[33m$BK_CACHE_ID\033[0m"
