@@ -28,7 +28,7 @@ fi
 
 if [[ "${BUILDKITE_PLUGIN_CACHE_PR:-true}" =~ (false|off|0) ]]; then
   if [[ ! "${BUILDKITE_PULL_REQUEST:-false}" =~ (false) ]]; then
-    echo "${BK_LOG_PREFIX}PR Detected. Skipping..."
+    echo -e "${BK_LOG_PREFIX}PR Detected. Skipping..."
     exit 0
   fi
 fi
@@ -52,17 +52,17 @@ if [[ -n "${BUILDKITE_PLUGIN_CACHE_KEY:-}" ]]; then
     fi
   done < <(env | sort)
 
-  echo "${BK_LOG_PREFIX}🔍 Looking for $CACHE_KEY"
+  echo -e "${BK_LOG_PREFIX}🔍 Looking for $CACHE_KEY"
 
   if [ -f "$BK_CACHE_BASEDIR/lib/backends/$BK_CACHE_BACKEND.bash" ]; then
     . "$BK_CACHE_BASEDIR/lib/backends/$BK_CACHE_BACKEND.bash"
     restore
   else
-    echo "${BK_LOG_PREFIX}🚨 $BK_CACHE_BACKEND is not supported or not provided. Soft failing..."
+    echo -e "${BK_LOG_PREFIX}🚨 $BK_CACHE_BACKEND is not supported or not provided. Soft failing..."
     exit 0
   fi
 
 else
-  echo "${BK_LOG_PREFIX}🚨 Cache is skipped because no cache key provided"
+  echo -e "${BK_LOG_PREFIX}🚨 Cache is skipped because no cache key provided"
   exit 0
 fi

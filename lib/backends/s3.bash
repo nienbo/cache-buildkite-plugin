@@ -69,7 +69,7 @@ function restore() {
       if [ "${#keys[@]}" -gt 0 ]; then
         for key in "${keys[@]}"; do
           key="$(expand_templates "${key}")"
-          echo "${BK_LOG_PREFIX}🔍 Looking using restore-key: ${key}"
+          echo -e "${BK_LOG_PREFIX}🔍 Looking using restore-key: ${key}"
           PKEY=$(aws s3api list-objects --bucket "${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}" $BK_AWS_ARGS --prefix="${TKEY}/${key}" --query 'Contents[].{Key: Key, LastModified: LastModified}' | jq 'try(. |= sort_by(.LastModified)  |  first(reverse[]) | .["Key"]) catch "NULL"')
           PKEY="${PKEY%\"}"
           PKEY="${PKEY#\"}"

@@ -61,21 +61,21 @@ function expand_templates() {
 }
 
 function cache_hit() {
-  echo "${BK_LOG_PREFIX}🔥 Cache hit: $1"
+  echo -e "${BK_LOG_PREFIX}🔥 Cache hit: $1"
 }
 
 function cache_restore_skip() {
-  echo "${BK_LOG_PREFIX}🚨 Cache restore is skipped because $1 does not exist"
+  echo -e "${BK_LOG_PREFIX}🚨 Cache restore is skipped because $1 does not exist"
 }
 
 function error() {
-  echo "${BK_LOG_PREFIX}🚨 $1"
+  echo -e "${BK_LOG_PREFIX}🚨 $1"
 }
 
 function source_locating() {
-  echo "${BK_LOG_PREFIX}🔍 Locating source: $1"
+  echo -e "${BK_LOG_PREFIX}🔍 Locating source: $1"
 }
 
 function cache_locating() {
-  echo "${BK_LOG_PREFIX}🔍 Locating cache: $1"
+  echo -e "${BK_LOG_PREFIX}🔍 Locating cache: $1"
 }
