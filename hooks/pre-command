@@ -9,13 +9,13 @@ set -euo pipefail
 BK_CACHE_BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
 BK_CACHE_VERSION=$(<"$BK_CACHE_BASEDIR/VERSION")
 BK_CACHE_ID=""
-BK_LOG_PREFIX="(*) - "
+BK_LOG_PREFIX="[*] - "
 
 . "$BK_CACHE_BASEDIR/lib/shared.bash"
 
 if [[ -n "${BUILDKITE_PLUGIN_CACHE_ID:-}" ]]; then
   BK_CACHE_ID="${BUILDKITE_PLUGIN_CACHE_ID:-}"
-  BK_LOG_PREFIX="(${BK_CACHE_ID}) - "
+  BK_LOG_PREFIX="[\033[33m$BK_CACHE_ID\033[0m] - "
   echo -e "~~~ :bash: \033[33mCache\033[0m Buildkite Plugin v$BK_CACHE_VERSION for \033[33m$BK_CACHE_ID\033[0m"
 else
   echo -e "~~~ :bash: \033[33mCache\033[0m Buildkite Plugin v$BK_CACHE_VERSION"

@@ -14,10 +14,10 @@ BK_LOG_PREFIX="(*) - "
 
 if [[ -n "${BUILDKITE_PLUGIN_CACHE_ID:-}" ]]; then
   BK_CACHE_ID="${BUILDKITE_PLUGIN_CACHE_ID:-}"
-  BK_LOG_PREFIX="(${BK_CACHE_ID}) - "
-  echo -e "~~~ :bash: Processing Post-Cache for \033[33m$BK_CACHE_ID\033[0m"
+  BK_LOG_PREFIX="[\033[33m$BK_CACHE_ID\033[0m] - "
+  echo -e "~~~ :bash: Processing \033[33mPost-Cache\033[0m for \033[33m$BK_CACHE_ID\033[0m"
 else
-  echo -e "~~~ :bash: Processing Post-Cache..."
+  echo -e "~~~ :bash: Processing \033[33mPost-Cache\033[0m..."
   echo "Please use 'id' key to identify caches"
 fi
 
