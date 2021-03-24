@@ -140,8 +140,6 @@ steps:
         key: "v1-cache-ruby-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
           - 'v1-cache-ruby-{{ runner.os }}-'
-          - 'v1-cache-ruby-'
-        backend: s3
         s3:
           bucket: 'gcs-bucket'
           args: '--endpoint-url=https://storage.googleapis.com --region=us-east1'
