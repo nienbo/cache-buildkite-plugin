@@ -29,7 +29,7 @@ Plus, In addition to tarball & rsync, we also do not re-create another tarball f
     - [Supported templates](#supported-templates)
   - [Hashing (checksum) against directory](#hashing-checksum-against-directory)
   - [Skip Cache on PRs](#skip-cache-on-prs)
-  - [Multiple usages in same pipeline](#multiple-usages-in-same-pipeline)
+  - [Advanced and Multiple usages in same pipeline](#advanced-and-multiple-usages-in-same-pipeline)
   - [Usage with docker](#usage-with-docker)
   - [Auto deletion old caches](#auto-deletion-old-caches)
   - [Globs on paths](#globs-on-paths)
@@ -238,13 +238,13 @@ the cache key will be determined by executing a _checksum_ (actually `sha1sum`) 
 
 ### Supported templates
 
-| **Template**                                                | **Translated**                                               |
-| ----------------------------------------------------------- | ------------------------------------------------------------ |
-| `id`                                                        | `id` of your cache. Defaults to **empty**.                   |
-| `runner.os`                                                 | **One of**:<br />Windows<br />Linux<br />macOS<br />Generic  |
+| **Template**                                                | **Translated**                                                                     |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `id`                                                        | `id` of your cache. Defaults to **empty**.                                         |
+| `runner.os`                                                 | **One of**:<br />Windows<br />Linux<br />macOS<br />Generic                        |
 | `checksum 'file_name'` - or -<br />`checksum './directory'` | File: sha1 of that file<br />Directory: **sorted** hashing of the whole directory. |
-| `git.branch`                                                | For example: `master`.<br />Derived from `${BUILDKITE_BRANCH}` |
-| `git.commit`                                                | For example: `9576a34...`. (Full SHA).<br />Derived from `${BUILDKITE_COMMIT}` |
+| `git.branch`                                                | For example: `master`.<br />Derived from `${BUILDKITE_BRANCH}`                     |
+| `git.commit`                                                | For example: `9576a34...`. (Full SHA).<br />Derived from `${BUILDKITE_COMMIT}`     |
 
 ## Hashing (checksum) against directory
 
@@ -305,17 +305,16 @@ Or you can set this by Environment:
 export BUILDKITE_PLUGIN_CACHE_PR=false
 ```
 
-## Multiple usages in same pipeline
+## Advanced and Multiple usages in same pipeline
 
 ```yaml
-cache: &cache
+node-cache: &node-cache
   id: node
   key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'yarn.lock' }}"
   restore-keys:
     - 'v1-cache-{{ id }}-{{ runner.os }}-'
     - 'v1-cache-{{ id }}-'
   backend: s3
-  pr: false
   s3:
     bucket: cache-bucket
   paths:
@@ -323,18 +322,36 @@ cache: &cache
     # If you have sub-dir then use:
     # - **/node_modules
 
+ruby-cache: &ruby-cache
+  id: ruby
+  key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
+  restore-keys:
+    - 'v1-cache-{{ id }}-{{ runner.os }}-'
+    - 'v1-cache-{{ id }}-'
+  backend: s3
+  s3:
+    bucket: cache-bucket
+  paths:
+    - 'bundler/vendor'
+
+caches: &caches
+  - gencer/cache#v2.4.2: *node-cache
+  - gencer/cache#v2.4.2: *ruby-cache
+
 steps:
   - name: ':jest: Run tests'
-    key: jest
-    command: yarn test --runInBand
+    key: test
+    command: yarn test --runInBand && bundle exec rspec --color
     plugins:
-      - gencer/cache#v2.4.2: *cache
+      <<: *caches
+      docker#v3.7.0: ~ # Use your config here
   - name: ':istanbul: Run Istanbul'
     key: istanbul
-    depends_on: jest
+    depends_on: test
     command: .buildkite/steps/istanbul.sh
     plugins:
-      - gencer/cache#v2.4.2: *cache
+      <<: *caches
+      docker#v3.7.0: ~ # Use your config here
 ```
 
 ## Usage with docker
