@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run tests
         run: docker-compose run --rm tests
-      - name: Run lint
-        run: docker-compose run --rm lint
+      # - name: Run lint
+      #   run: docker-compose run --rm lint
       - name: Run shellcheck
         run: docker-compose run --rm shellcheck

@@ -94,21 +94,22 @@ function cache() {
     find "${CACHE_PREFIX}" -type f -mtime +"${DAYS}" -exec rm -f {} \;
   fi
 
+  TAR_TARGETS=""
+
   if [ "${#paths[@]}" -eq 1 ]; then
-    mkdir -p "${CACHE_PREFIX}"
-    TAR_FILE="${CACHE_PREFIX}/${CACHE_KEY}.${BK_TAR_EXTENSION}"
-    if [ ! -f "$TAR_FILE" ]; then
-      tar $BK_TAR_ARGS "${TAR_FILE}" ${paths[*]}
-    fi
+    TAR_TARGETS="${paths[*]}"
   elif
     [ "${#paths[@]}" -gt 1 ]
   then
-    mkdir -p "${CACHE_PREFIX}"
-    TAR_FILE="${CACHE_PREFIX}/${CACHE_KEY}.${BK_TAR_EXTENSION}"
-    if [ ! -f "$TAR_FILE" ]; then
-      TMP_FILE="$(mktemp)"
-      tar $BK_TAR_ARGS "${TMP_FILE}" ${paths[@]}
-      mv -f "${TMP_FILE}" "${TAR_FILE}"
-    fi
+    TAR_TARGETS="${paths[@]}"
+  fi
+
+  cache_locating "${TAR_TARGETS}"
+  mkdir -p "${CACHE_PREFIX}"
+  TAR_FILE="${CACHE_PREFIX}/${CACHE_KEY}.${BK_TAR_EXTENSION}"
+  if [ ! -f "$TAR_FILE" ]; then
+    TMP_FILE="$(mktemp)"
+    tar $BK_TAR_ARGS "${TMP_FILE}" ${TAR_TARGETS}
+    mv -f "${TMP_FILE}" "${TAR_FILE}"
   fi
 }
