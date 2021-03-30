@@ -1,3 +1,7 @@
+# v2.4.3
+
++ Fixed unnecessary quotes on endpoint and region. This causes aws operation fail when `endpoint` and `region` used instead of `args`.
+  
 # v2.4.2
 
 + Added `id` support to supported cache key templates. You can use in your keys as `{{ id }}`
