@@ -1,3 +1,7 @@
+# v2.4.4
+
++ Allow globs in tarballs when used with s3
+
 # v2.4.3
 
 + Fixed unnecessary quotes on endpoint and region. This causes aws operation fail when `endpoint` and `region` used instead of `args`.
