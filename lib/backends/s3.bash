@@ -118,7 +118,7 @@ function cache() {
   elif
     [ "${#paths[@]}" -gt 1 ]
   then
-    cache_locating "${path}"
+    cache_locating "${paths[@]}"
     TAR_FILE="${CACHE_KEY}.${BK_TAR_EXTENSION}"
     if [ ! -f "$TAR_FILE" ]; then
       TMP_FILE="$(mktemp)"
