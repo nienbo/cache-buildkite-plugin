@@ -122,7 +122,7 @@ function cache() {
     TAR_FILE="${CACHE_KEY}.${BK_TAR_EXTENSION}"
     if [ ! -f "$TAR_FILE" ]; then
       TMP_FILE="$(mktemp)"
-      tar $BK_TAR_ARGS "${TMP_FILE}" "${paths[@]}"
+      tar $BK_TAR_ARGS "${TMP_FILE}" ${paths[@]}
       mv -f "${TMP_FILE}" "${TAR_FILE}"
       aws s3 cp $BK_AWS_ARGS "${TAR_FILE}" "s3://${BUCKET}/${TAR_FILE}"
     fi

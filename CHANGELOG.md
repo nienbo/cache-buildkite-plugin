@@ -1,3 +1,7 @@
+# v2.4.5
+
++ Allow globs in tarballs when used with s3 **with multiple paths**. v2.4.4 only enabled for single path only.
+
 # v2.4.4
 
 + Allow globs in tarballs when used with s3
