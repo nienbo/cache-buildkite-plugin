@@ -2,7 +2,7 @@
 
 # Defaults...
 BK_CACHE_COMPRESS=${BUILDKITE_PLUGIN_CACHE_COMPRESS:-false}
-BK_TAR_ARGS=""
+BK_TAR_ARGS=()
 BK_TAR_ADDITIONAL_ARGS="--ignore-failed-read"
 BK_TAR_EXTENSION="tar"
 BK_TAR_EXTRACT_ARGS="-xf"
@@ -27,20 +27,20 @@ if [[ ! "$OSTYPE" == "darwin"* ]]; then
   if [[ ! "${BK_CACHE_COMPRESS:-false}" =~ (false) ]]; then
     number_re='^[0-9]+$'
     if [[ ${BK_CACHE_COMPRESS} =~ $number_re ]]; then
-      BK_TAR_ARGS="${BK_TAR_ADDITIONAL_ARGS} --use-compress-program='gzip -${BK_CACHE_COMPRESS}' -cf"
+      BK_TAR_ARGS=("$BK_TAR_ADDITIONAL_ARGS" --use-compress-program "gzip -$BK_CACHE_COMPRESS" -cf)
     else
-      BK_TAR_ARGS="${BK_TAR_ADDITIONAL_ARGS} -zcf"
+      BK_TAR_ARGS=("$BK_TAR_ADDITIONAL_ARGS" -zcf)
     fi
     BK_TAR_EXTENSION="tar.gz"
     BK_TAR_EXTRACT_ARGS="-xzf"
   else
-    BK_TAR_ARGS="${BK_TAR_ADDITIONAL_ARGS} -cf"
+    BK_TAR_ARGS=("$BK_TAR_ADDITIONAL_ARGS" -cf)
   fi
 else
   if [[ ! "${BK_CACHE_COMPRESS:-false}" =~ (false) ]]; then
-    BK_TAR_ARGS="-zcf"
+    BK_TAR_ARGS=(-zcf)
   else
-    BK_TAR_ARGS="-cf"
+    BK_TAR_ARGS=(-cf)
   fi
 fi
 
@@ -114,7 +114,7 @@ function cache() {
   TAR_FILE="${CACHE_PREFIX}/${CACHE_KEY}.${BK_TAR_EXTENSION}"
   if [ ! -f "$TAR_FILE" ]; then
     TMP_FILE="$(mktemp)"
-    tar $BK_TAR_ARGS "${TMP_FILE}" ${TAR_TARGETS}
+    tar "${BK_TAR_ARGS[@]}" "${TMP_FILE}" ${TAR_TARGETS}
     mv -f "${TMP_FILE}" "${TAR_FILE}"
   fi
 }
