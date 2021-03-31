@@ -1,3 +1,9 @@
+
+# v2.4.6
+
++ Tidy tarball calls
++ Adjustable compress option. Now you can decide ratio from 0 to 9 on compressed tarballs (Applies to tarball and s3 backends)
+
 # v2.4.5
 
 + Allow globs in tarballs when used with s3 **with multiple paths**. v2.4.4 only enabled for single path only.

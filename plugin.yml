@@ -23,7 +23,7 @@ configuration:
       bucket:
         type: string
       compress:
-        type: boolean
+        type: [number, boolean]
       class:
         type: string
       endpoint:
@@ -36,7 +36,7 @@ configuration:
       path:
         type: string
       compress:
-        type: boolean
+        type: [number, boolean]
       max:
         type: number
     rsync:
