@@ -2,7 +2,7 @@
 
 # Defaults...
 BK_AWS_ARGS=""
-BK_CACHE_COMPRESS=${BUILDKITE_PLUGIN_CACHE_S3_COMPRESS:-false}
+BK_CACHE_COMPRESS=${BUILDKITE_PLUGIN_CACHE_COMPRESS:-false}
 BK_TAR_ARGS=""
 BK_TAR_ADDITIONAL_ARGS="--ignore-failed-read"
 BK_TAR_EXTENSION="tar"
@@ -20,7 +20,12 @@ if [[ ! "$OSTYPE" == "darwin"* ]]; then
   esac
 
   if [[ ! "${BK_CACHE_COMPRESS:-false}" =~ (false) ]]; then
-    BK_TAR_ARGS="${BK_TAR_ADDITIONAL_ARGS} -zcf"
+    number_re='^[0-9]+$'
+    if [[ ${BK_CACHE_COMPRESS} =~ $number_re ]]; then
+      BK_TAR_ARGS="${BK_TAR_ADDITIONAL_ARGS} --use-compress-program='gzip -${BK_CACHE_COMPRESS}' -cf"
+    else
+      BK_TAR_ARGS="${BK_TAR_ADDITIONAL_ARGS} -zcf"
+    fi
     BK_TAR_EXTENSION="tar.gz"
     BK_TAR_EXTRACT_ARGS="-xzf"
   else
