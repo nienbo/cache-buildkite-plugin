@@ -65,7 +65,12 @@ function restore() {
     cache_restore_skip "s3://${BUCKET}/${TAR_FILE}"
   else
     cache_hit "s3://${BUCKET}/${TAR_FILE}"
-    aws s3 cp $BK_AWS_ARGS "s3://${BUCKET}/${TAR_FILE}" .
+    if test -f "${TAR_FILE}"; then
+      cache_hit "tar://${TAR_FILE}"
+      echo "Using local tar cache instead of s3 cache"
+    else 
+      aws s3 cp $BK_AWS_ARGS "s3://${BUCKET}/${TAR_FILE}" .
+    fi
     tar ${BK_TAR_EXTRACT_ARGS} "${TAR_FILE}" -C .
   fi
 }
