@@ -1,3 +1,7 @@
+# v2.4.7
+
++ Use Array to prevent escaping arguments with quote on tar commands
++ Final release for `compress`
 
 # v2.4.6
 
