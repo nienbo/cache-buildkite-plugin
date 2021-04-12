@@ -1,3 +1,7 @@
+# v2.4.8
+
++ Using `{{ git.branch }}` cache-key with a `/` in the branch name. See #26.
+
 # v2.4.7
 
 + Use Array to prevent escaping arguments with quote on tar commands
