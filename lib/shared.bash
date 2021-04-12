@@ -24,7 +24,8 @@ function expand_templates() {
       EXPANDED_VALUE=$(find "$TARGET" -type f -exec $HASHER_BIN {} \; | sort -k 2 | $HASHER_BIN | awk '{print $1}')
       ;;
     "git.branch"*)
-      EXPANDED_VALUE="${BUILDKITE_BRANCH}"
+      BRANCH="${BUILDKITE_BRANCH}"
+      EXPANDED_VALUE="${BRANCH//\//_}"
       ;;
     "git.commit"*)
       EXPANDED_VALUE="${BUILDKITE_COMMIT}"
