@@ -344,15 +344,15 @@ steps:
     key: test
     command: yarn test --runInBand && bundle exec rspec --color
     plugins:
-      <<: *caches
-      docker#v3.7.0: ~ # Use your config here
+      *caches
+      - docker#v3.7.0: ~ # Use your config here
   - name: ':istanbul: Run Istanbul'
     key: istanbul
     depends_on: test
     command: .buildkite/steps/istanbul.sh
     plugins:
-      <<: *caches
-      docker#v3.7.0: ~ # Use your config here
+      *caches
+      - docker#v3.7.0: ~ # Use your config here
 ```
 
 ## Usage with docker
