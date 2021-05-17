@@ -70,7 +70,7 @@ S3 backend uses **AWS CLI** v**1** or v**2** to copy and download from/to S3 buc
 steps:
   - plugins:
     - gencer/cache#v2.4.8:
-        id: ruby
+        id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
@@ -98,7 +98,7 @@ Use `endpoint` and `region` fields to pass host and region parameters to be able
 steps:
   - plugins:
     - gencer/cache#v2.4.8:
-        id: ruby
+        id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
@@ -134,7 +134,7 @@ Enabling this interoperability in Google Cloud Storage will generate the respect
 steps:
   - plugins:
     - gencer/cache#v2.4.8:
-        id: ruby
+        id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
@@ -186,7 +186,7 @@ You can also use rsync to store your files using the `rsync` backend. Files will
 steps:
   - plugins:
     - gencer/cache#v2.4.8:
-        id: ruby
+        id: ruby # or ruby-3.0
         backend: rsync
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         rsync:
@@ -211,7 +211,7 @@ You can also use tarballs to store your files using the `tarball` backend. Files
 steps:
   - plugins:
     - gencer/cache#v2.4.8:
-        id: ruby
+        id: ruby # or ruby-3.0
         backend: tarball
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
@@ -255,7 +255,7 @@ Along with lock files, you can calculate directory that contains multiple files 
 steps:
   - plugins:
     - gencer/cache#v2.4.8:
-        id: node
+        id: node # or node-16
         backend: tarball # Optional. Default `backend` is already set to `tarball` 
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
         restore-keys:
@@ -281,7 +281,7 @@ You can skip caching on Pull Requests (Merge Requests) by simply adding `pr: fal
 steps:
   - plugins:
     - gencer/cache#v2.4.8:
-        id: ruby
+        id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
@@ -310,7 +310,7 @@ export BUILDKITE_PLUGIN_CACHE_PR=false
 
 ```yaml
 node-cache: &node-cache
-  id: node
+  id: node # or node-16
   key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'yarn.lock' }}"
   restore-keys:
     - 'v1-cache-{{ id }}-{{ runner.os }}-'
@@ -324,7 +324,7 @@ node-cache: &node-cache
     # - **/node_modules
 
 ruby-cache: &ruby-cache
-  id: ruby
+  id: ruby # or ruby-3.0
   key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
   restore-keys:
     - 'v1-cache-{{ id }}-{{ runner.os }}-'
@@ -366,7 +366,7 @@ steps:
     command: yarn test --runInBand
     plugins:
       - gencer/cache#v2.4.8: # Define cache *before* docker plugins.
-        id: ruby
+        id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
@@ -393,7 +393,7 @@ steps:
     command: yarn test --runInBand
     plugins:
       - gencer/cache#v2.4.8:
-        id: ruby
+        id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
