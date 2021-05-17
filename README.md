@@ -335,24 +335,21 @@ ruby-cache: &ruby-cache
   paths:
     - 'bundler/vendor'
 
-caches: &caches
+all-plugins: &all-plugins
   - gencer/cache#v2.4.8: *node-cache
   - gencer/cache#v2.4.8: *ruby-cache
+  - docker#v3.7.0: ~ # Use your config here
 
 steps:
   - name: ':jest: Run tests'
     key: test
     command: yarn test --runInBand && bundle exec rspec --color
-    plugins:
-      <<: *caches
-      docker#v3.7.0: ~ # Use your config here
+    plugins: *all-plugins
   - name: ':istanbul: Run Istanbul'
     key: istanbul
     depends_on: test
     command: .buildkite/steps/istanbul.sh
-    plugins:
-      <<: *caches
-      docker#v3.7.0: ~ # Use your config here
+    plugins: *all-plugins
 ```
 
 ## Usage with docker
