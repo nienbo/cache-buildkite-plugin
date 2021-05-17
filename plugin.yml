@@ -1,5 +1,5 @@
 name: Cache
-description: Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux and macOS. (Windows is on the way)
+description: Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows
 author: https://github.com/gencer
 requirements:
   - aws
