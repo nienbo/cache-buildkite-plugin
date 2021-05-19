@@ -142,7 +142,10 @@ steps:
         s3:
           bucket: 'gcs-bucket'
           args: '--endpoint-url=https://storage.googleapis.com --region=us-east1'
-          compress: true
+          # Alternatively, you can use these 2 inputs instead of `args`:
+          # endpoint: "https://storage.googleapis.com"
+          # region: "us-east1"
+          compress: 2
 ```
 
 However, as GCS does not support multipart uploads, it is required to disable this in the AWS CLI. This
