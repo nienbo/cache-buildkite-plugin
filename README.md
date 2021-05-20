@@ -76,10 +76,10 @@ steps:
         restore-keys:
           - 'v1-cache-{{ id }}-{{ runner.os }}-'
           - 'v1-cache-{{ id }}-'
+        compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         s3:
           profile: "other-profile" # Optional. Defaults to `default`.
           bucket: "s3-bucket"
-          compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
           class: STANDARD # Optional. Defaults to empty which is usually STANDARD or based on policy.
           args: '--option 1' # Optional. Defaults to empty. Any optional argument that can be passed to aws s3 cp command.
         paths:
@@ -139,13 +139,13 @@ steps:
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         restore-keys:
           - 'v1-cache-{{ id }}-{{ runner.os }}-'
+        compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         s3:
           bucket: 'gcs-bucket'
           args: '--endpoint-url=https://storage.googleapis.com --region=us-east1'
           # Alternatively, you can use these 2 inputs instead of `args`:
           # endpoint: "https://storage.googleapis.com"
           # region: "us-east1"
-          compress: 2
 ```
 
 However, as GCS does not support multipart uploads, it is required to disable this in the AWS CLI. This
@@ -220,10 +220,10 @@ steps:
         restore-keys:
           - 'v1-cache-{{ id }}-{{ runner.os }}-'
           - 'v1-cache-{{ id }}-'
+        compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         tarball:
           path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.8+
           max: 7 # Optional. Removes tarballs older than 7 days.
-          compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         paths:
           - 'bundle/vendor'
 ```
@@ -259,15 +259,15 @@ steps:
   - plugins:
     - gencer/cache#v2.4.8:
         id: node # or node-16
-        backend: tarball # Optional. Default `backend` is already set to `tarball` 
+        backend: tarball # Optional. Default `backend` is already set to `tarball`
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
         restore-keys:
           - 'v1-cache-{{ id }}-{{ runner.os }}-'
           - 'v1-cache-{{ id }}-'
+        compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         tarball:
           path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.8+
-          max: 7 # Optional. Removes tarballs older than 7 days. 
-          compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
+          max: 7 # Optional. Removes tarballs older than 7 days.
         paths:
           - node_modules
 ```
@@ -291,10 +291,10 @@ steps:
           - 'v1-cache-{{ id }}-{{ runner.os }}-'
           - 'v1-cache-{{ id }}-'
         pr: false # Default to `true` which is do cache on PRs.
+        compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         s3:
           profile: "other-profile" # Optional. Defaults to `default`.
           bucket: "s3-bucket"
-          compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
           class: STANDARD # Optional. Defaults to empty which is usually STANDARD or based on policy.
           args: '--option 1' # Optional. Defaults to empty. Any optional argument that can be passed to aws s3 cp command.
         paths:
