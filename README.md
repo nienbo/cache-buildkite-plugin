@@ -274,7 +274,7 @@ steps:
 
 For example, you can calculate total checksum of your javascript folder to skip build, If the source didn't changed.
 
-Note: Before hashing files, we do "sort". This provides exact same sorted and hashed content against very same directory between builds.
+Note: Before hashing files, we do sorting via `sort`. This makes exact same sorted and hashed content against very same directory between different builds.
 
 ## Skip Cache on PRs
 
@@ -415,9 +415,9 @@ export BUILDKITE_PLUGIN_CACHE_COMPRESS=2
 
 ## Auto deletion old caches
 
-To keep caches and delete them in _for example_ 7 days, use tarball backend and use `max`. On S3 side, please use S3 Policy for this routine. Each uploaded file to S3 will be deleted according to your file deletion policy.
+For tarballs, To keep caches and delete them in _for example_ 7 days, use `max: 7`.
 
-**For S3**, Due to expiration policy, we just re-upload the same tarball to refresh expiration date. As long as you use the same cache, S3 will not delete it. Otherwise, It will be deleted from S3-side not used in a manner time.
+For S3, As long as you use Lifcecycle policy (AWS and Scaleway supports this feature) you will only have caches for number of days you specify in your Lifecycle policy terms. This will allows you to invalidate old caches and save some storage costs.
 
 ## Globs on paths
 
