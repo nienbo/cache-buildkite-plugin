@@ -17,6 +17,8 @@ configuration:
       type: string
     compress:
       type: [number, boolean]
+    continue_on_error:
+      type: boolean
     pr:
       type: boolean
     s3:
