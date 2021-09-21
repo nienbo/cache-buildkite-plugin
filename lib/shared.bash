@@ -73,6 +73,10 @@ function error() {
   echo -e "${BK_LOG_PREFIX}🚨 $1"
 }
 
+function info() {
+  echo -e "${BK_LOG_PREFIX}ℹ️ $1"
+}
+
 function source_locating() {
   echo -e "${BK_LOG_PREFIX}🔍 Locating source: $1"
 }

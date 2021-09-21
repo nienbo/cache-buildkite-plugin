@@ -26,8 +26,12 @@ if [[ "${BUILDKITE_PLUGIN_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
 fi
 
 if [ "${BUILDKITE_COMMAND_EXIT_STATUS}" -ne 0 ]; then
-  echo -e "--- ${BK_LOG_PREFIX}🚨 Cache is skipped because step returned ${BUILDKITE_COMMAND_EXIT_STATUS}"
-  exit 0
+  if [[ "${BUILDKITE_PLUGIN_CACHE_CONTINUE_ON_ERROR:-false}" =~ (true|on|1) ]]; then
+    info "Step returned non-zero exit code: ${BUILDKITE_COMMAND_EXIT_STATUS}. Continuing per instructed as continue_on_error"
+  else
+    echo -e "--- ${BK_LOG_PREFIX}🚨 Cache is skipped because step returned ${BUILDKITE_COMMAND_EXIT_STATUS}"
+    exit 0
+  fi
 fi
 
 if [[ "${BUILDKITE_PLUGIN_CACHE_PR:-true}" =~ (false|off|0) ]]; then
