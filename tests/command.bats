@@ -3,7 +3,9 @@
 load "$BATS_PATH/load.bash"
 
 # Uncomment to enable stub debugging
+# export AWS_STUB_DEBUG=/dev/tty
 # export GIT_STUB_DEBUG=/dev/tty
+# export TAR_STUB_DEBUG=/dev/tty
 
 @test "Pre-command restores cache with basic key" {
 
@@ -229,5 +231,38 @@ load "$BATS_PATH/load.bash"
   unset BUILDKITE_PLUGIN_CACHE_S3_BUCKET
   unset BUILDKITE_PIPELINE_SLUG
   unset BUILDKITE_ORGANIZATION_SLUG
+}
 
+@test "S3 arguments are passed through to copy command" {
+
+  stub aws \
+   "s3api head-object --bucket my-bucket --key 'my-org/my-pipeline/v1-cache-key.tar' --profile my-profile : true" \
+   "s3 cp --profile my-profile --acl bucket-owner-full-control s3://my-bucket/my-org/my-pipeline/v1-cache-key.tar . : echo Copied from S3"
+
+  stub tar \
+   "-xf v1-cache-key.tar -C . : echo Extracted tar archive"
+
+  export BUILDKITE_ORGANIZATION_SLUG="my-org"
+  export BUILDKITE_PIPELINE_SLUG="my-pipeline"
+  export BUILDKITE_PLUGIN_CACHE_S3_BUCKET="my-bucket"
+  export BUILDKITE_PLUGIN_CACHE_S3_PROFILE="my-profile"
+  export BUILDKITE_PLUGIN_CACHE_S3_ARGS="--acl bucket-owner-full-control"
+  export BUILDKITE_PLUGIN_CACHE_BACKEND="s3"
+  export BUILDKITE_PLUGIN_CACHE_KEY="v1-cache-key"
+
+  run "$PWD/hooks/pre-command"
+  assert_success
+  assert_output --partial "Copied from S3"
+  assert_output --partial "Extracted tar archive"
+
+  unset BUILDKITE_PLUGIN_CACHE_KEY
+  unset BUILDKITE_PLUGIN_CACHE_BACKEND
+  unset BUILDKITE_PLUGIN_CACHE_S3_PROFILE
+  unset BUILDKITE_PLUGIN_CACHE_S3_ARGS
+  unset BUILDKITE_PLUGIN_CACHE_S3_BUCKET
+  unset BUILDKITE_PIPELINE_SLUG
+  unset BUILDKITE_ORGANIZATION_SLUG
+
+  unstub aws
+  unstub tar
 }
