@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Defaults...
-BK_AWS_ARGS=""
+BK_DEFAULT_AWS_ARGS=""
+BK_CUSTOM_AWS_ARGS=""
 BK_CACHE_COMPRESS=${BUILDKITE_PLUGIN_CACHE_COMPRESS:-false}
 BK_TAR_ARGS=()
 BK_TAR_ADDITIONAL_ARGS="--ignore-failed-read"
@@ -40,23 +41,25 @@ else
 fi
 
 if [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_PROFILE:-}" ]]; then
-  BK_AWS_ARGS="--profile ${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}"
+  BK_DEFAULT_AWS_ARGS="--profile ${BUILDKITE_PLUGIN_CACHE_S3_PROFILE}"
 fi
 
 if [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_CLASS:-}" ]]; then
-  BK_AWS_ARGS="${BK_AWS_ARGS} --storage-class '${BUILDKITE_PLUGIN_CACHE_S3_CLASS}'"
+  BK_DEFAULT_AWS_ARGS="${BK_DEFAULT_AWS_ARGS} --storage-class '${BUILDKITE_PLUGIN_CACHE_S3_CLASS}'"
 fi
 
 if [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_ENDPOINT:-}" ]]; then
-  BK_AWS_ARGS="${BK_AWS_ARGS} --endpoint-url ${BUILDKITE_PLUGIN_CACHE_S3_ENDPOINT}"
+  BK_DEFAULT_AWS_ARGS="${BK_DEFAULT_AWS_ARGS} --endpoint-url ${BUILDKITE_PLUGIN_CACHE_S3_ENDPOINT}"
 fi
 
 if [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_REGION:-}" ]]; then
-  BK_AWS_ARGS="${BK_AWS_ARGS} --region ${BUILDKITE_PLUGIN_CACHE_S3_REGION}"
+  BK_DEFAULT_AWS_ARGS="${BK_DEFAULT_AWS_ARGS} --region ${BUILDKITE_PLUGIN_CACHE_S3_REGION}"
 fi
 
+BK_CUSTOM_AWS_ARGS="${BK_DEFAULT_AWS_ARGS}"
+
 if [[ -n "${BUILDKITE_PLUGIN_CACHE_S3_ARGS:-}" ]]; then
-  BK_AWS_ARGS="${BK_AWS_ARGS} ${BUILDKITE_PLUGIN_CACHE_S3_ARGS}"
+  BK_CUSTOM_AWS_ARGS="${BK_CUSTOM_AWS_ARGS} ${BUILDKITE_PLUGIN_CACHE_S3_ARGS}"
 fi
 
 function restore() {
@@ -65,7 +68,7 @@ function restore() {
   BUCKET="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}/${TKEY}"
   BK_AWS_FOUND=false
 
-  aws s3api head-object --bucket "${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}" --key "${TKEY}/${TAR_FILE}" $BK_AWS_ARGS || no_head=true
+  aws s3api head-object --bucket "${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}" --key "${TKEY}/${TAR_FILE}" ${BK_DEFAULT_AWS_ARGS} || no_head=true
 
   if ${no_head:-false}; then
     # Check `jq` first
@@ -75,7 +78,7 @@ function restore() {
         for key in "${keys[@]}"; do
           key="$(expand_templates "${key}")"
           echo -e "${BK_LOG_PREFIX}🔍 Looking using restore-key: ${key}"
-          PKEY=$(aws s3api list-objects --bucket "${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}" $BK_AWS_ARGS --prefix="${TKEY}/${key}" --query 'Contents[].{Key: Key, LastModified: LastModified}' | jq 'try(. |= sort_by(.LastModified)  |  first(reverse[]) | .["Key"]) catch "NULL"')
+          PKEY=$(aws s3api list-objects --bucket "${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}" ${BK_DEFAULT_AWS_ARGS} --prefix="${TKEY}/${key}" --query 'Contents[].{Key: Key, LastModified: LastModified}' | jq 'try(. |= sort_by(.LastModified)  |  first(reverse[]) | .["Key"]) catch "NULL"')
           PKEY="${PKEY%\"}"
           PKEY="${PKEY#\"}"
           if [ "${PKEY}" == "NULL" ]; then
@@ -98,7 +101,7 @@ function restore() {
   fi
 
   if [[ ! "${BK_AWS_FOUND}" =~ (false) ]]; then
-    aws s3 cp $BK_AWS_ARGS "s3://${BUCKET}/${TAR_FILE}" .
+    aws s3 cp ${BK_CUSTOM_AWS_ARGS} "s3://${BUCKET}/${TAR_FILE}" .
     tar ${BK_TAR_EXTRACT_ARGS} "${TAR_FILE}" -C .
   else
     cache_restore_skip "s3://${BUCKET}/${TAR_FILE}"
@@ -124,7 +127,7 @@ function cache() {
     TMP_FILE="$(mktemp)"
     tar "${BK_TAR_ARGS[@]}" "${TMP_FILE}" ${TAR_TARGETS}
     mv -f "${TMP_FILE}" "${TAR_FILE}"
-    aws s3 cp $BK_AWS_ARGS "$TAR_FILE" "s3://${BUCKET}/${TAR_FILE}"
+    aws s3 cp ${BK_CUSTOM_AWS_ARGS} "${TAR_FILE}" "s3://${BUCKET}/${TAR_FILE}"
   fi
   rm -f "${TAR_FILE}"
 }
