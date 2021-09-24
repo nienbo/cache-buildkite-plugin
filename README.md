@@ -1,4 +1,4 @@
-# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.4.8-blue?style=flat-square)](https://buildkite.com/plugins) [![CI](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml) <!-- omit in toc -->
+# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.4.9-blue?style=flat-square)](https://buildkite.com/plugins) [![CI](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/gencer/cache-buildkite-plugin/actions/workflows/ci.yml) <!-- omit in toc -->
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows* <!-- omit in toc -->
 
@@ -70,7 +70,7 @@ S3 backend uses **AWS CLI** v**1** or v**2** to copy and download from/to S3 buc
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.4.8:
+    - gencer/cache#v2.4.9:
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -98,7 +98,7 @@ Use `endpoint` and `region` fields to pass host and region parameters to be able
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.4.8:
+    - gencer/cache#v2.4.9:
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -134,7 +134,7 @@ Enabling this interoperability in Google Cloud Storage will generate the respect
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.4.8:
+    - gencer/cache#v2.4.9:
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -189,12 +189,12 @@ You can also use rsync to store your files using the `rsync` backend. Files will
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.4.8:
+    - gencer/cache#v2.4.9:
         id: ruby # or ruby-3.0
         backend: rsync
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
         rsync:
-          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.8+
+          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.9+
         paths:
           - 'bundle/vendor'
 ```
@@ -214,7 +214,7 @@ You can also use tarballs to store your files using the `tarball` backend. Files
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.4.8:
+    - gencer/cache#v2.4.9:
         id: ruby # or ruby-3.0
         backend: tarball
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -223,7 +223,7 @@ steps:
           - 'v1-cache-{{ id }}-'
         compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         tarball:
-          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.8+
+          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.9+
           max: 7 # Optional. Removes tarballs older than 7 days.
         paths:
           - 'bundle/vendor'
@@ -258,7 +258,7 @@ Along with lock files, you can calculate directory that contains multiple files 
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.4.8:
+    - gencer/cache#v2.4.9:
         id: node # or node-16
         backend: tarball # Optional. Default `backend` is already set to `tarball`
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
@@ -267,7 +267,7 @@ steps:
           - 'v1-cache-{{ id }}-'
         compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
         tarball:
-          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.8+
+          path: '/tmp/buildkite-cache' # Defaults to /tmp with v2.4.9+
           max: 7 # Optional. Removes tarballs older than 7 days.
         paths:
           - node_modules
@@ -284,7 +284,7 @@ You can skip caching on Pull Requests (Merge Requests) by simply adding `pr: fal
 ```yml
 steps:
   - plugins:
-    - gencer/cache#v2.4.8:
+    - gencer/cache#v2.4.9:
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -340,8 +340,8 @@ ruby-cache: &ruby-cache
     - 'bundler/vendor'
 
 all-plugins: &all-plugins
-  - gencer/cache#v2.4.8: *node-cache
-  - gencer/cache#v2.4.8: *ruby-cache
+  - gencer/cache#v2.4.9: *node-cache
+  - gencer/cache#v2.4.9: *ruby-cache
   - docker#v3.7.0: ~ # Use your config here
 
 steps:
@@ -366,7 +366,7 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - gencer/cache#v2.4.8: # Define cache *before* docker plugins.
+      - gencer/cache#v2.4.9: # Define cache *before* docker plugins.
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -391,7 +391,7 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - gencer/cache#v2.4.8:
+      - gencer/cache#v2.4.9:
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -422,7 +422,7 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - gencer/cache#v2.4.8:
+      - gencer/cache#v2.4.9:
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
