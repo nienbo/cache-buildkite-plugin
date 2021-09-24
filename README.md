@@ -32,6 +32,7 @@ Plus, In addition to tarball & rsync, we also do not re-create another tarball f
   - [Advanced and Multiple usages in same pipeline](#advanced-and-multiple-usages-in-same-pipeline)
   - [Usage with docker](#usage-with-docker)
   - [Adjust compression level](#adjust-compression-level)
+  - [Continue to cache on failed builds](#continue-to-cache-on-failed-builds)
   - [Auto deletion old caches](#auto-deletion-old-caches)
   - [Globs on paths](#globs-on-paths)
 - [Roadmap](#roadmap)
@@ -380,8 +381,6 @@ steps:
       - docker#v3.7.0: ~ # Use your config here
       - docker-compose#3.7.0: ~ # Or compose. Use your config here
 ```
-
-
 ## Adjust compression level
 
 You can pass numbers to `compress` argument. Default is `false` means no compression. If you pass `true` then default compression (`6`) will be used. You can provide compression level from 0 to 9. 0 means least, 9 means best compression (Causes intensive CPU usage).
@@ -411,6 +410,32 @@ Or, alternatively you can use environments globally:
 
 ```bash
 export BUILDKITE_PLUGIN_CACHE_COMPRESS=2
+```
+
+## Continue to cache on failed builds
+
+There is a possibility to do cache and send to S3 or Tarball storage when a build failed (aka. `non-zero exit code`). This is possible via `continue_on_error` option key as follow:
+
+```yaml
+steps:
+  - name: ':jest: Run tests'
+    key: jest
+    command: yarn test --runInBand
+    plugins:
+      - gencer/cache#v2.4.8:
+        id: ruby # or ruby-3.0
+        backend: s3
+        key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
+        restore-keys:
+          - 'v1-cache-{{ id }}-{{ runner.os }}-'
+          - 'v1-cache-{{ id }}-'
+        pr: false
+        compress: 2 # fast compression.
+        s3:
+          bucket: s3-bucket
+        paths:
+          - bundle/vendor
+        continue_on_error: true # Cache will be made even build fails.
 ```
 
 ## Auto deletion old caches

@@ -1,5 +1,4 @@
-
-# master
+# v2.4.9
 
 + Add an option to allow caching on non-zero exit codes via `continue_on_error` option key. See #33.
 + Fix: S3 args are passed to head-object call which is incompatible with `cp`. See #35.
