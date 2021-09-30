@@ -17,6 +17,8 @@ configuration:
       type: string
     compress:
       type: [number, boolean]
+    compress-program:
+      type: [string]
     continue_on_error:
       type: boolean
     pr:

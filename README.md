@@ -78,6 +78,7 @@ steps:
           - 'v1-cache-{{ id }}-{{ runner.os }}-'
           - 'v1-cache-{{ id }}-'
         compress: true # Create tar.gz instead of .tar (Compressed) Defaults to `false`.
+        compress-program: gzip # Allows for custom compression backends - i.e. pigz. Defaults to `gzip`.
         s3:
           profile: "other-profile" # Optional. Defaults to `default`.
           bucket: "s3-bucket"
