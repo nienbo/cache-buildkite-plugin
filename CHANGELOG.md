@@ -1,3 +1,7 @@
+# v2.4.10
+
++ Allow multithreaded compression using additional compressing tools like `pigz` via `compress-program` option. See #38.
+
 # v2.4.9
 
 + Add an option to allow caching on non-zero exit codes via `continue_on_error` option key. See #33.
