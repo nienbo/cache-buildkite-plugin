@@ -18,12 +18,12 @@
 # v2.4.7
 
 + Use Array to prevent escaping arguments with quote on tar commands
-+ Final release for `compress`
++ Final release for `compress` option key
 
 # v2.4.6
 
-+ Tidy tarball calls
-+ Adjustable compress option. Now you can decide ratio from 0 to 9 on compressed tarballs (Applies to tarball and s3 backends)
++ Tidied tarball calls
++ Adjustable compression option. Now you can decide ratio from `0` to `9` on compressed tarballs (Applies to tarball and s3 backends)
 
 # v2.4.5
 
@@ -39,7 +39,7 @@
   
 # v2.4.2
 
-+ Added `id` support to supported cache key templates. You can use in your keys as `{{ id }}`
++ Added `id` key to supported cache key templates. You can use in your keys as `{{ id }}`
 
 # v2.4.1
 
@@ -52,7 +52,7 @@
 
 # v2.3.10
 
-+ Don't upload unconditionally to S3. See #21.
++ Don't upload anything unconditionally to S3. See #21.
 
 # v2.3.9
 
@@ -66,7 +66,7 @@
 
 # v2.3.7
 
-+ Do not check `busybox` on macOS. See #17.
++ Do not check for `busybox` on macOS. See #17.
 
 # v2.3.6
 
@@ -80,7 +80,7 @@
 
 # v2.3.4
 
-+ Many variables perepended by `BK_CACHE_` to avoid conflict with local variables. More will come.
++ Many variables perepended with `BK_CACHE_` to avoid conflict with local variables. More will come.
 
 # v2.3.3
 
@@ -96,11 +96,11 @@
 
 # v2.3.0
 
-+ Ability to skip cache on PR builds. See README.
++ Ability to skip cache on PR-triggered builds. See README.
   
 # v2.2.1
 
-+ Fix possible failure in tarball cleanup. See #12. ([@djmarcin]( https://github.com/djmarcin))
++ Fix possible failure at tarball cleanup. See #12. ([@djmarcin]( https://github.com/djmarcin))
 
 # v2.2.0
 
@@ -109,7 +109,7 @@
 # v2.1.0
 
 + Improved templating support. Moving shared function to `shared.bash` See #8 and #9. ([@djmarcin]( https://github.com/djmarcin))
-+ Added tests. And rewarp the code. See #10. ([@djmarcin]( https://github.com/djmarcin))
++ Added tests and rewarp the code. See #10. ([@djmarcin]( https://github.com/djmarcin))
 
 # v2.0.10
 
@@ -121,12 +121,12 @@
 
 # v2.0.8
 
-+ Fix `"` and `'` (single/double quotes) issues on docker image that used in EC2 instances.
++ Fix `"` and `'` (single/double quotes) issues on docker image where used in EC2 instances.
 
 # v2.0.7
 
 + S3 uploads are now defiend in pipeline instead of ENV variables.
-+ Ability to hash directory.
++ Ability to hash directories.
 + Improved terminal output with emojis (_and printing current cache version_)
 
 # v2.0.6
@@ -136,19 +136,19 @@
 # v2.0.5
 
 + Fix checksum for files with dashes in them
-* Fix incorrect `tr` usage by @xthexder
-* Use `shasum` on macOS.
++ Fix incorrect `tr` usage by @xthexder
++ Use `shasum` on macOS.
 
 # v2.0.3
 
 + Skip cache at top level if `key` not provided
 + Check if tar file exists on `s3` before `cp`.
-* + Make AWS Profile optional
-* `sync -> cp` command changed
++ Make AWS Profile optional
++ `sync -> cp` command changed
 
 # v2.0.2
 
-+ Skip cache if exit status iz not zero
++ Skip cache if exit status is not zero
 
 # v2.0.1
 
