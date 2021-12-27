@@ -1,3 +1,7 @@
+# main
+
++ Fix restore on tarball backend. See #43.
+
 # v2.4.10
 
 + Allow multithreaded compression using additional compressing tools like `pigz` via `compress-program` option. See #38.
