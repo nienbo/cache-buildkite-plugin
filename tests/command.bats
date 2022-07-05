@@ -1,11 +1,13 @@
 #!/usr/bin/env bats
 
-load "$BATS_PATH/load.bash"
+setup() {
+  load "$BATS_PLUGIN_PATH/load.bash"
 
-# Uncomment to enable stub debugging
-# export AWS_STUB_DEBUG=/dev/tty
-# export GIT_STUB_DEBUG=/dev/tty
-# export TAR_STUB_DEBUG=/dev/tty
+  # Uncomment to enable stub debugging
+  # export AWS_STUB_DEBUG=/dev/tty
+  # export GIT_STUB_DEBUG=/dev/tty
+  # export TAR_STUB_DEBUG=/dev/tty
+}
 
 @test "Pre-command restores cache with basic key" {
 

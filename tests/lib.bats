@@ -1,6 +1,8 @@
 #!/usr/bin/env bats
 
-load "$BATS_PATH/load.bash"
+setup() {
+  load "$BATS_PLUGIN_PATH/load.bash"
+}
 
 shared_lib="$PWD/lib/shared.bash"
 
