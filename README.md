@@ -252,6 +252,7 @@ the cache key will be determined by executing a _checksum_ (actually `sha1sum`) 
 | `checksum 'file_name'` - or -<br />`checksum './directory'` | File: sha1 of that file<br />Directory: **sorted** hashing of the whole directory. |
 | `git.branch`                                                | For example: `master`.<br />Derived from `${BUILDKITE_BRANCH}`                     |
 | `git.commit`                                                | For example: `9576a34...`. (Full SHA).<br />Derived from `${BUILDKITE_COMMIT}`     |
+| `env.FOO`                                                   | Value in environment variable `FOO`                                                |
 
 ## Hashing (checksum) against directory
 
