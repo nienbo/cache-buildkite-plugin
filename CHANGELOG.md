@@ -1,6 +1,7 @@
-# main
+# v2.4.11
 
-+ Fix restore on tarball backend. See #43.
++ Fix restore on tarball backend. See #43 by @atty303
++ Add support for reading env variables in cache key template. See #50 by @smilin-desperado
 
 # v2.4.10
 
