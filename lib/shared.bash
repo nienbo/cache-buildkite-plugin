@@ -90,5 +90,5 @@ function cache_locating() {
 }
 
 function pipeline_slug() {
-  echo ${BUILDKITE_PLUGIN_CACHE_SLUG_OVERRIDE:-${BUILDKITE_PIPELINE_SLUG}}
+  echo ${BUILDKITE_PLUGIN_CACHE_PIPELINE_SLUG_OVERRIDE:-${BUILDKITE_PIPELINE_SLUG}}
 }
