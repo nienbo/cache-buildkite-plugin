@@ -1,3 +1,7 @@
+# v2.4.12
+
++ Sharing caches between pipelines. See #55 by @irphilli
+
 # v2.4.11
 
 + Fix restore on tarball backend. See #43 by @atty303
