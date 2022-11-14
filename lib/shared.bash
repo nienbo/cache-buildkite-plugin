@@ -88,3 +88,7 @@ function source_locating() {
 function cache_locating() {
   echo -e "${BK_LOG_PREFIX}🔍 Locating cache: $1"
 }
+
+function pipeline_slug() {
+  echo ${BUILDKITE_PLUGIN_CACHE_SLUG_OVERRIDE:-${BUILDKITE_PIPELINE_SLUG}}
+}
