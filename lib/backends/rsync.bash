@@ -14,14 +14,14 @@ if [ -n "${BUILDKITE_PLUGIN_CACHE_RSYNC_PATH:-}" ]; then
 fi
 
 function restore() {
-  CACHE_PREFIX="${BK_BASE_DIR}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
+  CACHE_PREFIX="${BK_BASE_DIR}/${BUILDKITE_ORGANIZATION_SLUG}/$(pipeline_slug)"
 
   mkdir -p "${CACHE_PREFIX}/${CACHE_KEY}"
   rsync -a "$RSYNC_ARGS" "${CACHE_PREFIX}/${CACHE_KEY}/" .
 }
 
 function cache() {
-  CACHE_PREFIX="${BK_BASE_DIR}/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
+  CACHE_PREFIX="${BK_BASE_DIR}/${BUILDKITE_ORGANIZATION_SLUG}/$(pipeline_slug)"
   mkdir -p "${CACHE_PREFIX}/${CACHE_KEY}/"
 
   if [ "${#paths[@]}" -eq 1 ]; then

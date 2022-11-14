@@ -88,3 +88,10 @@ function source_locating() {
 function cache_locating() {
   echo -e "${BK_LOG_PREFIX}🔍 Locating cache: $1"
 }
+
+# Value to be used as the pipeline slug
+# Returns:
+#   - String
+function pipeline_slug() {
+  echo "${BUILDKITE_PLUGIN_CACHE_PIPELINE_SLUG_OVERRIDE:-${BUILDKITE_PIPELINE_SLUG}}"
+}
