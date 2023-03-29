@@ -5,7 +5,7 @@ BK_DEFAULT_AWS_ARGS=""
 BK_CUSTOM_AWS_ARGS=""
 BK_CACHE_COMPRESS=${BUILDKITE_PLUGIN_CACHE_COMPRESS:-false}
 BK_CACHE_COMPRESS_PROGRAM=${BUILDKITE_PLUGIN_CACHE_COMPRESS_PROGRAM:-gzip}
-BK_CACHE_PREFERE_LOCAL=${BUILDKITE_PLUGIN_CACHE_PREFERE_LOCAL:-false}
+BK_CACHE_SAVE_CACHE=${BUILDKITE_PLUGIN_CACHE_SAVE_CACHE:-false}
 BK_CACHE_LOCAL_PATH="/tmp"
 BK_TAR_ARGS=()
 BK_TAR_ADDITIONAL_ARGS="--ignore-failed-read"
@@ -72,7 +72,7 @@ function restore() {
   BK_AWS_FOUND=false
 
   # Check if prefere local is true and if tar file exists in tmp dir
-  if [ "${BK_CACHE_PREFERE_LOCAL}" == "true" ] && [ -f "${BK_CACHE_LOCAL_PATH}/${TAR_FILE}" ]; then
+  if [ "${BK_CACHE_SAVE_CACHE}" == "true" ] && [ -f "${BK_CACHE_LOCAL_PATH}/${TAR_FILE}" ]; then
     echo -e "${BK_LOG_PREFIX}:file_cabinet: Using previously downloaded file ${BK_CACHE_LOCAL_PATH}/${TAR_FILE} since local is prefered."
     tar ${BK_TAR_EXTRACT_ARGS} "${BK_CACHE_LOCAL_PATH}/${TAR_FILE}" -C .
     return
@@ -112,7 +112,7 @@ function restore() {
 
   if [[ ! "${BK_AWS_FOUND}" =~ (false) ]]; then
     aws s3 cp ${BK_CUSTOM_AWS_ARGS} "s3://${BUCKET}/${TAR_FILE}" .
-    [ "${BK_CACHE_PREFERE_LOCAL}" == "true" ] && cp "${TAR_FILE}" "${BK_CACHE_LOCAL_PATH}/${TAR_FILE}"
+    [ "${BK_CACHE_SAVE_CACHE}" == "true" ] && cp "${TAR_FILE}" "${BK_CACHE_LOCAL_PATH}/${TAR_FILE}"
     tar ${BK_TAR_EXTRACT_ARGS} "${TAR_FILE}" -C .
   else
     cache_restore_skip "s3://${BUCKET}/${TAR_FILE}"

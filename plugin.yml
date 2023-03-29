@@ -38,7 +38,7 @@ configuration:
         type: string
       args:
         type: string
-      prefere-local:
+      save-cache:
         type: boolean
     tarball:
       path:

@@ -86,7 +86,7 @@ steps:
           bucket: "s3-bucket"
           class: STANDARD # Optional. Defaults to empty which is usually STANDARD or based on policy.
           args: '--option 1' # Optional. Defaults to empty. Any optional argument that can be passed to aws s3 cp command.
-          prefere-local: true # Optional. Defaults to false, meaning cache file is always downloaded.
+          save-cache: true # Optional. Saves the cache on temp folder and keep between builds/jobs on the same machine.
         paths:
           - 'bundle/vendor'
 ```
