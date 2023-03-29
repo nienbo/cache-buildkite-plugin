@@ -1,3 +1,7 @@
+# v2.4.13
+
++ Add `prefere-local` property to s3 cache. @ingcsmoreno
+
 # v2.4.12
 
 + Sharing caches between pipelines. See #55 by @irphilli

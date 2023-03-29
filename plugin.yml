@@ -38,6 +38,8 @@ configuration:
         type: string
       args:
         type: string
+      prefere-local:
+        type: boolean
     tarball:
       path:
         type: string
