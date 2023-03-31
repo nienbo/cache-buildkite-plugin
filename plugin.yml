@@ -26,26 +26,31 @@ configuration:
     pr:
       type: boolean
     s3:
-      profile:
-        type: string
-      bucket:
-        type: string
-      class:
-        type: string
-      endpoint:
-        type: string
-      region:
-        type: string
-      args:
-        type: string
+      properties:
+        profile:
+          type: string
+        bucket:
+          type: string
+        class:
+          type: string
+        endpoint:
+          type: string
+        region:
+          type: string
+        args:
+          type: string
+        save-cache:
+          type: boolean
     tarball:
-      path:
-        type: string
-      max:
-        type: number
+      properties:
+        path:
+          type: string
+        max:
+          type: number
     rsync:
-      path:
-        type: string
+      properties:
+        path:
+          type: string
     paths:
       type: [string, array]
     env:

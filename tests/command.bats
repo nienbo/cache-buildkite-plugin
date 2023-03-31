@@ -28,6 +28,7 @@ setup() {
   run "$PWD/hooks/pre-command"
   assert_success
   assert_output --partial "Copied from S3"
+  refute_output --partial "Using previously downloaded file"
   assert_output --partial "Extracted tar archive"
 
   unset BUILDKITE_PLUGIN_CACHE_KEY
@@ -38,6 +39,39 @@ setup() {
   unset BUILDKITE_ORGANIZATION_SLUG
 
   unstub aws
+  unstub tar
+}
+
+@test "Pre-command restores S3 backed cache using local file" {
+  RANDOM_NUM=$(echo $RANDOM)
+
+  stub tar \
+   "-xf /tmp/v1-local-cache-key-${RANDOM_NUM}.tar -C . : echo Extracted tar archive"
+
+  export BUILDKITE_ORGANIZATION_SLUG="my-org"
+  export BUILDKITE_PIPELINE_SLUG="my-pipeline"
+  export BUILDKITE_PLUGIN_CACHE_S3_BUCKET="my-bucket"
+  export BUILDKITE_PLUGIN_CACHE_S3_PROFILE="my-profile"
+  export BUILDKITE_PLUGIN_CACHE_S3_SAVE_CACHE="true"
+  export BUILDKITE_PLUGIN_CACHE_BACKEND="s3"
+  export BUILDKITE_PLUGIN_CACHE_KEY="v1-local-cache-key-${RANDOM_NUM}"
+
+  touch "/tmp/${BUILDKITE_PLUGIN_CACHE_KEY}.tar"
+
+  run "$PWD/hooks/pre-command"
+  assert_success
+  refute_output --partial "Copied from S3"
+  assert_output --partial "Using previously downloaded file"
+  assert_output --partial "Extracted tar archive"
+
+  unset BUILDKITE_PLUGIN_CACHE_KEY
+  unset BUILDKITE_PLUGIN_CACHE_BACKEND
+  unset BUILDKITE_PLUGIN_CACHE_S3_SAVE_CACHE
+  unset BUILDKITE_PLUGIN_CACHE_S3_PROFILE
+  unset BUILDKITE_PLUGIN_CACHE_S3_BUCKET
+  unset BUILDKITE_PIPELINE_SLUG
+  unset BUILDKITE_ORGANIZATION_SLUG
+
   unstub tar
 }
 
