@@ -54,7 +54,7 @@ setup() {
   export BUILDKITE_PLUGIN_CACHE_S3_PROFILE="my-profile"
   export BUILDKITE_PLUGIN_CACHE_BACKEND="s3"
   export BUILDKITE_PLUGIN_CACHE_KEY="v1-local-cache-key-${RANDOM_NUM}"
-  export BUILDKITE_PLUGIN_CACHE_SAVE_CACHE="true"
+  export BUILDKITE_PLUGIN_CACHE_S3_SAVE_CACHE="true"
 
   touch "/tmp/${BUILDKITE_PLUGIN_CACHE_KEY}.tar"
 
@@ -64,7 +64,7 @@ setup() {
   assert_output --partial "Using previously downloaded file"
   assert_output --partial "Extracted tar archive"
 
-  unset BUILDKITE_PLUGIN_CACHE_SAVE_CACHE
+  unset BUILDKITE_PLUGIN_CACHE_S3_SAVE_CACHE
   unset BUILDKITE_PLUGIN_CACHE_KEY
   unset BUILDKITE_PLUGIN_CACHE_BACKEND
   unset BUILDKITE_PLUGIN_CACHE_S3_PROFILE
