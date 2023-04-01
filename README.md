@@ -35,6 +35,7 @@ Plus, In addition to tarball & rsync, we also do not re-create another tarball f
   - [Continue to cache on failed builds](#continue-to-cache-on-failed-builds)
   - [Multi-threaded compression](#multi-threaded-compression)
   - [Sharing caches between pipelines](#sharing-caches-between-pipelines)
+  - [Keep the cache file between jobs/builds](#keep-the-cache-file-between-jobsbuilds)
   - [Auto deletion old caches](#auto-deletion-old-caches)
   - [Globs on paths](#globs-on-paths)
 - [Roadmap](#roadmap)
@@ -491,6 +492,31 @@ steps:
         paths:
           - bundle/vendor
         pipeline-slug-override: "other-pipeline" # other-pipeline references the same Gemfile.lock
+```
+
+## Keep the cache file between jobs/builds
+
+To prevent re-downloading the same cache again and place it to a temporary directory then copy when necessary use the `save-cache` option as follows:
+
+```yaml
+steps:
+  - name: ':jest: Run tests'
+    key: jest
+    command: yarn test --runInBand
+    plugins:
+      - nienbo/cache#v2.4.13:
+        id: ruby # or ruby-3.0
+        backend: s3
+        key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
+        restore-keys:
+          - 'v1-cache-{{ id }}-{{ runner.os }}-'
+          - 'v1-cache-{{ id }}-'
+        compress: 2 # fast compression.
+        s3:
+          bucket: s3-bucket
+          save-cache: true # Optional. Saves the cache on temp folder and keep between builds/jobs on the same machine. Defaults to `false`
+        paths:
+          - bundle/vendor
 ```
 
 ## Auto deletion old caches
