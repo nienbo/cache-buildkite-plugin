@@ -2,6 +2,15 @@
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows* <!-- omit in toc -->
 
+----
+
+#### ⚠️ This repository transferred from `gencer` to `nienbo` organization. It is recommended to change plugin calls from `gencer/cache` to `nienbo/cache`. ⚠️
+
+Absolutely **not mandatory**. But **recommended**.<br/>
+This notification message will be removed after few weeks.
+
+----
+
 &ast; Windows requires **Git for Windows 2.25 or later**.
 
 A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) to restore and save
