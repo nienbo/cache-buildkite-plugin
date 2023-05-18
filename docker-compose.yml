@@ -6,7 +6,7 @@ services:
       - '.:/plugin:ro'
   lint:
     image: buildkite/plugin-linter
-    command: ['--id', 'gencer/cache']
+    command: ['--id', 'nienbo/cache']
     volumes:
       - '.:/plugin:ro'
   shellcheck:
