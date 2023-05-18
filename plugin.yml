@@ -21,6 +21,8 @@ configuration:
       type: [string]
     continue_on_error:
       type: boolean
+    always:
+      type: boolean
     pipeline-slug-override:
       type: string
     pr:

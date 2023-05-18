@@ -2,6 +2,7 @@
 
 # Defaults...
 BK_CACHE_COMPRESS=${BUILDKITE_PLUGIN_CACHE_COMPRESS:-false}
+BK_ALWAYS_CACHE=${BUILDKITE_PLUGIN_CACHE_ALWAYS:-false}
 BK_TAR_ARGS=()
 BK_TAR_ADDITIONAL_ARGS="--ignore-failed-read"
 BK_TAR_EXTENSION="tar"
@@ -112,6 +113,12 @@ function cache() {
   cache_locating "${TAR_TARGETS}"
   mkdir -p "${CACHE_PREFIX}"
   TAR_FILE="${CACHE_PREFIX}/${CACHE_KEY}.${BK_TAR_EXTENSION}"
+
+  if [ $BK_ALWAYS_CACHE == "true" ]; then
+    echo -e "${BK_LOG_PREFIX}:file_cabinet::close: Removing previously found cache ${TAR_FILE} since always is true."
+    rm -f "${TAR_FILE}"
+  fi
+
   if [ ! -f "$TAR_FILE" ]; then
     TMP_FILE="$(mktemp)"
     tar "${BK_TAR_ARGS[@]}" "${TMP_FILE}" ${TAR_TARGETS}
