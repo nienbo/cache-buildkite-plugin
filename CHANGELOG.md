@@ -1,3 +1,7 @@
+# v2.4.14
+
++ Remove existing tar file when cache **always** is set to `true`. See #59 by @ingcsmoreno
+
 # v2.4.13
 
 + Add `save-cache` property to s3 cache. @ingcsmoreno
