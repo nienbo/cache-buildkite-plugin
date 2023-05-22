@@ -1,6 +1,6 @@
 # v2.4.14
 
-+ Remove existing tar file when cache **always** is set to `true`. See #59 by @ingcsmoreno
++ Remove existing tar file when cache **always** is set to `true`. See #59 by @jebentier
 
 # v2.4.13
 
