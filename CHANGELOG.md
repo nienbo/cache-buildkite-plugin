@@ -1,3 +1,7 @@
+# v2.4.15
+
++ Discard broken S3 downloads. See #65, #64 by @bradleyayers
+
 # v2.4.14
 
 + Remove existing tar file when cache **always** is set to `true`. See #59 by @jebentier
