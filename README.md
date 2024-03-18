@@ -284,6 +284,10 @@ For example, you can calculate total checksum of your javascript folder to skip 
 
 Note: Before hashing files, we do sorting via `sort`. This makes exact same sorted and hashed content against very same directory between different builds.
 
+## Skip Post command Hook
+
+You can skip post command hook by simply adding `skip-post-command-hook: false`
+
 ## Skip Cache on PRs
 
 You can skip caching on Pull Requests (Merge Requests) by simply adding `pr: false` to the cache plugin. For example;
