@@ -382,3 +382,22 @@ setup() {
   unstub mktemp
   unstub aws
 }
+
+
+@test "Post-command skips with flag" {
+
+  export BUILDKITE_PLUGIN_CACHE_SKIP_POST_COMMAND_HOOK="true"
+
+  run "$PWD/hooks/post-command"
+  assert_success
+  refute_output --partial ':bash: Processing'
+
+  unset BUILDKITE_PLUGIN_CACHE_SKIP_POST_COMMAND_HOOK
+}
+
+@test "Post-command is not skipped by default" {
+
+  run "$PWD/hooks/post-command"
+  assert_output --partial ':bash: Processing'
+
+}

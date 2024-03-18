@@ -6,6 +6,10 @@
 
 set -euo pipefail
 
+if [[ "${BUILDKITE_PLUGIN_CACHE_SKIP_POST_COMMAND_HOOK:-false}" =~ (true|on|1) ]]; then
+  exit 0
+fi
+
 BK_CACHE_BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
 BK_CACHE_ID=""
 BK_LOG_PREFIX="(*) - "

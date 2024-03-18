@@ -23,6 +23,8 @@ configuration:
       type: boolean
     always:
       type: boolean
+    skip-post-command-hook:
+      type: boolean
     pipeline-slug-override:
       type: string
     pr:
