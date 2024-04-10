@@ -23,6 +23,10 @@ function expand_templates() {
       TARGET="$(echo -e "${TEMPLATE_VALUE/"checksum"/""}" | tr -d \' | tr -d \" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
       EXPANDED_VALUE=$(find "$TARGET" -type f -exec $HASHER_BIN {} \; | sort -k 2 | $HASHER_BIN | awk '{print $1}')
       ;;
+    "date "*)
+      DATE_FMT="$(echo -e "${TEMPLATE_VALUE/"date"/""}" | tr -d \' | tr -d \" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+      EXPANDED_VALUE=$(date "${DATE_FMT}")
+      ;;
     "env."*)
       ENV_VAR_NAME="$(echo -e "${TEMPLATE_VALUE/"env."/""}" | tr -d \' | tr -d \" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
       EXPANDED_VALUE="${!ENV_VAR_NAME}"
