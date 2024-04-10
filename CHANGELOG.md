@@ -1,3 +1,7 @@
+# v2.4.16
+
++ Add date formats to templates. See #71 by @pquerna
+
 # v2.4.15
 
 + Discard broken S3 downloads. See #65, #64 by @bradleyayers
