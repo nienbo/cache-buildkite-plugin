@@ -75,8 +75,10 @@ function restore() {
   # Check if prefere local is true and if tar file exists in tmp dir
   if [ "${BK_CACHE_SAVE_CACHE}" == "true" ] && [ -f "${BK_CACHE_LOCAL_PATH}/${TAR_FILE}" ]; then
     echo -e "${BK_LOG_PREFIX}:file_cabinet: Using previously downloaded file ${BK_CACHE_LOCAL_PATH}/${TAR_FILE} since local is prefered."
-    tar ${BK_TAR_EXTRACT_ARGS} "${BK_CACHE_LOCAL_PATH}/${TAR_FILE}" -C .
-    return
+    if tar ${BK_TAR_EXTRACT_ARGS} "${BK_CACHE_LOCAL_PATH}/${TAR_FILE}" -C . ; then
+        return
+    fi
+    echo -e "${BK_LOG_PREFIX}:file_cabinet: Ignoring corrupted previously downloaded file ${BK_CACHE_LOCAL_PATH}/${TAR_FILE}."
   fi
 
   aws s3api head-object --bucket "${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}" --key "${TKEY}/${TAR_FILE}" ${BK_DEFAULT_AWS_ARGS} || no_head=true
