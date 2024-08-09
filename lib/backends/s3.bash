@@ -155,7 +155,17 @@ function cache() {
     TMP_FILE="$(mktemp)"
     tar "${BK_TAR_ARGS[@]}" "${TMP_FILE}" ${TAR_TARGETS}
     mv -f "${TMP_FILE}" "${TAR_FILE}"
-    aws s3 cp ${BK_CUSTOM_AWS_ARGS} "${TAR_FILE}" "s3://${BUCKET}/${TAR_FILE}"
+
+    if ! tar tf "${TAR_FILE}" &> /dev/null; then
+      rm -rf "${TAR_FILE}"
+      tar "${BK_TAR_ARGS[@]}" "${TMP_FILE}" ${TAR_TARGETS}
+      mv -f "${TMP_FILE}" "${TAR_FILE}"
+    fi
+    if ! tar tf "${TAR_FILE}" &> /dev/null; then
+      error "Error while packaging cache"
+    else
+      aws s3 cp ${BK_CUSTOM_AWS_ARGS} "${TAR_FILE}" "s3://${BUCKET}/${TAR_FILE}"
+    fi
   fi
   rm -f "${TAR_FILE}"
 }
