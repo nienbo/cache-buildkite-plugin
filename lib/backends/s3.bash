@@ -159,5 +159,4 @@ function cache() {
     mv -f "${TMP_FILE}" "${TAR_FILE}"
     aws s3 cp ${BK_CUSTOM_AWS_ARGS} "${TAR_FILE}" "s3://${BUCKET}/${TAR_FILE}"
   fi
-  rm -f "${TAR_FILE}"
 }
