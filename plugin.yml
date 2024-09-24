@@ -43,6 +43,8 @@ configuration:
           type: string
         save-cache:
           type: boolean
+        save-cache-dir:
+          type: string
     tarball:
       properties:
         path:
