@@ -132,6 +132,9 @@ function restore() {
 
 function cache() {
   TAR_FILE="${CACHE_KEY}.${BK_TAR_EXTENSION}"
+  if [ "${BK_CACHE_SAVE_CACHE}" == "true" ]; then
+    TAR_FILE="${BK_CACHE_LOCAL_PATH}/${TAR_FILE}"
+  fi
   BUCKET="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}/${BUILDKITE_ORGANIZATION_SLUG}/$(pipeline_slug)"
   TAR_TARGETS=""
 
