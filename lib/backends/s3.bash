@@ -132,6 +132,9 @@ function restore() {
 
 function cache() {
   TAR_FILE="${CACHE_KEY}.${BK_TAR_EXTENSION}"
+  if [ "${BK_CACHE_SAVE_CACHE}" == "true" ]; then
+    TAR_FILE="${BK_CACHE_LOCAL_PATH}/${TAR_FILE}"
+  fi
   BUCKET="${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}/${BUILDKITE_ORGANIZATION_SLUG}/$(pipeline_slug)"
   TAR_TARGETS=""
 
@@ -144,7 +147,6 @@ function cache() {
   fi
 
   cache_locating "${TAR_TARGETS}"
-  TAR_FILE="${CACHE_KEY}.${BK_TAR_EXTENSION}"
 
   if [ $BK_ALWAYS_CACHE == "true" ]; then
     echo -e "${BK_LOG_PREFIX}:file_cabinet::close: Removing previously found cache ${TAR_FILE} since always is true."
@@ -157,5 +159,4 @@ function cache() {
     mv -f "${TMP_FILE}" "${TAR_FILE}"
     aws s3 cp ${BK_CUSTOM_AWS_ARGS} "${TAR_FILE}" "s3://${BUCKET}/${TAR_FILE}"
   fi
-  rm -f "${TAR_FILE}"
 }
