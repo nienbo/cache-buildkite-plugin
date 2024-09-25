@@ -89,6 +89,7 @@ steps:
           class: STANDARD # Optional. Defaults to empty which is usually STANDARD or based on policy.
           args: '--option 1' # Optional. Defaults to empty. Any optional argument that can be passed to aws s3 cp command.
           save-cache: true # Optional. Saves the cache on temp folder and keep between builds/jobs on the same machine.
+          save-cache-dir: /mnt/cache # Optional. Where to save the cache if `save-cache` is enabled.
         paths:
           - 'bundle/vendor'
 ```
@@ -517,6 +518,7 @@ steps:
         s3:
           bucket: s3-bucket
           save-cache: true # Optional. Saves the cache on temp folder and keep between builds/jobs on the same machine. Defaults to `false`
+          save-cache-dir: /mnt/cache # Optional. Where to save the cache if `save-cache` is enabled.
         paths:
           - bundle/vendor
 ```
