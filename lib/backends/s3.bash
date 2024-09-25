@@ -74,11 +74,11 @@ function restore() {
 
   # Check if prefere local is true and if tar file exists in tmp dir
   if [ "${BK_CACHE_SAVE_CACHE}" == "true" ] && [ -f "${BK_CACHE_LOCAL_PATH}/${TAR_FILE}" ]; then
-    echo -e "${BK_LOG_PREFIX}:file_cabinet: Using previously downloaded file ${BK_CACHE_LOCAL_PATH}/${TAR_FILE} since local is prefered."
+    echo -e "${BK_LOG_PREFIX}🗄️ Using previously downloaded file ${BK_CACHE_LOCAL_PATH}/${TAR_FILE} since local is preferred."
     if tar ${BK_TAR_EXTRACT_ARGS} "${BK_CACHE_LOCAL_PATH}/${TAR_FILE}" -C . ; then
         return
     fi
-    echo -e "${BK_LOG_PREFIX}:file_cabinet: Ignoring corrupted previously downloaded file ${BK_CACHE_LOCAL_PATH}/${TAR_FILE}."
+    echo -e "${BK_LOG_PREFIX}🗄️ Ignoring corrupted previously downloaded file ${BK_CACHE_LOCAL_PATH}/${TAR_FILE}."
   fi
 
   aws s3api head-object --bucket "${BUILDKITE_PLUGIN_CACHE_S3_BUCKET}" --key "${TKEY}/${TAR_FILE}" ${BK_DEFAULT_AWS_ARGS} || no_head=true
@@ -149,7 +149,7 @@ function cache() {
   cache_locating "${TAR_TARGETS}"
 
   if [ $BK_ALWAYS_CACHE == "true" ]; then
-    echo -e "${BK_LOG_PREFIX}:file_cabinet::close: Removing previously found cache ${TAR_FILE} since always is true."
+    echo -e "${BK_LOG_PREFIX}🗄️🗑️ Removing previously found cache ${TAR_FILE} since always is true."
     rm -f "${TAR_FILE}"
   fi
 
