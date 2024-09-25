@@ -1,3 +1,10 @@
+# v2.4.17
+
++ Fix typos and update readme. See #77 by calvinbui
++ configurable save-cache directory. See #75 by calvinbui
++ Don't upload to S3 if local cache exists. See #76 by calvinbui
++ fix #72 ignore corrupted save-cache. See #73 by @eshedg
+
 # v2.4.16
 
 + Add date formats to templates. See #71 by @pquerna
