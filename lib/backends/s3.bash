@@ -123,7 +123,12 @@ function restore() {
       mv -f "${TMP_FILE}" "${TAR_FILE}"
     fi
 
-    [ "${BK_CACHE_SAVE_CACHE}" == "true" ] && cp "${TAR_FILE}" "${BK_CACHE_LOCAL_PATH}/${TAR_FILE}"
+    if [ "${BK_CACHE_SAVE_CACHE}" == "true" ]; then
+      if [ ! -d "${BK_CACHE_LOCAL_PATH}" ]; then
+        mkdir -p "${BK_CACHE_LOCAL_PATH}"
+      fi
+      cp "${TAR_FILE}" "${BK_CACHE_LOCAL_PATH}/${TAR_FILE}"
+    fi
     tar ${BK_TAR_EXTRACT_ARGS} "${TAR_FILE}" -C .
   else
     cache_restore_skip "s3://${BUCKET}/${TAR_FILE}"
@@ -148,7 +153,7 @@ function cache() {
 
   cache_locating "${TAR_TARGETS}"
 
-  if [ $BK_ALWAYS_CACHE == "true" ]; then
+  if [ ${BK_ALWAYS_CACHE} == "true" ]; then
     echo -e "${BK_LOG_PREFIX}🗄️🗑️ Removing previously found cache ${TAR_FILE} since always is true."
     rm -f "${TAR_FILE}"
   fi
