@@ -41,6 +41,16 @@ if [[ "${BUILDKITE_PLUGIN_CACHE_PR:-true}" =~ (false|off|0) ]]; then
   fi
 fi
 
+if [[ "${BUILDKITE_PLUGIN_CACHE_UPLOAD_CACHE:-true}" =~ (false|off|0) ]]; then
+  echo -e "${BK_LOG_PREFIX}⏭️ Cache upload is disabled. Skipping..."
+  exit 0
+elif [[ "${BUILDKITE_PLUGIN_CACHE_UPLOAD_CACHE:-true}" == "default-branch-only" ]]; then
+  if [[ ${BUILDKITE_BRANCH} != "${BUILDKITE_PIPELINE_DEFAULT_BRANCH}" ]]; then
+    echo -e "${BK_LOG_PREFIX}⏭️ Cache upload is disabled on non-default branches. Skipping..."
+    exit 0
+  fi
+fi
+
 if [[ -n "${BUILDKITE_PLUGIN_CACHE_KEY:-}" ]]; then
 
   # Defaults...
