@@ -28,7 +28,7 @@ configuration:
     pr:
       type: boolean
     upload-cache:
-      type: string
+      type: [string, boolean]
     s3:
       properties:
         profile:
