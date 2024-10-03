@@ -1,3 +1,8 @@
+# v2.4.18
+
++ create cache-dir if not exists. See #78 by @calvinbui
++ Ability to skip uploading cache. See #79 by @calvinbui
+
 # v2.4.17
 
 + Fix typos and update readme. See #77 by @calvinbui
