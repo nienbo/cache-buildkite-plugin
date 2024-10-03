@@ -319,6 +319,33 @@ Or you can set this by Environment:
 export BUILDKITE_PLUGIN_CACHE_PR=false
 ```
 
+## Skip cache upload
+
+You can skip the cache upload at the end of a build step by using `upload-cache`. The possible values are:
+
+| **Value**             | **Behavior**                                                                                  |
+| --------------------- | --------------------------------------------------------------------------------------------- |
+| `true` (default)      | Cache will be uploaded at the end of the build step                                           |
+| `false`               | Cache upload will be skipped.                                                                 |
+| `default-branch-only` | Cache will only upload on the default branch (defined by `BUILDKITE_PIPELINE_DEFAULT_BRANCH`) |
+
+```yml
+steps:
+  - plugins:
+    - nienbo/cache#v2.4.17:
+        id: ruby # or ruby-3.0
+        backend: s3
+        key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
+        restore-keys:
+          - 'v1-cache-{{ id }}-{{ runner.os }}-'
+        s3:
+          bucket: "s3-bucket"
+        paths:
+          - 'bundle/vendor'
+        upload-cache: false # Defaults to `true`
+
+```
+
 ## Advanced and Multiple usages in same pipeline
 
 ```yaml
