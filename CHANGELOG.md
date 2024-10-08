@@ -1,3 +1,8 @@
+# v2.4.19
+
++ upload to s3 without local path. See #80 by @calvinbui
+  - _Fixes regression from #76._
+
 # v2.4.18
 
 + create cache-dir if not exists. See #78 by @calvinbui
