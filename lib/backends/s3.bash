@@ -33,6 +33,12 @@ if [[ ! "$OSTYPE" == "darwin"* ]]; then
     fi
     BK_TAR_EXTENSION="tar.gz"
     BK_TAR_EXTRACT_ARGS="-xzf"
+
+    if [[ "${BK_CACHE_COMPRESS_PROGRAM}" == zstd ]]; then
+      BK_TAR_EXTENSION="tar.zst"
+      BK_TAR_ARGS=("$BK_TAR_ADDITIONAL_ARGS" --use-compress-program "zstd" -cf)
+      BK_TAR_EXTRACT_ARGS="--use-compress-program zstd -xf"
+    fi
   else
     BK_TAR_ARGS=("$BK_TAR_ADDITIONAL_ARGS" -cf)
   fi
