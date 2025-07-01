@@ -126,8 +126,6 @@ function cache() {
   fi
 
   if [ ! -f "$TAR_FILE" ]; then
-    TMP_FILE="$(mktemp)"
-    tar "${BK_TAR_ARGS[@]}" "${TMP_FILE}" ${TAR_TARGETS}
-    mv -f "${TMP_FILE}" "${TAR_FILE}"
+    tar "${BK_TAR_ARGS[@]}" "${TAR_FILE}" ${TAR_TARGETS}
   fi
 }
