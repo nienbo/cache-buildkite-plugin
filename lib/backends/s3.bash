@@ -120,13 +120,11 @@ function restore() {
   fi
 
   if [[ ! "${BK_AWS_FOUND}" =~ (false) ]]; then
-    TMP_FILE="$(mktemp)"
-    aws s3 cp ${BK_CUSTOM_AWS_ARGS} "s3://${BUCKET}/${TAR_FILE}" "${TMP_FILE}"  || s3_download_failed=true
+    aws s3 cp ${BK_CUSTOM_AWS_ARGS} "s3://${BUCKET}/${TAR_FILE}" "${TAR_FILE}" || s3_download_failed=true
     if ${s3_download_failed:-false}; then
       echo -e "S3 download failed, soft failing and skipping cache restore..."
+      rm -f "${TAR_FILE}"
       return 0
-    else
-      mv -f "${TMP_FILE}" "${TAR_FILE}"
     fi
 
     if [ "${BK_CACHE_SAVE_CACHE}" == "true" ]; then
@@ -169,9 +167,7 @@ function cache() {
   fi
 
   if [ ! -f "$TAR_FILE" ]; then
-    TMP_FILE="$(mktemp)"
-    tar "${BK_TAR_ARGS[@]}" "${TMP_FILE}" ${TAR_TARGETS}
-    mv -f "${TMP_FILE}" "${TAR_FILE}"
+    tar "${BK_TAR_ARGS[@]}" "${TAR_FILE}" ${TAR_TARGETS}
     aws s3 cp ${BK_CUSTOM_AWS_ARGS} "${TAR_FILE}" "s3://${BUCKET}/$(basename "${TAR_FILE}")"
   fi
 }
