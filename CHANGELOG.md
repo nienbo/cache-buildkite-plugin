@@ -1,6 +1,7 @@
 # v2.4.21
 
-+ Avoid using /tmp. See #85 by @JP-Ellis
++ Support zstd as a compression backend by @Amir-Ahmad in https://github.com/nienbo/cache-buildkite-plugin/pull/82
++ fix: avoid mktemp by @JP-Ellis in https://github.com/nienbo/cache-buildkite-plugin/pull/85
 
 # v2.4.20
 
