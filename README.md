@@ -1,4 +1,4 @@
-# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.4.20-blue?style=flat-square)](https://buildkite.com/plugins) [![CI](https://github.com/nienbo/cache-buildkite-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/nienbo/cache-buildkite-plugin/actions/workflows/ci.yml) <!-- omit in toc -->
+# Cache Buildkite Plugin [![Version badge](https://img.shields.io/badge/cache-v2.4.21-blue?style=flat-square)](https://buildkite.com/plugins) [![CI](https://github.com/nienbo/cache-buildkite-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/nienbo/cache-buildkite-plugin/actions/workflows/ci.yml) <!-- omit in toc -->
 
 ### Tarball, Rsync & S3 Cache Kit for Buildkite. Supports Linux, macOS and Windows* <!-- omit in toc -->
 
@@ -75,7 +75,7 @@ S3 backend uses **AWS CLI** v**1** or v**2** to copy and download from/to S3 buc
 ```yml
 steps:
   - plugins:
-    - nienbo/cache#v2.4.20:
+    - nienbo/cache#v2.4.21:
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -106,7 +106,7 @@ Use `endpoint` and `region` fields to pass host and region parameters to be able
 ```yml
 steps:
   - plugins:
-    - nienbo/cache#v2.4.20:
+    - nienbo/cache#v2.4.21:
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -142,7 +142,7 @@ Enabling this interoperability in Google Cloud Storage will generate the respect
 ```yml
 steps:
   - plugins:
-    - nienbo/cache#v2.4.20:
+    - nienbo/cache#v2.4.21:
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -197,7 +197,7 @@ You can also use rsync to store your files using the `rsync` backend. Files will
 ```yml
 steps:
   - plugins:
-    - nienbo/cache#v2.4.20:
+    - nienbo/cache#v2.4.21:
         id: ruby # or ruby-3.0
         backend: rsync
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -222,7 +222,7 @@ You can also use tarballs to store your files using the `tarball` backend. Files
 ```yml
 steps:
   - plugins:
-    - nienbo/cache#v2.4.20:
+    - nienbo/cache#v2.4.21:
         id: ruby # or ruby-3.0
         backend: tarball
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -268,7 +268,7 @@ Along with lock files, you can calculate directory that contains multiple files 
 ```yml
 steps:
   - plugins:
-    - nienbo/cache#v2.4.20:
+    - nienbo/cache#v2.4.21:
         id: node # or node-16
         backend: tarball # Optional. Default `backend` is already set to `tarball`
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum './app/javascript' }}" # Calculate whole 'app/javascript' recursively
@@ -294,7 +294,7 @@ You can skip caching on Pull Requests (Merge Requests) by simply adding `pr: fal
 ```yml
 steps:
   - plugins:
-    - nienbo/cache#v2.4.20:
+    - nienbo/cache#v2.4.21:
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -333,7 +333,7 @@ You can skip the cache upload at the end of a build step by using `upload-cache`
 ```yml
 steps:
   - plugins:
-    - nienbo/cache#v2.4.20:
+    - nienbo/cache#v2.4.21:
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -377,8 +377,8 @@ ruby-cache: &ruby-cache
     - 'bundler/vendor'
 
 all-plugins: &all-plugins
-  - nienbo/cache#v2.4.20: *node-cache
-  - nienbo/cache#v2.4.20: *ruby-cache
+  - nienbo/cache#v2.4.21: *node-cache
+  - nienbo/cache#v2.4.21: *ruby-cache
   - docker#v3.7.0: ~ # Use your config here
 
 steps:
@@ -403,7 +403,7 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - nienbo/cache#v2.4.20: # Define cache *before* docker plugins.
+      - nienbo/cache#v2.4.21: # Define cache *before* docker plugins.
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -428,7 +428,7 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - nienbo/cache#v2.4.20:
+      - nienbo/cache#v2.4.21:
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -459,7 +459,7 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - nienbo/cache#v2.4.20:
+      - nienbo/cache#v2.4.21:
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -485,7 +485,7 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - nienbo/cache#v2.4.20:
+      - nienbo/cache#v2.4.21:
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -510,7 +510,7 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - nienbo/cache#v2.4.20:
+      - nienbo/cache#v2.4.21:
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -535,7 +535,7 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - nienbo/cache#v2.4.20:
+      - nienbo/cache#v2.4.21:
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -569,7 +569,7 @@ steps:
     key: jest
     command: yarn test --runInBand
     plugins:
-      - nienbo/cache#v2.4.20:
+      - nienbo/cache#v2.4.21:
         id: ruby # or ruby-3.0
         backend: s3
         key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'Gemfile.lock' }}"
@@ -594,4 +594,4 @@ You can use glob pattern in paths (to be cached) after `v2.1.x`
 + BitPaket Easy Storage support.
 + Azure Blob Storage support.
 
-Copyright © 2024 Nienbo Corporation. All rights reserved.
+Copyright © 2025 Nienbo Corporation. All rights reserved.

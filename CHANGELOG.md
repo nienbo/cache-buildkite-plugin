@@ -1,3 +1,7 @@
+# v2.4.21
+
++ Avoid using /tmp. See #85 by @JP-Ellis
+
 # v2.4.20
 
 + create save-cache-dir if not exists when uploading. See #81 by @calvinbui
